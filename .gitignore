@@ -10,6 +10,7 @@
 
 # generated files
 bin/
+bin/markjmind.v8.jar
 gen/
 
 # Local configuration file (sdk path, etc)
