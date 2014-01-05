@@ -18,7 +18,7 @@ import android.widget.TextView;
  * @author 오재웅
  * @version 2013.11.17
  */
-public class Jwc extends JwViewController{
+public class Jwc extends JwViewController{ 
 	
 	
 	public static Drawable getDrawable(int R_drawable_id,View view){
