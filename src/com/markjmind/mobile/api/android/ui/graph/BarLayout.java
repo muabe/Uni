@@ -164,7 +164,7 @@ public class BarLayout extends LinearLayout{
 				int h = headerLyt.getHeight()-paddingSize;
 				 if(h>0){
 					 leftLyt.setPadding(leftLyt.getPaddingLeft(), h, leftLyt.getPaddingRight(), leftLyt.getPaddingBottom());
-				 }else if(h<0){
+				 }else if(h<=0){
 					 center.setPadding(center.getPaddingLeft(), Math.abs(h), center.getPaddingRight(), center.getPaddingBottom());
 				 }
 			}
@@ -177,7 +177,7 @@ public class BarLayout extends LinearLayout{
 				int h = footLyt.getHeight()-paddingSize;
 				 if(h>0){
 					 leftLyt.setPadding(leftLyt.getPaddingLeft(), leftLyt.getPaddingTop(), leftLyt.getPaddingRight(), h);
-				 }else if(h<0){
+				 }else if(h<=0){
 					 center.setPadding(center.getPaddingLeft(), center.getPaddingTop(), center.getPaddingRight(), Math.abs(h));
 				 }
 			}

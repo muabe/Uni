@@ -268,8 +268,10 @@ public class Bar extends LinearLayout{
 			if(anim==null){
 				anim =defalutAninmation();
 			}
-			anim.setDuration(totalFigure*150/max*10);
-			barMain.setAnimation(anim);
+			if(max!=0){
+				anim.setDuration(totalFigure*150/max*10);
+				barMain.setAnimation(anim);
+			}
 			
 		}
 		

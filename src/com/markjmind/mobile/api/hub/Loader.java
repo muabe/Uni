@@ -38,7 +38,6 @@ public class Loader {
 	 public Store dataSend(boolean isCookie){
 		 String url = defaultUrl;
 		 String mdParameters = ajd.getUriString();
-		 url = url;
 		 Log.d("개발자:dataSend",url);
 		 WebConnection wc = new WebConnection();
 		 if(isCookie==true){

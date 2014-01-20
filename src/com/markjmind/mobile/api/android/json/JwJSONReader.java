@@ -126,6 +126,10 @@ public abstract class JwJSONReader<ParentResult> {
 		if(!json.isNull(name)){
 			JSONType type = getJSONType(json,name);
 			switch (type) {
+			case Object:
+				array = new JSONArray();
+				array.put(json.get(name));
+				break;
 			case JSONObject:
 				JSONObject gateway = json.getJSONObject(name);
 				array = new JSONArray();

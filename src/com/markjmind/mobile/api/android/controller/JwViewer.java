@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -51,10 +50,12 @@ public abstract class JwViewer {
 	 */
 	public abstract void view_init();
 	
-	public Object loading(){
-		return null;
+	public boolean loading(){
+		return true;
 	}
-	
+	public void view_fail(){
+		
+	}
 	/**
 	 * 기본생성자
 	 */
@@ -174,10 +175,8 @@ public abstract class JwViewer {
 		vxm.add(id, jwViewer.getLayoutId(), "", jwViewer, jwViewer.getClass());
 	}
 	
-	public void viewerInit(boolean newInstance){
-		if(newInstance || viewer==null){
-			viewer = (ViewGroup)Jwc.getViewInfalter(layoutId,context);
-		}
+	public void viewerInit(){
+		viewer = (ViewGroup)Jwc.getViewInfalter(layoutId,context);
 	}
 	/**
 	 *  id에 해당하는 Viewer를 반환한다.
@@ -215,7 +214,7 @@ public abstract class JwViewer {
 	public JwViewer changeViewer(int R_id_parents, Object param) {
 		this.param = param;
 		ViewGroup parents;
-		viewerInit(true);
+		viewerInit();
 		if(mode==TYPE_MODE.DIALOG){
 			parents = (ViewGroup)Jwc.getView(R_id_parents, dialog);
 			Jwc.changeLayout(viewer, (ViewGroup)Jwc.getView(R_id_parents, dialog));
@@ -230,7 +229,7 @@ public abstract class JwViewer {
 	
 	public JwViewer  changeViewer(ViewGroup parents, Object param) {
 		this.param = param;
-		viewerInit(true);
+		viewerInit();
 		View view = Jwc.changeLayout(viewer, parents);
 		parentView = parents;
 		view_init();
@@ -240,7 +239,7 @@ public abstract class JwViewer {
 	public JwViewer  addViewer(int R_id_parents,Object param) {
 		this.param = param;
 		ViewGroup parents = (ViewGroup)Jwc.getView(R_id_parents, activity);
-		viewerInit(true);
+		viewerInit();
 		View view = Jwc.addLayout(viewer, parents);
 		parentView = parents;
 		view_init();
@@ -355,25 +354,37 @@ public abstract class JwViewer {
 			loadingParam = new Store();
 			loadingParam.clear();
 			if(isIndoBack){
-				viewerInit(true);
+				viewerInit();
 			}
 			return loading(); //데이터 가져오기
 		}
 		@Override
 		protected void onPostExecute(Object result) {
-			if(!isStop){
-				if(!isIndoBack){
-					viewerInit(true);
+			boolean isView = (Boolean)result;
+			if(isView){
+				if(!isStop){
+					if(!isIndoBack){
+						viewerInit();
+					}
+					View view = Jwc.changeLayout(viewer, parentView);
+					view_init();
+				}else{
+					view_fail();
+//					Log.d("Jwviewr", "오재웅 Jwviewr stop2");
 				}
-				View view = Jwc.changeLayout(viewer, parentView);
-				view_init();
-			}else{
-				Log.d("Jwviewr", "오재웅 Jwviewr stop2");
 			}
 		}
-		
-		
 	}
+	
+	public void setPreView(int R_layout_id){
+		if(parentView!=null){
+			parentView.removeAllViews();
+		}
+		ViewGroup loading = (ViewGroup) Jwc.getViewInfalter( R_layout_id, getParent().getContext());
+		loading.setLayoutParams(getParent().getLayoutParams());
+		((ViewGroup)getParent()).addView(loading);
+	}
+	
 	////////////////////////////////////////////////////////////////////////////////////
 	
 	
@@ -514,7 +525,7 @@ public abstract class JwViewer {
 	 * 부모의 view를  반환한다.
 	 * @return 부모 View
 	 */
-	public View getParent(){
+	public ViewGroup getParent(){
 		return this.parentView;
 	}
 	
