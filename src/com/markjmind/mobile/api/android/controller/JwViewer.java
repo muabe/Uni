@@ -268,6 +268,21 @@ public abstract class JwViewer {
 		vxm.getViewer(id, dialog).asyncChangeViewer(R_id_parents, isIndoBack);
 	}
 	
+	public static void asyncChangeViewer(String id, int R_id_parents, Activity activity){
+		vxm.getViewer(id, activity).asyncChangeViewer(R_id_parents, false);
+	}
+	public static void asyncChangeViewer(String id, int R_id_parents, Object param, Activity activity){
+		vxm.getViewer(id, activity).asyncChangeViewer(R_id_parents, param, false);
+	}
+	public static void asyncChangeViewer(String id, int R_id_parents, Object param, Dialog dialog){
+		vxm.getViewer(id, dialog).asyncChangeViewer(R_id_parents, param, false);
+	}
+	public static void asyncChangeViewer(String id, int R_id_parents, Dialog dialog){
+		vxm.getViewer(id, dialog).asyncChangeViewer(R_id_parents, false);
+	}
+	
+	
+	
 	public JwViewer asyncChangeViewer(int R_id_parents, boolean isIndoBack) {
 		return asyncChangeViewer(R_id_parents,null, isIndoBack);
 	}
