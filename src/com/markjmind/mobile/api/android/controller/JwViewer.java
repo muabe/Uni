@@ -309,6 +309,48 @@ public abstract class JwViewer {
 		return this;
 	}
 	
+	/**
+	 * 클래스로 직접 컨트롤
+	 * @param R_id_parents
+	 * @param param
+	 * @return
+	 */
+	public static void asyncChangeViewer(int layout_id, Class jwViewerClass, int R_id_parents, Object param, Activity activity, boolean isIndoBack){
+		try {
+			JwViewer viewer = (JwViewer)jwViewerClass.newInstance();
+			viewer.init(activity, layout_id);
+			viewer.asyncChangeViewer(R_id_parents, param, isIndoBack);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		}
+	}
+	public static void asyncChangeViewer(int layout_id, Class jwViewerClass, int R_id_parents, Object param, Activity activity){
+		asyncChangeViewer(layout_id, jwViewerClass, R_id_parents, param, activity, false);
+	}
+	public static void asyncChangeViewer(int layout_id, Class jwViewerClass, int R_id_parents, Activity activity){
+		asyncChangeViewer(layout_id, jwViewerClass, R_id_parents, null, activity, false);
+	}
+	public static void asyncChangeViewer(int layout_id, Class<JwViewer> jwViewerClass, int R_id_parents, Object param, Dialog dialog, boolean isIndoBack){
+		try {
+			JwViewer viewer = jwViewerClass.newInstance();
+			viewer.init(dialog, layout_id);
+			viewer.asyncChangeViewer(R_id_parents, param, isIndoBack);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		}
+	}
+	public static void asyncChangeViewer(int layout_id, Class<JwViewer> jwViewerClass, int R_id_parents, Object param, Dialog dialog){
+		asyncChangeViewer(layout_id, jwViewerClass, R_id_parents, param, dialog, false);
+	}
+	public static void asyncChangeViewer(int layout_id, Class<JwViewer> jwViewerClass, int R_id_parents, Dialog dialog){
+		asyncChangeViewer(layout_id, jwViewerClass, R_id_parents, null, dialog, false);
+	}
+	
+	
 	private void excute(){
 		if(ref!=null){
 			ref.stop();
