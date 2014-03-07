@@ -104,6 +104,17 @@ public class Store extends LinkedHashMap implements Comparable{
 		return ((Integer)result).intValue();
 	}
 	
+	public float optFloat(String key, float defaultValue){
+		Object result = this.get(key);
+		if(result == null){
+			return defaultValue;
+		}
+		if(result instanceof java.lang.String){
+			return Float.parseFloat((String)result); 
+		}
+		return ((Float)result).floatValue();
+	}
+	
 	public long getLong(String key){
 		Object result = this.get(key);
 		if(result instanceof java.lang.String){

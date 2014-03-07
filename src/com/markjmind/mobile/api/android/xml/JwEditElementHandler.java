@@ -22,6 +22,7 @@ public class JwEditElementHandler extends DefaultHandler{
 	boolean isStart = false;
 	Hashtable<String,String> tempTag = new Hashtable<String, String>();
 	Hashtable<String,Integer> nodeIndex = new Hashtable<String, Integer>();
+	public static String SEP = "+";
 	
 	ArrayList<String> nodePath = new ArrayList<String>();
 	ArrayList<JwElement> putEndString = new ArrayList<JwElement>();
@@ -77,7 +78,7 @@ public class JwEditElementHandler extends DefaultHandler{
     		if(i==0){
     			nodePathStr = nodePath.get(i);
     		}else{
-    			nodePathStr = nodePathStr+"_"+nodePath.get(i);
+    			nodePathStr = nodePathStr+SEP+nodePath.get(i);
     		}
     	}
     	if(nodeIndex.containsKey(nodePathStr) ){
@@ -109,7 +110,7 @@ public class JwEditElementHandler extends DefaultHandler{
 	    		if(i==0){
 	    			nodePathStr = nodePath.get(i);
 	    		}else{
-	    			nodePathStr = nodePathStr+"_"+nodePath.get(i);
+	    			nodePathStr = nodePathStr+SEP+nodePath.get(i);
 	    		}
     		}
     	}
@@ -139,7 +140,7 @@ public class JwEditElementHandler extends DefaultHandler{
 	    	xmlString.append(text.toString().trim());
     	}
     	if(tempTag.size()>0){
-    		String key = nodePathStr+"_"+localName;
+    		String key = nodePathStr+SEP+localName;
     		if(tempTag.containsKey(key)){
     			addLine(lineString);
     	    	addDep(dep+1, depString);
@@ -167,7 +168,7 @@ public class JwEditElementHandler extends DefaultHandler{
     	    	if(i==0){
     	    		nodePathStr = nodePath.get(i);
     	    	}else{
-    	    		nodePathStr = nodePathStr+"_"+nodePath.get(i);
+    	    		nodePathStr = nodePathStr+SEP+nodePath.get(i);
     	    	}
         	}
     		tempTag.put(nodePathStr, text.toString().trim());
