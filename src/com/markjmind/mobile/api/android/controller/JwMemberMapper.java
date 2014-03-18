@@ -1,45 +1,77 @@
 package com.markjmind.mobile.api.android.controller;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 
-import android.util.Log;
 import android.view.View;
 
 public class JwMemberMapper {
 	
-	public void getFieldList(JwViewer obj){
-		Class cls = obj.getClass();
-		Field[] fields = cls.getDeclaredFields();
-		Log.d("ddddddddddd", "--------------------------------------------------------------------------------------------------------------");
+	@Retention( RetentionPolicy.RUNTIME )
+	@Target( ElementType.FIELD )
+	public @interface getView
+	{
+		int value() default -1;
+		String click() default "";
+	}
+	
+	@Retention( RetentionPolicy.RUNTIME )
+	@Target( ElementType.FIELD )
+	public @interface getViewClick
+	{
+		int value() default -1;
+		String click() default "";
+	}
+		
+	public static void injectField(JwViewer obj){
+		Field[] fields = obj.getClass().getDeclaredFields();
 		for(int i=0;i<fields.length;i++){
-			String modifiers = "";
-			switch (fields[i].getModifiers()) {
-				case 0:
-					modifiers = "";
-					break;
-				case 1:
-					modifiers = "public";
-					break;
-				case 2:
-					modifiers = "private";
-					break;
-				case 4:
-					modifiers = "protected";
-					break;
-			}
-			Log.d("ddddddddddd", "("+fields[i].getType().getName()+")"+modifiers+" "+fields[i].getName());
-			try {
-				View view = obj.getViewTag(fields[i].getName());
-				if(view!=null){
-					fields[i].set(obj, fields[i].getType().cast(view));
+			if(fields[i].isAnnotationPresent(getView.class)){
+				getView ab = fields[i].getAnnotation(getView.class);
+				int id = ab.value();
+				id = setField(obj,id,fields[i]);
+				String click = ab.click();
+				if(!"".equals(click) && click.length()>0){
+					obj.setOnClickListener(click, id);
 				}
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+			}else if(fields[i].isAnnotationPresent(getViewClick.class)){
+				getViewClick ab = fields[i].getAnnotation(getViewClick.class);
+				int id = ab.value();
+				id = setField(obj,id,fields[i]);
+				String click = ab.click();
+				if(!"".equals(click) && click.length()>0){
+				}else{
+					click = fields[i].getName();
+				}
+				obj.setOnClickListener(click, id);
 			}
 		}
-		Log.d("ddddddddddd", "--------------------------------------------------------------------------------------------------------------");
 	}
+	
+	private static int setField(JwViewer obj, int id, Field field){
+		if(id==-1){
+			id = JwStringID.getID(field.getName(), obj.getActivity().getApplication());
+		}
+		View v = obj.getView(id);
+		if(v==null){
+			throw new JwMapperException("["+field.getName()+"] Filed에 해당하는 ID(Null)가 잘못 지정되었습니다.",null);
+		}
+		try {
+			field.setAccessible(true);
+			field.set(obj, v);
+		} catch (IllegalArgumentException e) {
+			throw new JwMapperException("["+field.getName()+"] 잘못된 Field가 지정되었습니다.",e);
+		} catch (IllegalAccessException e) {
+			throw new JwMapperException("["+field.getName()+"] 접근권한이 없는 필드입니다.",e);
+		}
+		return id;
+	}
+	
+	
+	
+
 }

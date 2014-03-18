@@ -269,7 +269,7 @@ public class BarLayout extends LinearLayout{
 			return this;
 		}
 		
-		public LeftInfo setFontSize(){
+		public LeftInfo setFontSize(int fontSize){
 			this.fontSize = fontSize;
 			for(int i=0;i<namesView.size();i++){
 				setTextViewTextSize(namesView.get(i),fontSize);
@@ -442,7 +442,12 @@ public class BarLayout extends LinearLayout{
 			float margin = getWidth()/(chartInfos.size()+1)/4*scale;
 			for(int i=0;i<chartInfos.size();i++){
 				Bar bar = chartInfos.get(i).bar;
-				bar.setMargin((int)margin, 0, (int)margin, 0);
+				if(i%2==0){
+					bar.setBackgroundColor(Color.GREEN);
+				}else{
+					bar.setBackgroundColor(Color.BLUE);
+				}
+//				bar.setMargin((int)margin, 0, (int)margin, 0);
 			}
 		}
 		@Override
@@ -471,6 +476,11 @@ public class BarLayout extends LinearLayout{
 			BarStyle ci = getChartInfo(index);
 			if(ci!=null){
 				setTextViewText(ci.footView,name);
+				if(index%2==0){
+					ci.footLayout.setBackgroundColor(Color.GREEN);
+				}else{
+					ci.footLayout.setBackgroundColor(Color.RED);
+				}
 			}
 			setVisibility(View.VISIBLE);
 		}
@@ -709,12 +719,13 @@ public class BarLayout extends LinearLayout{
 			this.bar = bar;
 			this.headerView = headerView;
 			this.footView = footView;
-			headerLayout = new LinearLayout(bar.getContext());
+			headerLayout = new LinearLayout(getContext());
 			headerLayout.setOrientation(LinearLayout.HORIZONTAL);
 			headerLayout.setLayoutParams(new LayoutParams(0,LayoutParams.WRAP_CONTENT,1));
 			headerLayout.setGravity(Gravity.CENTER);
 			headerLayout.addView(headerView);
-			footLayout = new LinearLayout(bar.getContext());
+			
+			footLayout = new LinearLayout(getContext());
 			footLayout.setOrientation(LinearLayout.HORIZONTAL);
 			footLayout.setLayoutParams(new LayoutParams(0,LayoutParams.WRAP_CONTENT,1));
 			footLayout.setGravity(Gravity.CENTER);

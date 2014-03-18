@@ -222,6 +222,16 @@ public abstract class JwViewer {
 		return vxm.getViewer(id, dialog);
 	}
 	
+	public JwViewer  addViewer(int R_id_parents,Object param) {
+		this.param = param;
+		ViewGroup parents = (ViewGroup)Jwc.getView(R_id_parents, activity);
+		viewerInit();
+		View view = Jwc.addLayout(viewer, parents);
+		parentView = parents;
+		view_init();
+		return this;
+	}
+	
 //*************************************************** changeViewer *********************************************//	
 	public JwViewer changeViewer(int R_id_parents, Object param) {
 		this.param = param;
@@ -248,16 +258,6 @@ public abstract class JwViewer {
 		return this;
 	}
 
-	public JwViewer  addViewer(int R_id_parents,Object param) {
-		this.param = param;
-		ViewGroup parents = (ViewGroup)Jwc.getView(R_id_parents, activity);
-		viewerInit();
-		View view = Jwc.addLayout(viewer, parents);
-		parentView = parents;
-		view_init();
-		return this;
-	}
-	
 	public static void changeViewer(String id, int R_id_parents, Activity activity){
 		vxm.getViewer(id, activity).changeViewer(R_id_parents);
 	}
@@ -277,6 +277,35 @@ public abstract class JwViewer {
 	
 	public JwViewer changeViewer(ViewGroup parents) {
 		return changeViewer(parents,null);
+	}
+	
+	public JwViewer cv(int R_id_parents, Object param) {
+		return changeViewer(R_id_parents,param);
+	}
+	
+	public JwViewer  cv(ViewGroup parents, Object param) {
+		return changeViewer(parents,param);
+	}
+
+	public static void cv(String id, int R_id_parents, Activity activity){
+		vxm.getViewer(id, activity).changeViewer(R_id_parents);
+	}
+	public static void cv(String id, int R_id_parents, Object param, Activity activity){
+		vxm.getViewer(id, activity).changeViewer(R_id_parents, param);
+	}
+	public static void cv(String id, int R_id_parents, Object param, Dialog dialog){
+		vxm.getViewer(id, dialog).changeViewer(R_id_parents, param);
+	}
+	public static void cv(String id, int R_id_parents, Dialog dialog){
+		vxm.getViewer(id, dialog).changeViewer(R_id_parents);
+	}
+	
+	public JwViewer cv(int R_id_parents) {
+		return cv(R_id_parents,null);
+	}
+	
+	public JwViewer cv(ViewGroup parents) {
+		return cv(parents,null);
 	}
 	
 //*************************************************** asyncChangeViewer *********************************************//
@@ -341,6 +370,51 @@ public abstract class JwViewer {
 		return asyncChangeViewer(parents,null, isIndoBack);
 	}
 	
+	
+	public JwViewer acv(int R_id_parents, Object param, boolean isIndoBack) {
+		return asyncChangeViewer(R_id_parents, param,isIndoBack);
+	}
+	
+	public JwViewer  acv(ViewGroup parents, Object param, boolean isIndoBack) {
+		return asyncChangeViewer(parents,param,isIndoBack);
+	}
+	
+	public static void acv(String id, int R_id_parents, Activity activity, boolean isIndoBack){
+		vxm.getViewer(id, activity).acv(R_id_parents, isIndoBack);
+	}
+	public static void acv(String id, int R_id_parents, Object param, Activity activity, boolean isIndoBack){
+		vxm.getViewer(id, activity).acv(R_id_parents, param, isIndoBack);
+	}
+	public static void acv(String id, int R_id_parents, Object param, Dialog dialog, boolean isIndoBack){
+		vxm.getViewer(id, dialog).acv(R_id_parents, param, isIndoBack);
+	}
+	public static void acv(String id, int R_id_parents, Dialog dialog, boolean isIndoBack){
+		vxm.getViewer(id, dialog).acv(R_id_parents, isIndoBack);
+	}
+	
+	public static void acv(String id, int R_id_parents, Activity activity){
+		vxm.getViewer(id, activity).acv(R_id_parents, false);
+	}
+	public static void acv(String id, int R_id_parents, Object param, Activity activity){
+		vxm.getViewer(id, activity).acv(R_id_parents, param, false);
+	}
+	public static void acv(String id, int R_id_parents, Object param, Dialog dialog){
+		vxm.getViewer(id, dialog).acv(R_id_parents, param, false);
+	}
+	public static void acv(String id, int R_id_parents, Dialog dialog){
+		vxm.getViewer(id, dialog).acv(R_id_parents, false);
+	}
+	
+	public JwViewer acv(int R_id_parents, boolean isIndoBack) {
+		return acv(R_id_parents,null, isIndoBack);
+	}
+	
+	public JwViewer acv(ViewGroup parents, boolean isIndoBack) {
+		return acv(parents,null, isIndoBack);
+	}
+	
+	
+	
 //*************************************************** class asyncChangeViewer *********************************************//	
 	/**
 	 * 클래스로 직접 컨트롤
@@ -401,6 +475,44 @@ public abstract class JwViewer {
 	}
 	public static void asyncChangeViewer(int layout_id, Class<JwViewer> jwViewerClass, int R_id_parents, Dialog dialog){
 		asyncChangeViewer(layout_id, jwViewerClass, R_id_parents, null, dialog, false);
+	}
+	
+	
+	public static void acv(int layout_id, Class<JwViewer> jwViewerClass, ViewGroup parents, Object param, Activity activity, boolean isIndoBack){
+		asyncChangeViewer(layout_id, jwViewerClass,parents, param, activity);
+	}
+	public static void acv(int layout_id, Class jwViewerClass, ViewGroup parents, Object param, Activity activity){
+		acv(layout_id, jwViewerClass,parents,param,activity, false);
+	}
+	public static void acv(int layout_id, Class jwViewerClass, ViewGroup parents, Activity activity){
+		acv(layout_id, jwViewerClass,parents,null,activity, false);
+	}
+	
+	public static void acv(int layout_id, Class jwViewerClass, int R_id_parents, Object param, Activity activity, boolean isIndoBack){
+		try {
+			JwViewer viewer = (JwViewer)jwViewerClass.newInstance();
+			viewer.init(activity, layout_id);
+			viewer.asyncChangeViewer(R_id_parents, param, isIndoBack);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		}
+	}
+	public static void acv(int layout_id, Class jwViewerClass, int R_id_parents, Object param, Activity activity){
+		acv(layout_id, jwViewerClass, R_id_parents, param, activity, false);
+	}
+	public static void acv(int layout_id, Class jwViewerClass, int R_id_parents, Activity activity){
+		acv(layout_id, jwViewerClass, R_id_parents, null, activity, false);
+	}
+	public static void acv(int layout_id, Class jwViewerClass, int R_id_parents, Object param, Dialog dialog, boolean isIndoBack){
+		asyncChangeViewer(layout_id, jwViewerClass, R_id_parents, param, dialog, isIndoBack);
+	}
+	public static void acv(int layout_id, Class<JwViewer> jwViewerClass, int R_id_parents, Object param, Dialog dialog){
+		acv(layout_id, jwViewerClass, R_id_parents, param, dialog, false);
+	}
+	public static void acv(int layout_id, Class<JwViewer> jwViewerClass, int R_id_parents, Dialog dialog){
+		acv(layout_id, jwViewerClass, R_id_parents, null, dialog, false);
 	}
 	
 	private void excute(){
@@ -476,6 +588,7 @@ public abstract class JwViewer {
 						viewerInit();
 					}
 					View view = Jwc.changeLayout(viewer, parentView);
+					JwMemberMapper.injectField(JwViewer.this);
 					view_init();
 				}else{
 					view_fail();
@@ -565,17 +678,28 @@ public abstract class JwViewer {
 		oclReceiver.setOnClickListener(this, methodName, R_id_view, viewer);
 	}
 	/**
+	 * view에 해당하는 이벤트를  등록한다.
+	 * @param methodName 메소드명
+	 * @param view view 
+	 */
+	public void setOnClickListener(String methodName, View view){
+//		if(oclReceiver==null){
+			oclReceiver = new OnClickListenerReceiver(context);
+//		}
+		oclReceiver.setOnClickListener(this, methodName, view);
+	}
+	
+	/**
 	 * parents의 child view중 tag에 해당하는 뷰에 이벤트를  등록한다.
 	 * @param methodName 메소드명
 	 * @param tag 이벤트를 등록할 tag
 	 * @param parents tag를 찾을 parents view 
 	 */
 	public void setOnClickListener(String methodName, String tag, View parents){
-//		if(oclReceiver==null){
-			oclReceiver = new OnClickListenerReceiver(context);
-//		}
-		oclReceiver.setOnClickListener(this, methodName, getViewTag(tag, parents));
+		setOnClickListener(methodName,getViewTag(tag, parents));
 	}
+	
+	
 	
 	/**
 	 * tag에 해당하는 뷰에 이벤트를  등록한다.
@@ -612,11 +736,20 @@ public abstract class JwViewer {
 	 * @param tag 이벤트를 등록할 tag
 	 * @param parents tag를 찾을 parents view 
 	 */
-	public void setOnClickParamListener(String methodName, String tag, View parents, Object param){
+	public void setOnClickParamListener(String methodName, View view, Object param){
 //		if(oclReceiver==null){
 			oclReceiver = new OnClickListenerReceiver(context);
 //		}
-		oclReceiver.setOnClickParamListener(this, methodName, getViewTag(tag, parents),param);
+		oclReceiver.setOnClickParamListener(this, methodName, view,param);
+	}
+	/**
+	 * parents의 child view중 tag에 해당하는 뷰에 이벤트를  등록한다.
+	 * @param methodName 메소드명
+	 * @param tag 이벤트를 등록할 tag
+	 * @param parents tag를 찾을 parents view 
+	 */
+	public void setOnClickParamListener(String methodName, String tag, View parents, Object param){
+		setOnClickParamListener(methodName, getViewTag(tag, parents),param);
 	}
 	
 
@@ -652,7 +785,15 @@ public abstract class JwViewer {
 	 * @return View
 	 */
 	public View findViewById(int R_id_view){
-		return viewer.findViewById(R_id_view);
+		if(mode.equals(TYPE_MODE.ACTIVITY)){
+			return activity.findViewById(R_id_view);
+		}else if(mode.equals(TYPE_MODE.DIALOG)){
+			return dialog.findViewById(R_id_view);
+		}else{
+			return viewer.findViewById(R_id_view);
+		}
+			
+		
 	}
 	
 	/**

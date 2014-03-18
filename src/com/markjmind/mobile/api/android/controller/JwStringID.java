@@ -94,6 +94,24 @@ public class JwStringID {
 		}
 	}
 	
+	public static int getID(String idName, Application app) throws JwMapperException{
+		Class cls = getRClass("id",app);
+		Field field;
+		try {
+			field = cls.getDeclaredField(idName);
+			int value = field.getInt(null);
+			return value;
+		} catch (SecurityException e) {
+			throw new JwMapperException("[R.id."+idName+"] SecurityException",e);
+		} catch (NoSuchFieldException e) {
+			throw new JwMapperException("[R.id."+idName+"] 필드가 존재하지 않습니다.",e);
+		} catch (IllegalArgumentException e) {
+			throw new JwMapperException("[R.id."+idName+"] 잘못된 Field가 지정되었습니다.",e);
+		} catch (IllegalAccessException e) {
+			throw new JwMapperException("[R.id."+idName+"] 접근권한이 없는 필드입니다.",e);
+		}
+	}
+	
 	public static Class getRClass(String innerClassName, Application app) throws JwMapperException{
 		String fullName = app.getPackageName()+".R$"+innerClassName;
 		try {

@@ -50,13 +50,13 @@ public class OnClickListenerReceiver implements OnClickListener{
 					method.invoke(receiver, v);
 				}
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				throw new JwMapperException("["+methodName+"] 함수에 매개변수가 잘못 지정되었습니다.",e);
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				throw new JwMapperException("["+methodName+"] 접근권한이 없는 함수입니다.",e);
 			} catch (InvocationTargetException e) {
-				e.printStackTrace();
+				throw new JwMapperException("["+methodName+"] 잘못된 Field가 지정되었습니다.",e);
 			}catch (NoSuchMethodException e) {
-				e.printStackTrace();
+				throw new JwMapperException("["+methodName+"]  접근권한이 없는 함수입니다.",e);
 			}
 	 }
 	 
