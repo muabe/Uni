@@ -442,12 +442,7 @@ public class BarLayout extends LinearLayout{
 			float margin = getWidth()/(chartInfos.size()+1)/4*scale;
 			for(int i=0;i<chartInfos.size();i++){
 				Bar bar = chartInfos.get(i).bar;
-				if(i%2==0){
-					bar.setBackgroundColor(Color.GREEN);
-				}else{
-					bar.setBackgroundColor(Color.BLUE);
-				}
-//				bar.setMargin((int)margin, 0, (int)margin, 0);
+				bar.setMargin((int)margin, 0, (int)margin, 0);
 			}
 		}
 		@Override
@@ -476,11 +471,6 @@ public class BarLayout extends LinearLayout{
 			BarStyle ci = getChartInfo(index);
 			if(ci!=null){
 				setTextViewText(ci.footView,name);
-				if(index%2==0){
-					ci.footLayout.setBackgroundColor(Color.GREEN);
-				}else{
-					ci.footLayout.setBackgroundColor(Color.RED);
-				}
 			}
 			setVisibility(View.VISIBLE);
 		}

@@ -219,6 +219,7 @@ public class JwWheelView extends LinearLayout  implements OnTouchListener{
 			LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
 			setLayoutParams(lp2);
 			textView = new JwTextViewFonts(this.getContext());
+			textView.setTag("text");
 			textView.setTextSize(18);
 			textView.setText(text);
 			this.addView(textView);

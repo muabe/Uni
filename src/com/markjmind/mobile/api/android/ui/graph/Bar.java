@@ -66,7 +66,7 @@ public class Bar extends LinearLayout{
 	public void init(){
 		this.setOrientation(LinearLayout.VERTICAL);
 		this.setGravity(Gravity.BOTTOM);
-		thisParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+		thisParams = new LayoutParams(0, LayoutParams.MATCH_PARENT,1);
 		thisParams.weight = 1;
 		this.setLayoutParams(thisParams);
 		this.removeAllViews();
