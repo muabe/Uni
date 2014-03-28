@@ -58,15 +58,15 @@ public class JwMemberMapper {
 		}
 		View v = obj.getView(id);
 		if(v==null){
-			throw new JwMapperException("["+field.getName()+"] Filed에 해당하는 ID(Null)가 잘못 지정되었습니다.",null);
+			throw new JwMapperException("\n["+obj.getClass().getName()+"] Field:"+field.getName()+", Filed에 해당하는 ID(Null)가 잘못 지정되었습니다.",null);
 		}
 		try {
 			field.setAccessible(true);
 			field.set(obj, v);
 		} catch (IllegalArgumentException e) {
-			throw new JwMapperException("["+field.getName()+"] 잘못된 Field가 지정되었습니다.",e);
+			throw new JwMapperException("\n["+obj.getClass().getName()+"] Field:"+field.getName()+", 잘못된 Field에 해당하는 ID를 찾을수 없습니다.",e);
 		} catch (IllegalAccessException e) {
-			throw new JwMapperException("["+field.getName()+"] 접근권한이 없는 필드입니다.",e);
+			throw new JwMapperException("\n["+obj.getClass().getName()+"] Field:"+field.getName()+", 접근권한이 없는 필드입니다.",e);
 		}
 		return id;
 	}
