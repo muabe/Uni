@@ -1,15 +1,16 @@
 package com.markjmind.mobile.api.android.ui.view.textview;
 
+import java.util.Hashtable;
+
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.RectF;
 import android.graphics.Typeface;
-import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.SparseIntArray;
 import android.widget.TextView;
 
 public class JwTextViewFonts extends TextView{
+	public static Hashtable<String,Typeface> fonts = new Hashtable<String,Typeface>();
+	
 	public JwTextViewFonts(Context context) {
 	    super(context);
 	    setIncludeFontPadding(false);
@@ -36,7 +37,7 @@ public class JwTextViewFonts extends TextView{
 			 int[] attrsArray = new int[] {
 				        android.R.attr.textStyle // 0
 				    };
-				typeface = Typeface.createFromAsset(context.getAssets(), typefaceName);
+			 	typeface =  getTypeface(context,typefaceName);
 				TypedArray ta = context.obtainStyledAttributes(attrs, attrsArray);
 				style = ta.getInt(0, Typeface.NORMAL);
 				ta.recycle();
@@ -51,11 +52,18 @@ public class JwTextViewFonts extends TextView{
 		Typeface typeface = null;
 		try{
 //			int style = Typeface.NORMAL;
-			typeface = Typeface.createFromAsset(getContext().getAssets(), typefaceName);
+			typeface = getTypeface(getContext(),typefaceName);
 			setTypeface(typeface, style);
 		}catch(Exception e){
 			e.printStackTrace();
 		}	
+	}
+	
+	public static Typeface getTypeface(Context context, String typefaceName){
+		if(fonts.get(typefaceName)==null){
+	 		fonts.put(typefaceName, Typeface.createFromAsset(context.getAssets(), typefaceName));
+	 	}
+		return fonts.get(typefaceName);
 	}
 	
 	public void setFont(String typefaceName){
