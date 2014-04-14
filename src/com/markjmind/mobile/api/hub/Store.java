@@ -19,7 +19,7 @@ import java.util.Map;
 
 
 
-public class Store extends LinkedHashMap implements Comparable{
+public class Store<Value> extends LinkedHashMap<Object, Object> implements Comparable{
 
 	private String compareString = null;
 	private boolean ASC = true;
@@ -59,8 +59,8 @@ public class Store extends LinkedHashMap implements Comparable{
 	/**
 	 * key값에 대응하는 Object 객체를 가져온다
 	 */
-	public Object get(String key){
-		Object result = super.get(key);
+	public Value get(String key){
+		Value result = (Value)super.get(key);
 		if(result==null){
 			//result = super.get(key.toUpperCase());
 			return null;
@@ -186,10 +186,10 @@ public class Store extends LinkedHashMap implements Comparable{
 	/**
 	 * Store에 값들을 배열로 얻어온다
 	 */
-	public Object[] getValues(){
+	public Value[] getValues(){
 		if(this.size()==0)
 			return null;
-		Object[] o = this.values().toArray();
+		Value[] o = (Value[])this.values().toArray();
 		return o;
 	}
 	
@@ -210,8 +210,8 @@ public class Store extends LinkedHashMap implements Comparable{
 	/**
 	 * Store에 값들을 String 배열로 얻어온다
 	 */
-	public Object getValue(int index){
-		Object[] o = getValues();
+	public Value getValue(int index){
+		Value[] o = getValues();
 		return o[index];
 	}
 	
@@ -382,12 +382,12 @@ public class Store extends LinkedHashMap implements Comparable{
 	 * @param value
 	 * @return
 	 */
-	public synchronized Store add(String key, Object value){
+	public synchronized Store<Value> add(String key, Object value){
 	    put(key, value);
 		return this;
 	}
 	
-	public synchronized Store addStoreList(String key, StoreList storeList){
+	public synchronized Store<Value> addStoreList(String key, StoreList storeList){
 	    put(key, storeList, Type_StoreList);
 		return this;
 	}
@@ -416,7 +416,7 @@ public class Store extends LinkedHashMap implements Comparable{
 	 * @param value
 	 * @return
 	 */
-	public synchronized Store put(String key, Object value){
+	public synchronized Store<Value> put(String key, Object value){
 	    	super.put(key, value);
 	    	types.put(key, "java.lang.Object");
 	    	return this;
@@ -428,7 +428,7 @@ public class Store extends LinkedHashMap implements Comparable{
 	 * @param value
 	 * @return
 	 */
-	public synchronized Store put(String key, Object value, String type){
+	public synchronized Store<Value> put(String key, Object value, String type){
 	    	super.put(key, value);
 	    	types.put(key, type);
 	    	return this;
