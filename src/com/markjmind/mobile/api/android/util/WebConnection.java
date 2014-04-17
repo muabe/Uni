@@ -19,6 +19,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpUriRequest;
+
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;

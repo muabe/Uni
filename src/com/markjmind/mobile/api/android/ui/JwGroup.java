@@ -48,6 +48,27 @@ public class JwGroup {
 		click_view.setOnClickListener(new GroupOnClickListener(name));
 	}
 	
+	public void clear(){
+		group.clear();
+		history.clear();
+	}
+	
+	public View getView(String name){
+		if(name==null){
+			return null;
+		}
+		Store temp = (Store)group.get(name);
+		if(temp!=null){
+			return (View)temp.get("view");
+		}else{
+			return null;
+		}
+	}
+	
+	public View getCurrentView(){
+		return getView(getCurrentName());
+	}
+	
 	public void setListenerMotion(Motion motion){
 		String[] keys = group.getKeys();
 		switch (motion) {
