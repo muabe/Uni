@@ -93,8 +93,13 @@ public class Jwc extends JwViewController{
 		OnClickListenerReceiver.setOnClickListener(receiver, methodName, R_id_view, activity);
 	}
 	
-	public static  float getDensity(Context context){
+	public static float getDensity(Context context){
 		return  context.getResources().getDisplayMetrics().density;
-		
+	}
+	public static float getDensity(Activity context){
+		return  context.getResources().getDisplayMetrics().density;
+	}
+	public static float getDensity(View view){
+		return  view.getContext().getResources().getDisplayMetrics().density;
 	}
 }
