@@ -1,5 +1,5 @@
-markjmind
-=========
+MarkJ Android Async MVC Framework
+========
 
-Android Async MVC Framework
+
 
