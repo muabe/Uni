@@ -1,4 +1,4 @@
-MarkJ Android Async MVC Framework
+MarkJ Android Framework
 ========
 
 
