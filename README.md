@@ -16,7 +16,7 @@ MarkJ 에는 다음과 같은 기능들이 있습니다.
 - Utillity
 - Support multiple versions
 
-###Less Code
+##Less Code
 View Injection 을 활용할수 있는 Annotion과 UI Controller를 이용하면
 코드가 엄청나게 줄어들 수 있는 다양한 기능이 있습니다.
 Viewer방식으로 화면별/기능별로 Viewer를 분류하므로써 기존코드를 활용하고
@@ -137,7 +137,7 @@ ex)MainActivity 에서 SubActivity로 parameter를 넘겨 호출하는 예제
 		}
 	}
 
-#Quick and easy UI Manipulation
+##Quick and easy UI Manipulation
 현실적으로 GUI 개발에 있어서 안드로이드는 매우 취약합니다. 원하는 디자인과 구성을 위해
 때론 많을 시간을 소비해야할 때가 많습니다. 기본 View에 복잡한 디자인 적용이 어렵고 
 이벤트에 따른 동적 화면을 표현 하기가 쉽지 않습니다. XML Layout을 구현하는 code는 Activity, Flagement 등에 의존적이여서
@@ -150,7 +150,7 @@ MarkJ는 Activity, Flagement에 영향을 받지 않아 code를 화면별 조각
 
 
 
-#Convenient Async UI Manipulation
+##Convenient Async UI Manipulation
 Viewer는 바인딩 되기전 AsyncTask를 수행할수 있는 기능을 지원합니다.
 Viewer 내부의 loading 메소드를 재정의 함으로써 쉽게 AsyncTask를 사용할수 있으며
 AsyncTask가 수행하는 동안 Viewer load 화면을 설정 할수 있습니다.
@@ -159,7 +159,7 @@ AsyncTask가 수행하는 동안 Viewer load 화면을 설정 할수 있습니�
 
 
 
-#Binding
+##Binding
 MarkJ를 사용하면 Listener를 사용하기 편리해 집니다. 
 따로 Listener 클래스를 만들지 않아도 되고 내부 클래스로 만들지 않아도 되고 Listener 인터페이스를 implement 하지 않아도 됩니다. 
 Listener를 바인딩 할때 Parameter 또한 쉽게 할수 있습니다.
@@ -167,7 +167,7 @@ Annotation과 code로 Listener를 바인딩 할수 있는 두가지 방법을 �
 
 ***이벤트 소스
 
-#Custom view 
+##Custom view 
  GUI 개발시 화려한 디자인 구현과 단말 기종에 따른 스크린사이즈 문제에 어려움이 있습니다.
  예를들어 WheelView 나 그래프의 경우 오픈소스를 많이 쓰고 있습니다.
  오픈소스는 필요한 디자인을 적용하는데 한계가 있고 Code로 사이즈를 지정하는 등 여러 단말에 적용하기가 까다롭습니다.
@@ -179,7 +179,7 @@ Annotation과 code로 Listener를 바인딩 할수 있는 두가지 방법을 �
  그 밖에 멀티 윈도우, 각종 그래프 등등 개발에 유용한 주요 Custom View를 다수 제공하고 있습니다.
   
 
-#Utillity
+##Utillity
 개발에 도움을 주는 Utillity를 쉽게 사용할수 있는 모듈을 제공합니다.
  -XML,JSon Parser/converter
  -File handler 
@@ -192,7 +192,7 @@ Annotation과 code로 Listener를 바인딩 할수 있는 두가지 방법을 �
 
 ** bluetooth 화면
 
-#Support multiple versions
+##Support multiple versions
 하나의 코드로 여러개의 Android Version을 지원할수 있습니다.
 Viewer는 view의 기본 속성만으 사용하여 
 Android 2.2이상 모든 버전에 호환이 가능합니다.
