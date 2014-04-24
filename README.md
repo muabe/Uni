@@ -238,7 +238,7 @@ Drag and Drop으로 쉽게 Custom View 사용
 ```
 아래 몇가지 Custom View 소개 합니다.
 ```
-![](http://coosadb.cafe24.com/img/custom1.png) &nbsp; ![](http://coosadb.cafe24.com/img/custom2.png) &nbsp; ![](http://coosadb.cafe24.com/img/custom4.png)   
+![](http://coosadb.cafe24.com/img/custom1.jpg) &nbsp; ![](http://coosadb.cafe24.com/img/custom2.jpg) &nbsp; ![](http://coosadb.cafe24.com/img/custom4.jpg)   
  
 ![](http://coosadb.cafe24.com/img/custom5.jpg) &nbsp; ![](http://coosadb.cafe24.com/img/custom3.jpg)    
 
