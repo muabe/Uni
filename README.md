@@ -240,7 +240,7 @@ Drag and Drop으로 쉽게 Custom View 사용
 ```
 ![](http://coosadb.cafe24.com/img/custom1.jpg) &nbsp; ![](http://coosadb.cafe24.com/img/custom2.jpg) &nbsp; ![](http://coosadb.cafe24.com/img/custom4.jpg)   
  
-![](http://coosadb.cafe24.com/img/custom5.jpg) &nbsp; ![](http://coosadb.cafe24.com/img/custom3.jpg)    
+![](http://coosadb.cafe24.com/img/custom5.jpg) ![](http://coosadb.cafe24.com/img/custom3.jpg)    
 
 ##Utillity
 개발에 도움을 주는 Utillity를 쉽게 사용할수 있는 모듈을 제공합니다.
