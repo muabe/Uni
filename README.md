@@ -236,7 +236,7 @@ Drag and Drop으로 쉽게 Custom View 사용
 ```  
 ![](http://coosadb.cafe24.com/img/drag.jpg)   
 ```
-여러가지 Custom View가 있지만 몇가지만 소개 합니다.
+다양한 Custom View가 있지만 몇가지만 소개 합니다.
 -각종 Graph View,Wheel View,Book View
 ```
 ![](http://coosadb.cafe24.com/img/custom1.jpg) &nbsp; ![](http://coosadb.cafe24.com/img/custom2.jpg) &nbsp; ![](http://coosadb.cafe24.com/img/custom4.jpg)   
