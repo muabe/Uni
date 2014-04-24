@@ -8,7 +8,11 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 
 import android.view.View;
-
+/**
+ * 
+ * @author 오재웅
+ * @email markjmind@gmail.com
+ */
 public class JwMemberMapper {
 	
 	@Retention( RetentionPolicy.RUNTIME )

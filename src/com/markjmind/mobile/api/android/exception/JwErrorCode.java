@@ -1,6 +1,10 @@
 package com.markjmind.mobile.api.android.exception;
 
-
+/**
+ * 
+ * @author 오재웅
+ * @email markjmind@gmail.com
+ */
 public class JwErrorCode {
 	public String code;
 	public String subCode;

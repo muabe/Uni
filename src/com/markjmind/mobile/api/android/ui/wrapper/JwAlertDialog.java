@@ -3,7 +3,11 @@ package com.markjmind.mobile.api.android.ui.wrapper;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface.OnClickListener;
-
+/**
+ * 
+ * @author 오재웅
+ * @email markjmind@gmail.com
+ */
 public class JwAlertDialog {
 
 	public static void button(String title, String msg, String[] btnNames, Context context, OnClickListener onClickListener){

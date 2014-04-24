@@ -15,7 +15,11 @@ import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
+/**
+ * 
+ * @author 오재웅
+ * @email markjmind@gmail.com
+ */
 public class MeasureLayout extends FrameLayout  implements OnTouchListener{
 	
 	int measure;			//사이 간격 수치

@@ -6,7 +6,11 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Handler;
 import android.widget.Toast;
-
+/**
+ * 
+ * @author 오재웅
+ * @email markjmind@gmail.com
+ */
 public class JwToast{
 	
 	

@@ -8,6 +8,11 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+/**
+ * 
+ * @author 오재웅
+ * @email markjmind@gmail.com
+ */
 public class JwTextViewFonts extends TextView{
 	public static Hashtable<String,Typeface> fonts = new Hashtable<String,Typeface>();
 	

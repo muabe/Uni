@@ -2,6 +2,11 @@ package com.markjmind.mobile.api.hub;
 
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author 오재웅
+ * @email markjmind@gmail.com
+ */
 //MultyDataHub 
 public class ArrayJDhub {
 	private StoreList uriList = new StoreList();

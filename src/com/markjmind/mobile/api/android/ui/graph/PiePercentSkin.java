@@ -13,7 +13,7 @@ import android.widget.TextView;
 /**
  * 파이 그래프에서 원주위를 돌며 퍼센트를 나타내는 스킨
  * 
- * @author vuva
+ * @author 오재웅
  * 
  */
 public class PiePercentSkin implements IPieSkin {

@@ -18,6 +18,11 @@ import android.widget.LinearLayout;
 
 import com.markjmind.mobile.api.android.ui.view.textview.JwTextViewFonts;
 
+/**
+ * 
+ * @author 오재웅
+ * @email markjmind@gmail.com
+ */
 public class JwWheelView extends LinearLayout  implements OnTouchListener{
 	
 	int measure;			//사이 간격 수치

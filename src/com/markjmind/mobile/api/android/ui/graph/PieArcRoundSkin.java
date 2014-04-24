@@ -8,7 +8,7 @@ import android.graphics.RectF;
 /**
  * 파이그래프의 스킨으로 홈화면의 삼각형
  * 
- * @author vuva
+ * @author 오재웅
  * 
  */
 public class PieArcRoundSkin implements IPieSkin {

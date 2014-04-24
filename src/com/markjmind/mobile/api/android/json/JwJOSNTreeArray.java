@@ -7,7 +7,11 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.markjmind.mobile.api.hub.Store;
-
+/**
+ * 
+ * @author 오재웅
+ * @email markjmind@gmail.com
+ */
 public class JwJOSNTreeArray extends JwJSONReader<Store>{
 	
 	ArrayList<Store> data = new ArrayList<Store>();

@@ -1,7 +1,11 @@
 package com.markjmind.mobile.api.android.exception;
 
 import java.util.Hashtable;
-
+/**
+ * 
+ * @author 오재웅
+ * @email markjmind@gmail.com
+ */
 public class JwException extends Exception{
 	
 	private final long serialVersionUID = 7798690413547258894L;

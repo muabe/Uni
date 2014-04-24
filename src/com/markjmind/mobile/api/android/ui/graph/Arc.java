@@ -10,13 +10,12 @@ import android.graphics.RectF;
 import android.view.View;
 
 /**
- * @author 오재웅
- *
- * 원그래프의 기초 재료가 되는 클래스 이다.<br>
+ * * 원그래프의 기초 재료가 되는 클래스 이다.<br>
  * 그래프의 하나의 Arc 영역을 표시 하는 단위이다.<br>
  * 실제적으로 설정된 속성에따라 그래프가 화면에 표현되는 정보를 담았으며<br>
  * 그정보에 따라 canvas에 화면을 그려주는  알고리즘을 포함하고있다.<br>
  * 해당 영역에 대한 속성들을 변경할수 있다.
+ * @author 오재웅
  */
 public class Arc {
 	private PieLayout pl;

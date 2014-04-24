@@ -9,7 +9,11 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.FrameLayout;
-
+/**
+ * 
+ * @author 오재웅
+ * @email markjmind@gmail.com
+ */
 public class JwBaseDropDown extends Dialog implements OnClickListener{
 	private FrameLayout frame;
 	private View contentView;

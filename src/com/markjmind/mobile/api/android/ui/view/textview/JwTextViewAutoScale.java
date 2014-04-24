@@ -15,26 +15,13 @@ import android.widget.TextView;
 import android.widget.TextView.BufferType;
 
 /**
-* Text view that auto adjusts text size to fit within the view.
-* If the text size equals the minimum text size and still does not
-* fit, append with an ellipsis.
-* 
-* @author Chase Colburn
-* @since Apr 4, 2011
-*/
+ * 
+ * @author 오재웅
+ * @email markjmind@gmail.com
+ */
 public class JwTextViewAutoScale extends TextView {
 
 	private interface SizeTester {
-	    /**
-	     * 
-	     * @param suggestedSize
-	     *            Size of text to be tested
-	     * @param availableSpace
-	     *            available space in which text must fit
-	     * @return an integer < 0 if after applying {@code suggestedSize} to
-	     *         text, it takes less space than {@code availableSpace}, > 0
-	     *         otherwise
-	     */
 	    public int onTestSize(int suggestedSize, RectF availableSpace);
 	}
 
@@ -160,11 +147,6 @@ public class JwTextViewAutoScale extends TextView {
 	    mSpacingAdd = add;
 	}
 
-	/**
-	 * Set the lower text size limit and invalidate the view
-	 * 
-	 * @param minTextSize
-	 */
 	public void setMinTextSize(float minTextSize) {
 	    mMinTextSize = minTextSize;
 	    reAdjust();
@@ -237,15 +219,6 @@ public class JwTextViewAutoScale extends TextView {
 	        this.setMeasuredDimension(parentWidth, height);
 	    }
 
-	/**
-	 * Enables or disables size caching, enabling it will improve performance
-	 * where you are animating a value inside TextView. This stores the font
-	 * size against getText().length() Be careful though while enabling it as 0
-	 * takes more space than 1 on some fonts and so on.
-	 * 
-	 * @param enable
-	 *            enable font size caching
-	 */
 	public void enableSizeCache(boolean enable) {
 	    mEnableSizeCache = enable;
 	    mTextCachedSizes.clear();
