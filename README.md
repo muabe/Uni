@@ -154,9 +154,42 @@ UI Manipulation을 하도록 도와 줍니다.
 ##Convenient Async UI Manipulation<br>
 Viewer는 바인딩 되기전 AsyncTask를 수행할수 있는 기능을 지원합니다.<br>
 Viewer 내부의 loading 메소드를 재정의 함으로써 쉽게 AsyncTask를 사용할수 있으며<br>
-AsyncTask가 수행하는 동안 Viewer load 화면을 설정 할수 있습니다.<br>
+AsyncTask가 수행하는 동안 Viewer load 화면을 설정 할수 있습니다.
 
-** Async
+[채팅 화면을 Async로 갱신하는 예제]
+```
+public class TestActivity extends Activity{
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		//Async로 화면 바인딩
+		JwViewer.acv(R.layout.test, Test.class, JwViewer.setContentLinear(this), this);
+	}
+}
+public class Test extends JwViewer{
+	@getView TextView text;
+	
+	@Override
+	public void view_pre() {
+		super.view_pre();
+		setPreView(R.id.load); //로딩시 표시할 화면 설정
+	}
+	
+	@Override
+	public boolean loading() {
+		/* 네트워크 및 Thread 작업 실행 */
+		setLoadingParameter("name", "MarkJ"); //결과 설정
+		setLoadingParameter("say", "What's up?");//결과 설정
+		return true;
+	}
+	
+	@Override
+	public void view_init() {
+		String name = (String)getLoadingParameter("name");
+		String say= (String)getLoadingParameter("say");
+		text.setText(name+" : "+say);
+	}
+}
+```
 
 
 
@@ -164,21 +197,50 @@ AsyncTask가 수행하는 동안 Viewer load 화면을 설정 할수 있습니�
 MarkJ를 사용하면 Listener를 사용하기 편리해 집니다. <br>
 따로 Listener 클래스를 만들지 않아도 되고 내부 클래스로 만들지 않아도 되고 Listener 인터페이스를 implement 하지 않아도 됩니다.<br> 
 Listener를 바인딩 할때 Parameter 또한 쉽게 할수 있습니다.<br>
-Annotation과 code로 Listener를 바인딩 할수 있는 두가지 방법을 제공합니다.<br>
+Annotation과 code로 Listener를 바인딩 할수 있는 두가지 방법을 제공합니다.
 
-***이벤트 소스
+[Code Base 방식]
+```
+//함수명을 "say"를 명시하고 파라미터를 던져줄수 있다.
+public void view_init(){
+	String param = "what's up?"
+	setOnClickParamListener("say", R.id.say, param); 
+}
+//파라미터를 전달 받을수 있다.
+public void say(View v, Object param){
+		Log.d("MarkJ",param.toString());
+}
+```
+[Annotation방식]
+```
+해당 아이디명과 listener함수명 동일
+@getViewClick View say; //객체 Injection
 
+public void say(View v){
+		Log.d("MarkJ","What's up?");
+}
+```
 ##Custom view 
  GUI 개발시 화려한 디자인 구현과 단말 기종에 따른 스크린사이즈 문제에 어려움이 있습니다.<br>
  예를들어 WheelView 나 그래프의 경우 오픈소스를 많이 쓰고 있습니다.<br>
  오픈소스는 필요한 디자인을 적용하는데 한계가 있고 Code로 사이즈를 지정하는 등 여러 단말에 적용하기가 까다롭습니다.<br>
  Code Base형태로 제공되는 오픈소스 Custom View는 구현과 디자인 적용에 어려운 실정 입니다.<br>
- MarkJ에서 제공하는 Custom View는 IDE Layout Editor에서 드래그인 드랍 형태로 제공하고 있어 굉장히 쉽고 편리합니다.<br>
+ MarkJ에서 제공하는 Custom View는 IDE Layout Editor에서 Drag and Drop 형태로 제공하고 있어 굉장히 쉽고 편리합니다.<br>
  또한 그위에 디자인을 입히는 형식이라 복잡한 디자인을 쉽게 적용할수 있습니다.<br>
  Touch 및 Animation 등의 모듈을 제공하여 Active한 화면을 구성할수 있게 도와 줍니다.<br>
  MarkJ를 사용하면 android에서 제공하는 Widgets의 대부분을 custom하여 제공하고 있으며 <br>
  그 밖에 멀티 윈도우, 각종 그래프 등등 개발에 유용한 주요 Custom View를 다수 제공하고 있습니다.<br>
-  
+
+```
+Drag and Drop으로 쉽게 Custom View 사용
+```  
+![](http://coosadb.cafe24.com/img/drag.jpg)   
+```
+아래 몇가지 Custom View 소개 합니다.
+```
+![](http://coosadb.cafe24.com/img/custom1.png) &nbsp; ![](http://coosadb.cafe24.com/img/custom2.png) &nbsp; ![](http://coosadb.cafe24.com/img/custom4.png)   
+ 
+![](http://coosadb.cafe24.com/img/custom5.jpg) &nbsp; ![](http://coosadb.cafe24.com/img/custom3.jpg)    
 
 ##Utillity
 개발에 도움을 주는 Utillity를 쉽게 사용할수 있는 모듈을 제공합니다.
