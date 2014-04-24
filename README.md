@@ -3,8 +3,7 @@ MarkJ Android Framework
 안드로이드를 개발하다 보면 굉장히 어려운 UI Manipulation을 겪게 됩니다.<br>
 특히 AsyncTask와 UI 화면전환은 개발에 큰 걸림돌이 되곤 합니다.<br>
 개발자에게 복잡한 GUI는 비지니스 로직에 투자할 시간을 GUI 코딩에 허비하게 만듭니다.<br>
-UI Manipulation을 쉽고 빠르게 개발할수 있는 라이브러리가 필요했고<br>
-이런점을 해결하기 위해 나온 라이브러리가 MarkJ입니다.<br>
+UI Manipulation을 쉽고 빠르게 개발할수 있는 라이브러리가 필요했고 이런점을 해결하기 위해 나온 라이브러리가 MarkJ입니다.
 
 MarkJ 에는 다음과 같은 기능들이 있습니다.
 - Less Code
@@ -17,12 +16,12 @@ MarkJ 에는 다음과 같은 기능들이 있습니다.
 - Support multiple versions
 
 ##Less Code
-View Injection 을 활용할수 있는 Annotion과 UI Controller를 이용하면<br>
+View Injection 을 활용할수 있는 Annotion과 UI Controller를 이용하면
 코드가 엄청나게 줄어들 수 있는 다양한 기능이 있습니다.<br>
-Viewer방식으로 화면별/기능별로 Viewer를 분류하므로써 기존코드를 활용하고<br>
+Viewer방식으로 화면별/기능별로 Viewer를 분류하므로써 기존코드를 활용하고
 간결하며 직관적인 코드로 관리할수 있습니다.<br>
-또한 A-Query, Roboguice나 Android annotation같은 외부 라이브러리를<br> 
-아무런 제약없이 조합함으로써 더좋은 개발 퍼포먼스 낼수 있습니다.<br>
+또한 A-Query, Roboguice나 Android annotation같은 외부 라이브러리를
+아무런 제약없이 조합함으로써 더좋은 개발 퍼포먼스 낼수 있습니다.
 
 ex) MainActivity 에서 SubActivity로 parameter를 넘겨 호출하는 예제<br>
  [기존]
@@ -143,17 +142,17 @@ ex) MainActivity 에서 SubActivity로 parameter를 넘겨 호출하는 예제<b
 기본 View에 복잡한 디자인 적용이 어렵고 이벤트에 따른 동적 화면을 표현 하기가 쉽지 않습니다.<br> 
 XML Layout을 구현하는 code는 Activity, Flagement 등에 의존적이여서 code의 분류와 구성또한 어렵습니다.<br>
 MarkJ는 Activity, Flagement에 영향을 받지 않아 code를 화면별 조각인 Viewer로 분류하고 
-Viewer를 조합하여 새로운 화면을 구성합니다.<br> 
+Viewer를 조합하여 새로운 화면을 구성합니다.
 하나의 Layout에 필요한 Viewer를 조합하여 동적으로 바인딩하는것을 기본으로 합니다.<br>
 이런점은 이벤트나 특정 상황에서 쉽게 동적인 표현을 할수 있게 해줍니다.<br>
-다시말해 컴퍼넌트 형식 처리로 Layout에 전체가 아닌 특정 부분만 바인딩하여 <br>
+다시말해 컴퍼넌트 형식 처리로 Layout에 전체가 아닌 특정 부분만 바인딩하여
 시스템 자원과 개발 시간을 단축할 수 있습니다.<br>
-여기에 Viewer에 내장된 Injection, Async init, method binding 기능은 쉽고 빠르게<br> 
+여기에 Viewer에 내장된 Injection, Async init, method binding 기능은 쉽고 빠르게
 UI Manipulation을 하도록 도와 줍니다.
 
 ##Convenient Async UI Manipulation<br>
 Viewer는 바인딩 되기전 AsyncTask를 수행할수 있는 기능을 지원합니다.<br>
-Viewer 내부의 loading 메소드를 재정의 함으로써 쉽게 AsyncTask를 사용할수 있으며<br>
+Viewer 내부의 loading 메소드를 재정의 함으로써 쉽게 AsyncTask를 사용할수 있으며
 AsyncTask가 수행하는 동안 Viewer load 화면을 설정 할수 있습니다.<br>
 
 ** Async
