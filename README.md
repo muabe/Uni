@@ -3,7 +3,7 @@ MarkJ Android Framework
 안드로이드를 개발하다 보면 굉장히 어려운 UI Manipulation을 겪게 됩니다.<br>
 특히 AsyncTask와 UI 화면전환은 개발에 큰 걸림돌이 되곤 합니다.<br>
 개발자에게 복잡한 GUI는 비지니스 로직에 투자할 시간을 GUI 코딩에 허비하게 만듭니다.<br>
-UI Manipulation을 쉽고 빠르게 개발할수 있는 라이브러리가 필요했고<br>
+UI Manipulation을 쉽고 빠르게 개발할수 있는 라이브러리가 필요했고
 이런점을 해결하기 위해 나온 라이브러리가 MarkJ입니다.<br>
 
 MarkJ 에는 다음과 같은 기능들이 있습니다.
@@ -195,8 +195,9 @@ public class Test extends JwViewer{
 
 ##Binding
 MarkJ를 사용하면 Listener를 사용하기 편리해 집니다. <br>
-따로 Listener 클래스를 만들지 않아도 되고 내부 클래스로 만들지 않아도 되고 Listener 인터페이스를 implement 하지 않아도 됩니다.<br> 
-Listener를 바인딩 할때 Parameter 또한 쉽게 할수 있습니다.<br>
+Listener 클래스를 만들지 않아도 되고 내부 클래스로 만들지 않아도 되고<br>
+Listener 인터페이스를 implement 하지 않아도 됩니다.<br> 
+Listener를 바인딩 할때 Parameter 또한 쉽게 전달 할수 있습니다.<br>
 Annotation과 code로 Listener를 바인딩 할수 있는 두가지 방법을 제공합니다.
 
 [Code Base 방식]
