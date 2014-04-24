@@ -16,12 +16,10 @@ MarkJ 에는 다음과 같은 기능들이 있습니다.
 - Utillity
 - Support multiple versions
 
-
-
-#Less Code
-View Injection 을 활용할수 있는 Annotion과 UI Controller를 이용하면 
+###Less Code
+View Injection 을 활용할수 있는 Annotion과 UI Controller를 이용하면
 코드가 엄청나게 줄어들 수 있는 다양한 기능이 있습니다.
-Viewer방식으로 화면별/기능별로 Viewer를 분류하므로써 기존코드를 활용하고 
+Viewer방식으로 화면별/기능별로 Viewer를 분류하므로써 기존코드를 활용하고
 간결하며 직관적인 코드로 관리할수 있습니다.
 또한 A-Query, Roboguice나 Android annotation같은 외부 라이브러리를 
 아무런 제약없이 조합함으로써 더좋은 개발 퍼포먼스 낼수 있습니다.
