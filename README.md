@@ -24,74 +24,66 @@ Viewer방식으로 화면별/기능별로 Viewer를 분류하므로써 기존코
 또한 A-Query, Roboguice나 Android annotation같은 외부 라이브러리를
 아무런 제약없이 조합함으로써 더좋은 개발 퍼포먼스 낼수 있습니다.
 
-ex) MainActivity 에서 SubActivity로 parameter를 넘겨 호출하는 예제<br>
+ex) 아래는 같은 동일한 역할을 하는 소스코드 비교 예제입니다.<br>
  [기존]
 ```
 	public class MainActivity extends Activity{
-
+		private TextView text;
+		private Button btn1;
+		private Button btn2;
+		private Button btn3;
 		private Button subActivity;
-		private String param;
 	
 		@Override
 		protected void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.sample_projects);
-			param = "What's up?";
-			subActivity = (Button)findViewById(R.id.subActivity);
-			//SubActivity 호출
-			subActivity.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent intent = new Intent(MainActivity.this, SubActivity.class);
-					intent.putExtra("name", param);
-					startActivity(intent);
-				}
-			});
-		}
-	}
-
-
-	public class SubActivity extends Activity{
-	
-		private TextView text;
-		private Button btn1;
-		private Button btn2;
-		private Button btn3;
-		
-		@Override
-		protected void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			setContentView(R.layout.sub_main);
 			
 			text=(TextView)findViewById(R.id.text);
 			String param = getIntent().getExtras().getString("name");
-			//param값 셋팅
 			text.setText(param);
 			
-			btn1 = (Button)findViewById(R.id.btn1);
-			//버튼1 Click
+			btn1 = (Button)findViewById(R.id.btn1); //버튼1 Click
 			btn1.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					Log.d("SubActivity","btn1 Click!");
 				}
 			});
-			//버튼2 Click
-			btn2 = (Button)findViewById(R.id.btn2);
+			
+			btn2 = (Button)findViewById(R.id.btn2); //버튼2 Click
 			btn2.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					Log.d("SubActivity","btn2 Click!");
 				}
 			});
-			//버튼3 Click
-			btn3 = (Button)findViewById(R.id.btn3);
+			
+			btn3 = (Button)findViewById(R.id.btn3); //버튼3 Click
 			btn3.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					Log.d("SubActivity","btn3 Click!");
 				}
 			});
+			
+			subActivity = (Button)findViewById(R.id.subActivity); //SubActivity 호출
+			subActivity.setOnClickListener(new SubActivityShow("What's up?"));
+		}
+		
+		class SubActivityShow impelements OnClickListener{
+			private String say;
+			
+			public SubActivityShow(String say){
+				this.say = say;
+			}
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(MainActivity.this, SubActivity.class);
+				intent.putExtra("say", say);
+				startActivity(intent);
+			}
 		}
 	}
 ```
@@ -99,39 +91,26 @@ ex) MainActivity 에서 SubActivity로 parameter를 넘겨 호출하는 예제<b
   [MarkJ]
  ```
 	public class MainViewer extends JwViewer{
-		@Override
-		public void view_init() {
-			setOnClickListener("sub_Viewer", R_id_view); // Code base injection
-		}
-		//SubViewer 호출
-		public void sub_Viewer(View v){
-			String param = "What's up?";
-			//SubViewer를 동적 바인딩
-			JwViewer.acv(R.layout.sub_viewer, SubViewer.class, getParent(), param, getActivity());
-		}
-	}
-	
-	public class SubViewer extends JwViewer{
 		@getViewClick Button btn1; // Annotion injection
 		@getViewClick Button btn2;
 		@getViewClick Button btn3
 		
 		@Override
 		public void view_init() {
-			//param값 셋팅
-			String param = (String)getParameter();
-			Jwc.setTextId(R.id.text, param, getActivity());
+			Jwc.setTextId(R.id.text, getParameter(), getActivity());
+			setOnClickParamListener("sub_Viewer", R.id.sub_Viewer, "What's up?"); // Code base injection
 		}
-		//버튼1 Click
-		public void btn1(View v) {
+		
+		public void sub_Viewer(View v, Strig say){ //SubViewer 호출
+			JwViewer.acv(R.layout.sub_viewer, SubViewer.class, getParent(), say, getActivity());
+		}
+		public void btn1(View v) { //버튼1 Click
 			Log.d("SubActivity","btn1 Click!");
 		}
-		//버튼2 Click
-		public void btn2(View v) {
+		public void btn2(View v) { //버튼2 Click
 			Log.d("SubActivity","btn2 Click!");
 		}
-		//버튼3 Click
-		public void btn3(View v) {
+		public void btn3(View v) { //버튼3 Click
 			Log.d("SubActivity","btn3 Click!");
 		}
 	}
@@ -158,35 +137,22 @@ AsyncTask가 수행하는 동안 Viewer load 화면을 설정 할수 있습니�
 
 [채팅 화면을 Async로 갱신하는 예제]
 ```
-public class TestActivity extends Activity{
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		//Async로 화면 바인딩
-		JwViewer.acv(R.layout.test, Test.class, JwViewer.setContentLinear(this), this);
-	}
-}
+.... 
+//Async로 화면 바인딩
+JwViewer.acv(R.layout.test, Test.class, JwViewer.setContentLinear(this), this);
+....
+
+//바인딩을 받는 Viewer
 public class Test extends JwViewer{
-	@getView TextView text;
-	
-	@Override
-	public void view_pre() {
-		super.view_pre();
-		setPreView(R.id.load); //로딩시 표시할 화면 설정
-	}
-	
 	@Override
 	public boolean loading() {
 		/* 네트워크 및 Thread 작업 실행 */
-		setLoadingParameter("name", "MarkJ"); //결과 설정
 		setLoadingParameter("say", "What's up?");//결과 설정
 		return true;
 	}
-	
 	@Override
 	public void view_init() {
-		String name = (String)getLoadingParameter("name");
-		String say= (String)getLoadingParameter("say");
-		text.setText(name+" : "+say);
+		text.setText((String)getLoadingParameter("say"));
 	}
 }
 ```
