@@ -41,7 +41,7 @@ ex) 아래는 같은 동일한 역할을 하는 소스코드 비교 예제입니
 			
 			text=(TextView)findViewById(R.id.text);
 			String param = getIntent().getExtras().getString("name");
-			text.setText(param);
+			text.setText(param); //외부에서 받아온 parameter 출력
 			
 			btn1 = (Button)findViewById(R.id.btn1); //버튼1 Click
 			btn1.setOnClickListener(new OnClickListener() {
@@ -97,12 +97,12 @@ ex) 아래는 같은 동일한 역할을 하는 소스코드 비교 예제입니
 		
 		@Override
 		public void view_init() {
-			Jwc.setTextId(R.id.text, getParameter(), getActivity());
+			TextView(R.id.text).setText(getParam("name")); //외부에서 받아온 parameter 출력 
 			setOnClickParamListener("sub_Viewer", R.id.sub_Viewer, "What's up?"); // Code base injection
 		}
 		
-		public void sub_Viewer(View v, Strig say){ //SubViewer 호출
-			JwViewer.acv(R.layout.sub_viewer, SubViewer.class, getParent(), say, getActivity());
+		public void sub_Viewer(View v, String clickParam){ //SubViewer 호출
+			getViewer(R.layout.sub,SubViewer.class).addParam("say", clickParam).acv(getParent());
 		}
 		public void btn1(View v) { //버튼1 Click
 			Log.d("SubActivity","btn1 Click!");
@@ -152,7 +152,7 @@ public class Test extends JwViewer{
 	}
 	@Override
 	public void view_init() {
-		text.setText((String)getLoadingParameter("say"));
+		TextView(R.id.say_text).setText((String)getLoadingParameter("say"));
 	}
 }
 ```
