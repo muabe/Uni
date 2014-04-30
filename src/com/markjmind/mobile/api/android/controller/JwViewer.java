@@ -1,13 +1,17 @@
 package com.markjmind.mobile.api.android.controller;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationSet;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -27,7 +31,7 @@ import com.markjmind.mobile.api.hub.Store;
  * @version 2013.11.17
  */
 public class JwViewer {
-	
+	private static Store<Refresh> asyncTaskPool = new Store<Refresh>();
 	private static ViewerXmlMapper vxm;
 	private Context context;
 	private Activity activity;
@@ -57,7 +61,6 @@ public class JwViewer {
 	 */
 	public static Store<Object> asyncStore = new Store<Object>();
 	private boolean inViewInitBack = false;
-	private static Refresh ref;
 	
 	/**
 	 * 기본생성자
@@ -488,7 +491,7 @@ public class JwViewer {
 	public JwViewer acv(ViewGroup parents, boolean isIndoBack) {
 		parentView = parents;
 		this.inViewInitBack = isIndoBack;
-		excute();
+		excute("acv");
 		return this;
 	}
 	
@@ -646,15 +649,25 @@ public class JwViewer {
 //	public static void acv(int layout_id, Class<JwViewer> jwViewerClass, int R_id_parents, Dialog dialog){
 //		acv(layout_id, jwViewerClass, R_id_parents, null, dialog, false);
 //	}
+
 	
-	private void excute(){
+	@SuppressLint("NewApi") 
+	private void excute(String command){
+		String taskKey = layoutId+parentView.toString()+command;
+		Refresh ref = asyncTaskPool.get(taskKey);
 		if(ref!=null){
 			ref.stop();
 			ref.cancel(true);
 		}
-		ref = new Refresh();
+		ref = new Refresh(taskKey);
+		asyncTaskPool.add(taskKey, ref);
 		
-		ref.execute();
+		if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
+			ref.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		} else {
+			ref.execute();
+		}
+		
 	}
 
 	public void view_pre(){
@@ -665,16 +678,22 @@ public class JwViewer {
 	public void onProgressUpdate(Integer... values){
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////
 	private  class Refresh extends AsyncTask<Object, Integer, Object>{
-		boolean isStop;
+		private String taskKey;
+		private boolean isStop;
+		
+		public Refresh(String taskKey){
+			this.taskKey = taskKey;
+			this.isStop = false;
+		}
 		
 		public void stop(){
-			isStop=true;
+			asyncTaskPool.remove(taskKey);
+			isStop = true;
 		}
+		
 		@Override
 		protected void onPreExecute() {
-			isStop = false;
 			JwViewer.this.view_pre();
 		}
 		@Override
@@ -696,20 +715,21 @@ public class JwViewer {
 		}
 		@Override
 		protected void onPostExecute(Object result) {
+			if (isStop) {
+				return;
+			}
 			boolean isView = (Boolean)result;
 			if(isView){
-				if(!isStop){
-					if(!inViewInitBack){
-						viewerInit();
-					}
-					View view = Jwc.changeLayout(viewer, parentView);
-					JwMemberMapper.injectField(JwViewer.this);
-					view_init();
-				}else{
-					view_fail();
-//					Log.d("Jwviewr", "오재웅 Jwviewr stop2");
+				if(!inViewInitBack){
+					viewerInit();
 				}
+				View view = Jwc.changeLayout(viewer, parentView);
+				JwMemberMapper.injectField(JwViewer.this);
+				view_init();
+			}else{
+				view_fail();
 			}
+			asyncTaskPool.remove(taskKey);
 		}
 	}
 	
@@ -1006,5 +1026,10 @@ public class JwViewer {
 				((ViewGroup)parentView).removeView(this.getLayout());
 			}
 		}
+	}
+	
+	AnimationSet outAnimation;
+	public void setAnimation(AnimationSet outAnimation){
+		this.outAnimation = outAnimation;
 	}
 }
