@@ -657,7 +657,6 @@ public class JwViewer {
 		Refresh ref = asyncTaskPool.get(taskKey);
 		if(ref!=null){
 			ref.stop();
-			ref.cancel(true);
 		}
 		ref = new Refresh(taskKey);
 		asyncTaskPool.add(taskKey, ref);
@@ -688,8 +687,9 @@ public class JwViewer {
 		}
 		
 		public void stop(){
-			asyncTaskPool.remove(taskKey);
+			this.cancel(true);
 			isStop = true;
+			asyncTaskPool.remove(taskKey);
 		}
 		
 		@Override
