@@ -653,10 +653,14 @@ public class JwViewer {
 	
 	@SuppressLint("NewApi") 
 	private void excute(String command){
-		String taskKey = layoutId+parentView.toString()+command;
+		
+		String taskKey = layoutId+"_"+parentView.hashCode()+"_"+command;
 		Refresh ref = asyncTaskPool.get(taskKey);
 		if(ref!=null){
+			ref.cancel(true);
 			ref.stop();
+		}else{
+			Log.e("ㅁㄻㄴㄻㄴㄹ","NULL 널이다 : "+taskKey);
 		}
 		ref = new Refresh(taskKey);
 		asyncTaskPool.add(taskKey, ref);
@@ -687,9 +691,10 @@ public class JwViewer {
 		}
 		
 		public void stop(){
-			this.cancel(true);
 			isStop = true;
 			asyncTaskPool.remove(taskKey);
+			Log.e("ㅁㄻㄴㄻㄴㄹ","쓰레드 삭제 : "+taskKey);
+			
 		}
 		
 		@Override
@@ -720,8 +725,14 @@ public class JwViewer {
 			}
 			boolean isView = (Boolean)result;
 			if(isView){
+				if (isStop) {
+					return;
+				}
 				if(!inViewInitBack){
 					viewerInit();
+				}
+				if (isStop) {
+					return;
 				}
 				View view = Jwc.changeLayout(viewer, parentView);
 				JwMemberMapper.injectField(JwViewer.this);
