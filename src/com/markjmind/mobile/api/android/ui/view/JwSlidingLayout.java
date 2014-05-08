@@ -55,12 +55,14 @@ public class JwSlidingLayout extends LinearLayout{
 		this.isShow = true;
 		this.curr_value = 0;
 		this.isPost = true;
+		
 		setGravity(gravity);
 		
 		this.post(new Runnable() {
 			@Override
 			public void run() {
 				isPost = true;
+				((ViewGroup)getParent()).setFocusableInTouchMode(true);
 				if(JwSlidingLayout.this.getChildCount()==0){
 					return;
 				}
