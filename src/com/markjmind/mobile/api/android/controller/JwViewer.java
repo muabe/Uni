@@ -11,11 +11,13 @@ import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationSet;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.LinearLayout.LayoutParams;
 
 import com.markjmind.mobile.api.hub.Store;
 
@@ -36,6 +38,7 @@ import com.markjmind.mobile.api.hub.Store;
 public class JwViewer {
 	
 	private static Store<Refresh> asyncTaskPool = new Store<Refresh>();
+	private static int taskIndex = 0;
 	private static ViewerXmlMapper vxm;
 	private Context context;
 	private Activity activity;
@@ -300,6 +303,9 @@ public class JwViewer {
 	 */
 	public void viewerInit(){
 		viewer = (ViewGroup)Jwc.getViewInfalter(layoutId,context);
+		if(inAnimation!=null){
+			viewer.setAnimation(inAnimation);
+		}
 	}
 	
 	/**
@@ -443,6 +449,33 @@ public class JwViewer {
 		return this;
 	}
 	
+	private void removeAllViews(){
+		parentView.removeAllViews();
+	}
+	
+	private class RemoveAllAnimListener implements AnimationListener{
+		private View view;
+		public RemoveAllAnimListener(View view){
+			this.view = view;
+		}
+		@Override
+		public void onAnimationStart(Animation paramAnimation) {
+		}
+		@Override
+		public void onAnimationEnd(Animation paramAnimation) {
+			parentView.post(new Runnable() {
+			        public void run() {
+			        	parentView.removeView(view);
+			        }
+			    });
+		}
+		@Override
+		public void onAnimationRepeat(Animation paramAnimation) {
+		}
+		
+	}
+
+	
 	/**
 	 * index에 해당하는 부모 ViewGroup아래 JwViewer를 추가한다.
 	 * @param parents 부모 ViewGroup
@@ -454,12 +487,15 @@ public class JwViewer {
 		if(async){
 			excute(TASK_APUT);
 		}else{
-			cancelTaskAcv();
 			viewerInit();
+			ViewGroup.LayoutParams lp = viewer.getLayoutParams();
+			if(lp==null){
+				lp = parents.getLayoutParams();
+			}
 			if(index==-1){
-				parents.addView(viewer,  parents.getLayoutParams());
+				parents.addView(viewer, null);
 			}else{
-				parents.addView(viewer,index,parents.getLayoutParams());
+				parents.addView(viewer,index,null);
 			}
 			view_init();
 		}
@@ -496,8 +532,6 @@ public class JwViewer {
 		return add(parents);
 	}
 	
-	
-	
 	/**
 	 * 부모 ViewGroup 아래의 View들을 모두 지우고<br>
 	 * 현재 Viewer로 변경한다.
@@ -511,7 +545,8 @@ public class JwViewer {
 		}else{
 			cancelTaskAcv();
 			viewerInit();
-			View view = Jwc.changeLayout(viewer, parents);
+			removeAllViews();
+			parents.addView(viewer);
 			view_init();
 		}
 		return this;
@@ -590,8 +625,146 @@ public class JwViewer {
 //		return this;
 //	}
 	
-	public String getTaskKey(String command){
-		String taskKey = command+"_"+parentView.hashCode();
+	
+	public ViewGroup setPreView(int R_layout_id){
+		if(parentView!=null){
+			if(TASK_ACV.equals(task)){
+				removeAllViews();
+			}
+		}
+		//이부분 때문에 viewer랑 AsyncTask객체가 1:1만 이루어져야함
+		//그래서 jwviewer instance 하나에 한번만 async가능 
+		//하느의 instance로 add를 연속적으로 할경우 문제 발생 가능성 큼
+		//수정요망
+		viewer = (ViewGroup) Jwc.getViewInfalter( R_layout_id, getParent().getContext());
+		viewer.setLayoutParams(getParent().getLayoutParams());
+		((ViewGroup)getParent()).addView(viewer);
+		return (ViewGroup)viewer;
+	}
+	
+	@SuppressLint("NewApi") 
+	private void excute(String taskName){
+		this.task = taskName;
+		String taskKey = getTaskKey(taskName);
+		if(TASK_APUT.equals(taskName)){
+			taskIndex++;
+		}else{
+			cancelTaskAput();
+			cancelTaskAcv();
+		}
+		Refresh ref = new Refresh(taskKey, this);
+		asyncTaskPool.add(taskKey, ref);
+		
+		if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
+			ref.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		} else {
+			ref.execute();
+		}
+	}
+
+	public void view_pre(){
+		if(parentView!=null){
+			if(TASK_ACV.equals(task)){
+				removeAllViews();
+			}
+		}
+	}
+	public void onProgressUpdate(Integer... values){
+	}
+	public void onCancelled(){
+	}
+	
+	private class Refresh extends AsyncTask<Object, Integer, Object>{
+		private String taskKey;
+		private boolean isStop;
+		private JwViewer jv;
+		public Refresh(String taskKey, JwViewer jv){
+			this.taskKey = taskKey;
+			this.isStop = false;
+			this.jv = jv;
+		}
+		
+		public void stop(){
+			cancel(true);
+			isStop = true;
+			asyncTaskPool.remove(taskKey);
+			Log.w("JwViewer","Stop AsyncTask : "+taskKey);
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			if(preload){
+				viewerInit();
+				if(TASK_ACV.equals(task)){
+					jv.removeAllViews();
+				}
+				parentView.addView(viewer,parentView.getLayoutParams());	
+			}else{
+				JwViewer.this.view_pre();
+			}
+		}
+		@Override
+		protected void onCancelled() {
+			jv.onCancelled();
+		}
+		@Override
+		protected void onProgressUpdate(Integer... values) {
+			jv.onProgressUpdate(values);
+		}
+		@Override
+		protected Object doInBackground(Object... params) {
+			loadingParam = new Store<Object>();
+			loadingParam.clear();
+			return loading(); //데이터 가져오기
+		}
+		@Override
+		protected void onPostExecute(Object result) {
+			if (isStop) {
+				return;
+			}
+			boolean isView = (Boolean)result;
+			if(isView){
+				if(preload){
+					
+				}else{
+					viewerBind(jv, task);
+				}
+				JwMemberMapper.injectField(JwViewer.this);
+				view_init();
+			}else{
+				view_fail();
+			}
+			asyncTaskPool.remove(taskKey);
+		}
+	}
+	
+	private synchronized static void viewerBind(JwViewer jv, String task){
+		ViewGroup parentView = jv.getParent();
+		int viewerIndex = -1;
+		if(TASK_ACV.equals(task)){
+			jv.removeAllViews();
+		}else{
+			for(int i=0;i<parentView.getChildCount();i++){
+				if(jv.viewer == parentView.getChildAt(i)){
+					viewerIndex = i;
+					break;
+				}
+			}
+			parentView.removeView(jv.viewer);
+		}
+		jv.viewerInit();
+		if(viewerIndex>=0){
+			parentView.addView(jv.viewer,viewerIndex,parentView.getLayoutParams());
+		}else{
+			parentView.addView(jv.viewer,parentView.getLayoutParams());
+		}
+	}
+	
+	public String getTaskKey(String taskName){
+		String taskKey = taskName+"_"+parentView.hashCode();
+		if(TASK_APUT.equals(taskName)){
+			taskKey+=taskIndex;
+		}
 		return taskKey;
 	}
 	
@@ -607,120 +780,42 @@ public class JwViewer {
 		cancelTask(taskKey);
 	}
 	public static void cancelTaskAput(View parents){
-		String taskKey = TASK_APUT+"_"+parents.hashCode();
-		cancelTask(taskKey);
+		String[] keys = getRunTaskKeys();
+		for(int i=0;i<keys.length;i++){
+			String tempKey = TASK_APUT+"_"+parents.hashCode();
+			if(keys[i].indexOf(tempKey)>=0){
+				cancelTask(keys[i]);
+			}
+		}
 	}
 	
+	public void cancelTaskAput(){
+		cancelTaskAput(parentView);
+	}
 	
 	public void cancelTaskAcv(){
 		String taskKey = getTaskKey(TASK_ACV);
 		cancelTask(taskKey);
 	}
 	
-	public void cancelTaskAput(){
-		String taskKey = getTaskKey(TASK_APUT);
+	public void cancelTaskAput(View parents, int taskIndex){
+		String taskKey = TASK_APUT+"_"+parents.hashCode()+"_"+taskIndex;
 		cancelTask(taskKey);
 	}
-	
-	
-	@SuppressLint("NewApi") 
-	private void excute(String command){
-		this.task = command;
-		String taskKey = getTaskKey(command);
-		cancelTask(taskKey);
-		Refresh ref = new Refresh(taskKey);
-		asyncTaskPool.add(taskKey, ref);
-		
-		if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
-			ref.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-		} else {
-			ref.execute();
-		}
+	public void cancelTaskAput(int taskIndex){
+		cancelTaskAput(parentView,taskIndex);
 	}
-
-	public void view_pre(){
-		if(parentView!=null){
-			if(TASK_ACV.equals(task)){
-				parentView.removeAllViews();
-			}
-		}
-	}
-	public void onProgressUpdate(Integer... values){
+	public static int getRunTaskCount(){
+		return asyncTaskPool.size();
 	}
 	
-	private  class Refresh extends AsyncTask<Object, Integer, Object>{
-		private String taskKey;
-		private boolean isStop;
-		
-		public Refresh(String taskKey){
-			this.taskKey = taskKey;
-			this.isStop = false;
-		}
-		
-		public void stop(){
-			cancel(true);
-			isStop = true;
-			asyncTaskPool.remove(taskKey);
-			Log.w("JwViewer","Stop AsyncTask : "+taskKey);
-		}
-		
-		@Override
-		protected void onPreExecute() {
-			if(preload){
-				viewerInit();
-				parentView.removeAllViews();
-				parentView.addView(viewer,parentView.getLayoutParams());	
-			}else{
-				JwViewer.this.view_pre();
-			}
-		}
-		@Override
-		protected void onCancelled() {
-			super.onCancelled();
-		}
-		@Override
-		protected void onProgressUpdate(Integer... values) {
-			JwViewer.this.onProgressUpdate(values);
-		}
-		@Override
-		protected Object doInBackground(Object... params) {
-			loadingParam = new Store<Object>();
-			loadingParam.clear();
-			return loading(); //데이터 가져오기
-		}
-		@Override
-		protected void onPostExecute(Object result) {
-			if (isStop) {
-				return;
-			}
-			boolean isView = (Boolean)result;
-			if(isView){
-				if(!preload){
-					viewerInit();
-				}
-				if(TASK_ACV.equals(task)){
-					parentView.removeAllViews();
-					parentView.addView(viewer,parentView.getLayoutParams());	
-				}else{
-					parentView.addView(viewer,parentView.getLayoutParams());
-				}
-				JwMemberMapper.injectField(JwViewer.this);
-				view_init();
-			}else{
-				view_fail();
-			}
-			asyncTaskPool.remove(taskKey);
-		}
+	public static String[] getRunTaskKeys(){
+		return asyncTaskPool.getKeys();
 	}
 	
-	public void setPreView(int R_layout_id){
-		if(parentView!=null){
-			parentView.removeAllViews();
-		}
-		ViewGroup loading = (ViewGroup) Jwc.getViewInfalter( R_layout_id, getParent().getContext());
-		loading.setLayoutParams(getParent().getLayoutParams());
-		((ViewGroup)getParent()).addView(loading);
-	}
+	
+	
+	
 //*************************************************** changeViewer *********************************************//
 	
 	
@@ -894,6 +989,14 @@ public class JwViewer {
 	}
 	
 	/**
+	 * Viewer에해당하는 View를 가져온다.
+	 * @return Viewer에해당하는 View
+	 */
+	public View getView(){
+		return viewer;
+	}
+	
+	/**
 	 * activity안에 있는 View를 찾는다
 	 * @param R_id_view 찾을 View ID
 	 * @return View 해당 View
@@ -1007,8 +1110,14 @@ public class JwViewer {
 		}
 	}
 	
-	AnimationSet outAnimation;
-	public void setAnimation(AnimationSet outAnimation){
+	Animation outAnimation;
+	public JwViewer setOutAnim(Animation outAnimation){
 		this.outAnimation = outAnimation;
+		return this;
+	}
+	Animation inAnimation;
+	public JwViewer setInAnim(Animation inAnimation){
+		this.inAnimation = inAnimation;
+		return this;
 	}
 }

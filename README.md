@@ -102,7 +102,7 @@ ex) 아래는 같은 동일한 역할을 하는 소스코드 비교 예제입니
 		}
 		
 		public void sub_Viewer(View v, String clickParam){ //SubViewer 호출
-			getViewer(R.layout.sub,SubViewer.class).addParam("say", clickParam).acv(getParent());
+			getViewer(R.layout.sub,SubViewer.class).addParam("say", clickParam).change(getParent());
 		}
 		public void btn1(View v) { //버튼1 Click
 			Log.d("SubActivity","btn1 Click!");
@@ -139,7 +139,7 @@ AsyncTask가 수행하는 동안 Viewer load 화면을 설정 할수 있습니�
 ```
 .... 
 //Async로 화면 바인딩
-JwViewer.acv(R.layout.test, Test.class, JwViewer.setContentLinear(this), this);
+getViewer(R.layout.sub,Test.class).change(ParentsView);
 ....
 
 //바인딩을 받는 Viewer
