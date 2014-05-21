@@ -89,7 +89,7 @@ ex) 아래는 같은 동일한 역할을 하는 소스코드 비교 예제입니
 ```
 	
   [MarkJ]
- ```
+ ```java
 	public class MainViewer extends JwViewer{
 		@getViewClick Button btn1; // Annotion injection
 		@getViewClick Button btn2;
@@ -136,7 +136,7 @@ Viewer 내부의 loading 메소드를 재정의 함으로써 쉽게 AsyncTask를
 AsyncTask가 수행하는 동안 Viewer load 화면을 설정 할수 있습니다.
 
 [채팅 화면을 Async로 갱신하는 예제]
-```
+```java
 .... 
 //Async로 화면 바인딩
 getViewer(R.layout.sub,Test.class).change(ParentsView);
@@ -167,7 +167,7 @@ Listener를 바인딩 할때 Parameter 또한 쉽게 전달 할수 있습니다.
 Annotation과 code로 Listener를 바인딩 할수 있는 두가지 방법을 제공합니다.
 
 [Code Base 방식]
-```
+```java
 //함수명을 "say"를 명시하고 파라미터를 던져줄수 있다.
 public void view_init(){
 	String param = "what's up?"
