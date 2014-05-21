@@ -26,7 +26,7 @@ Viewer방식으로 화면별/기능별로 Viewer를 분류하므로써 기존코
 
 ex) 아래는 같은 동일한 역할을 하는 소스코드 비교 예제입니다.<br>
  [기존]
-```
+```java
 	public class MainActivity extends Activity{
 		private TextView text;
 		private Button btn1;
