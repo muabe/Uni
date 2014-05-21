@@ -179,7 +179,7 @@ public void say(View v, Object param){
 }
 ```
 [Annotation방식]
-```
+```java
 해당 아이디명과 listener함수명 동일
 @getViewClick View say; //객체 Injection
 
