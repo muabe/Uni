@@ -627,6 +627,7 @@ public class JwViewer {
 	private JwViewer add(ViewGroup parents, int index){
 		JwViewer jv = getViewer(getLayoutId(),jwViewerClass);
 		jv.parentView = parents;
+		jv.setAsync(this.async);
 		jv.setParamStore(viewerParam);
 		jv.setAnimation(this.inAnimation, this.outAnimation, this.outEndAnimate);
 		if(jv.async){
