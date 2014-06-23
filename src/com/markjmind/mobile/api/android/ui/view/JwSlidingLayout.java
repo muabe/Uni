@@ -26,9 +26,11 @@ public class JwSlidingLayout extends LinearLayout{
 	private int  vel;
 	private int maxSize;
 	private Position position;
-	private boolean isShow;
+	private boolean isOpened;
 	private float density;
 	private boolean isPost;
+	private int gravity;
+	private SlidingListener sListener;
 	
 	public static enum Position{
 		LEFT,RIGHT,TOP,BOTTOM
@@ -36,23 +38,32 @@ public class JwSlidingLayout extends LinearLayout{
 
 	public JwSlidingLayout(Context context) {
 		super(context);
-		init(Gravity.LEFT);
+		gravity = Gravity.LEFT;
+		init(gravity);
 	}
 
 	public JwSlidingLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		int[] attrsArray = new int[] {android.R.attr.gravity};
+		int[] attrsArray = new int[] {android.R.attr.gravity,android.R.attr.minHeight,android.R.attr.minWidth};
+		this.density = getResources().getDisplayMetrics().density;
 		TypedArray ta = context.obtainStyledAttributes(attrs, attrsArray);
-		int gravity = ta.getInt(0, Gravity.LEFT);
-		init(gravity);
+		gravity = ta.getInt(0, Gravity.LEFT);
+		this.minSize = (int)(20*density);
+		setMinimumHeight(ta.getDimensionPixelSize(1, (int)(20*density)));
+   		init(gravity);
 		ta.recycle();
 	}
+	@Override
+	public void setMinimumHeight(int minHeight) {
+		super.setMinimumHeight(minHeight);
+		this.minSize = (int)(minHeight);
+
+	}	
 	
 	public void init(int gravity){
-		this.density = getResources().getDisplayMetrics().density;
-		this.minSize = (int)(20*density);
+		
 		this.isFling = false;
-		this.isShow = true;
+		this.isOpened = true;
 		this.curr_value = 0;
 		this.isPost = true;
 		
@@ -71,14 +82,13 @@ public class JwSlidingLayout extends LinearLayout{
 				JwSlidingLayout.this.main.setOnTouchListener(new SimpleTouch());
 				gestureDetector = new GestureDetector(JwSlidingLayout.this.getContext(), new SimpleOnGesture());
 				gestureDetector.setIsLongpressEnabled(false);
-				
 				maxSize = getMeansure()-JwSlidingLayout.this.minSize;
 				ViewGroup.LayoutParams lp = JwSlidingLayout.this.main.getLayoutParams();
 				lp.width = JwSlidingLayout.this.main.getWidth();
 				lp.height = JwSlidingLayout.this.main.getHeight();
 				JwSlidingLayout.this.main.setLayoutParams(lp);
 				JwSlidingLayout.this.main.invalidate();
-				setVisible(isShow);  
+				setVisible(isOpened);  
 				isPost = false;
 				
 			}
@@ -104,23 +114,28 @@ public class JwSlidingLayout extends LinearLayout{
 		super.setGravity(gravity);
 	}
 	
+	public void setOnSlidingListener(SlidingListener sListener){
+		this.sListener = sListener;
+	}
+	
 	public JwSlidingLayout show(){
-		isShow = true;
 		if(!isPost){
-			aniMove(100);
+			aniMove(100*-1);
+		}else{
+			isOpened=true;
 		}
 		return this;
 	}
 	public JwSlidingLayout hide(){
-		isShow = false;
-		if(isPost){
+		if(!isPost){
 			aniMove(100);
+		}else{
+			isOpened=false;
 		}
 		return this;
 	}
 	
 	private JwSlidingLayout setVisible(boolean isVisible){
-		isShow = isVisible;
 		if(isPost){
 			if(isVisible){
 				move(maxSize*-1);
@@ -147,11 +162,23 @@ public class JwSlidingLayout extends LinearLayout{
 	private void move(int x){
 		curr_value +=x;
 		
-		if(curr_value>maxSize){
+		if(curr_value>=maxSize){
 			curr_value = maxSize;
+			if(isOpened){
+				isOpened = !isOpened;
+				if(sListener!=null){
+					sListener.closed(this);
+				}
+			}
 		}
-		if(curr_value<0){
+		if(curr_value<=0){
 			curr_value=0;
+			if(!isOpened){
+				isOpened = !isOpened;
+				if(sListener!=null){
+					sListener.opened(this);
+				}
+			}
 		}
 		int left = getPaddingLeft();
 		int right = getPaddingRight();
@@ -235,18 +262,17 @@ public class JwSlidingLayout extends LinearLayout{
 			float y = e2.getY()-e1.getY();
 			
 			if((position==Position.LEFT || position==Position.RIGHT )){
-				if(Math.abs(x)<5){
+				if(Math.abs(x)<0.5f){
 					return false;
 				}
-				Log.d("onFling","가로 velocityX:"+velocityX+" ,x:"+x+"("+(Math.abs(x)>=Math.abs(y))+")");
+//				Log.d("onFling","가로 velocityX:"+velocityX+" ,x:"+x+"("+(Math.abs(x)>=Math.abs(y))+")");
 				isDrag = false;
 				isFling = true;
 				aniMove(x);
 			}else if((position==Position.TOP || position==Position.BOTTOM)){
-				if(Math.abs(y)<5){
+				if(Math.abs(y)<0.5f){
 					return false;
 				}
-				Log.d("onFling","세로 velocitY:"+velocityY+" ,y:"+y+"("+(Math.abs(y)>Math.abs(x))+")");
 				isDrag = false;
 				isFling = true;
 				aniMove(y);
@@ -257,50 +283,62 @@ public class JwSlidingLayout extends LinearLayout{
 		}
 		@Override
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-			float x = e2.getX()-e1.getX();
-			float y = e2.getY()-e1.getY();
-			if(position==Position.LEFT || position==Position.RIGHT){
-				if(Math.abs(x)<1){
+			try{
+				float x = e2.getX()-e1.getX();
+				float y = e2.getY()-e1.getY();
+				if(position==Position.LEFT || position==Position.RIGHT){
+					if(Math.abs(x)<0.5f){
+						return false;
+					}
+					drag((int)x);
+				}else if(position==Position.TOP || position==Position.BOTTOM){
+					if(Math.abs(y)<0.5f){
+						return false;
+					}
+					drag((int)y);
+				}else{
 					return false;
 				}
-				drag((int)x);
-			}else if(position==Position.TOP || position==Position.BOTTOM){
-				if(Math.abs(y)<1){
-					return false;
-				}
-				drag((int)y);
-			}else{
+	            return true;
+			}catch(NullPointerException e){
 				return false;
 			}
-            return true;
         }
 	}
 	
-	class SimpleTouch implements OnTouchListener{
+	private class SimpleTouch implements OnTouchListener{
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
-			boolean gd = gestureDetector.onTouchEvent(event);
-			switch (event.getAction() & MotionEvent.ACTION_MASK) {
-				case MotionEvent.ACTION_DOWN:
-					break;
-		    	case MotionEvent.ACTION_UP:
-		    		if(isDrag && !isFling){
-		    			isFling=true;
-		    			int go=1;
-	    				if(curr_value==0 || 2>=maxSize/Math.abs(curr_value)){
-	    					go = -1;
-	    				}
-	    				if(position==Position.RIGHT || position==Position.BOTTOM){
-	    					go=go*-1;
-	    				}
-						aniMove(100*go);
-						return true;
-		    		}
-		    		isDrag = false;
-		    		return false;
+			try{
+				boolean gd = gestureDetector.onTouchEvent(event);
+				switch (event.getAction() & MotionEvent.ACTION_MASK) {
+					case MotionEvent.ACTION_DOWN:
+						break;
+			    	case MotionEvent.ACTION_UP:
+			    		if(isDrag && !isFling){
+			    			isFling=true;
+			    			int go=1;
+		    				if(curr_value==0 ||maxSize/2<Math.abs(curr_value)){
+		    					go = -1;
+		    				}
+		    				if(position==Position.RIGHT || position==Position.BOTTOM){
+		    					go=go*-1;
+		    				}
+							aniMove(100*go);
+							return true;
+			    		}
+			    		isDrag = false;
+			    		return false;
+				}
+				return gd;
+			}catch(NullPointerException e){
+				return false;
 			}
-			return gd;
 		}
+	}
+	public interface SlidingListener{
+		public void opened(JwSlidingLayout slidingLayout);
+		public void closed(JwSlidingLayout slidingLayout);
 	}
 	
 }

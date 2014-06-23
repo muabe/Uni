@@ -13,6 +13,7 @@ import android.view.View;
  * @author 오재웅
  * @email markjmind@gmail.com
  */
+
 public class JwMemberMapper {
 	
 	@Retention( RetentionPolicy.RUNTIME )
@@ -30,7 +31,23 @@ public class JwMemberMapper {
 		int value() default -1;
 		String click() default "";
 	}
+	
+	@Retention( RetentionPolicy.RUNTIME )
+	@Target(ElementType.TYPE)
+	public @interface layout
+	{
+		int value();
+	}
+	public static int injectionLayout(Class<?> viewerClass){
+		if(viewerClass.isAnnotationPresent(layout.class)){
+			layout lytId = viewerClass.getAnnotation(layout.class);
+			return lytId.value();
+		}else{
+			throw new JwMapperException("\n["+viewerClass.getName()+"] 해당 Viewer에 layout을 지정하는 annotation이 없습니다.",null);
+		}
 		
+	}
+	
 	public static void injectField(JwViewer obj){
 		Field[] fields = obj.getClass().getDeclaredFields();
 		for(int i=0;i<fields.length;i++){

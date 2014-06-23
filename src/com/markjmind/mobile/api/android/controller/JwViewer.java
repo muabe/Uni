@@ -9,9 +9,13 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -48,7 +52,7 @@ public class JwViewer {
 	private String id;
 	private int layoutId;
 	private Store<Object> loadingParam;
-	private Store<Object> ViewerParam;
+	private Store<Object> viewerParam;
 	
 	private Class<?> jwViewerClass;
 	
@@ -69,7 +73,7 @@ public class JwViewer {
 	 * 기본생성자
 	 */
 	protected JwViewer(){
-		ViewerParam = new Store<Object>();
+		viewerParam = new Store<Object>();
 	}
 	
 	/**
@@ -193,7 +197,7 @@ public class JwViewer {
 	 * @param value Parameter Value
 	 */
 	public JwViewer addParam(String key, Object value){
-		ViewerParam.add(key, value);
+		viewerParam.add(key, value);
 		return this;
 	}
 	
@@ -203,13 +207,15 @@ public class JwViewer {
 	 * @return Parameter Value
 	 */
 	public Object getParam(String key){
-		return ViewerParam.get(key);
+		return viewerParam.get(key);
 	}
+	
 	
 	/**
 	 * 다른 Viewer로 전달한 파라미터를 받는다.<br>
 	 * key에 대응하는 value가 없으면 defalut값을 리턴한다.
 	 * @param key Parameter Key
+	 * @param defalut value
 	 * @return Parameter Value
 	 */
 	public Object optParam(String key, Object defalut){
@@ -220,11 +226,56 @@ public class JwViewer {
 	}
 	
 	/**
+	 * 다른 Viewer로 전달한 파라미터를 String형으로 받는다.
+	 * @param key Parameter Key
+	 * @return Parameter String Value
+	 */
+	public String getParamString(String key){
+		return (String)getParam(key);
+	}
+	
+	/**
+	 * 다른 Viewer로 전달한 파라미터를 String형으로 받는다.<br>
+	 * key에 대응하는 value가 없으면 defalut값을 리턴한다.
+	 * @param key Parameter Key
+	 * @param defalut value
+	 * @return Parameter String Value
+	 */
+	public String optParamString(String key, String defalut){
+		return (String)optParam(key, defalut);
+	}
+	/**
+	 * 다른 Viewer로 전달한 파라미터를 Int형으로 받는다.
+	 * @param key Parameter Key
+	 * @return Parameter Int Value
+	 */
+	public int getParamInt(String key){
+		return (Integer)getParam(key);
+	}
+	
+	/**
+	 * 다른 Viewer로 전달한 파라미터를 Int형으로 받는다.<br>
+	 * key에 대응하는 value가 없으면 defalut값을 리턴한다.
+	 * @param key Parameter Key
+	 * @param defalut value
+	 * @return Parameter Int Value
+	 */
+	public int optParamInt(String key, int defalut){
+		return (Integer)optParam(key, defalut);
+	}
+	/**
 	 * 다른 Viewer로 전달한 파라미터 Store를 받는다.
 	 * @return Parameter store
 	 */
 	public Store<Object> getParamStore(){
-		return ViewerParam;
+		return viewerParam;
+	}
+	
+	/**
+	 *  다른 Viewer로 전달한 파라미터 Store를 설정한다.
+	 */
+	public void setParamStore(Store<Object> store){
+		viewerParam = store;
 	}
 	
 	/**
@@ -311,7 +362,7 @@ public class JwViewer {
 	 */
 	public void viewerInit(boolean newViewer){
 		if(newViewer){
-			viewer = (ViewGroup)Jwc.getViewInfalter(layoutId,context);
+			viewer = (ViewGroup)getLayoutInfalter(layoutId);
 			if(isCache){
 				JwViewerCache.put(this);
 			}
@@ -320,7 +371,7 @@ public class JwViewer {
 				JwViewer jv = JwViewerCache.get(layoutId,getParent()); 
 				if(jv==null){
 					Log.e("뷰어", "뷰어 새로만듬");
-					viewer = (ViewGroup)Jwc.getViewInfalter(layoutId,context);
+					viewer = (ViewGroup)getLayoutInfalter(layoutId);
 					//캐쉬에 저장
 					JwViewerCache.put(this);
 				}else{
@@ -329,7 +380,7 @@ public class JwViewer {
 				}
 				
 			}else{
-				viewer = (ViewGroup)Jwc.getViewInfalter(layoutId,context);
+				viewer = (ViewGroup)getLayoutInfalter(layoutId);
 				Log.e("뷰어", "노캐쉬!");
 			}
 		}
@@ -402,11 +453,12 @@ public class JwViewer {
 		}
 		return null;
 	}
+	
 	/**
-	 * Viewer를 정의한 Xml의 id에 해당하는 Viewer를 반환한다.
-	 * @param id Viewer ID
+	 * R_layout_id에 jwViewerClass를 바인딩한 Viewer를 리턴한다.
+	 * @param R_layout_id layout ID
 	 * @param activity activity
-	 * @return Viewer
+	 * @return JwViewer
 	 */
 	public static JwViewer getViewer(int R_layout_id, Class<?> jwViewerClass, Activity activity){
 		try {
@@ -422,11 +474,13 @@ public class JwViewer {
 		return null;
 	}
 	
+	
 	/**
-	 * Viewer를 정의한 Xml의 id에 해당하는 Viewer를 반환한다.
-	 * @param id Viewer ID
+	 * R_layout_id에 jwViewerClass를 바인딩한 Viewer를 리턴한다.
+	 * @param R_layout_id layout ID
+	 * @param jwViewerClass JwViewer를 정의한 Class
 	 * @param dialog dialog
-	 * @return Viewer
+	 * @return JwViewer
 	 */
 	public static JwViewer getViewer(int R_layout_id, Class<?> jwViewerClass, Dialog dialog){
 		try {
@@ -441,6 +495,55 @@ public class JwViewer {
 		}
 		return null;
 	}
+	
+	/**
+	 * R_layout_id에 jwViewerClass를 바인딩한 Viewer를 리턴한다.
+	 * @param R_layout_id layout ID
+	 * @param jwViewerClass JwViewer를 정의한 Class
+	 * @param jwViewer jwViewer
+	 * @return JwViewer
+	 */
+	public static JwViewer getViewer(int R_layout_id, Class<?> jwViewerClass, JwViewer jwViewer){
+		if(jwViewer.mode==JwViewer.TYPE_MODE.ACTIVITY){
+			return JwViewer.getViewer(R_layout_id, jwViewerClass, jwViewer.getActivity());
+		}else if(jwViewer.mode==JwViewer.TYPE_MODE.DIALOG){
+			return JwViewer.getViewer(R_layout_id, jwViewerClass, jwViewer.getDialog());
+		}
+		return null;
+	}
+	
+	/**
+	 * R_layout_id에 jwViewerClass를 바인딩한 Viewer를 리턴한다.<br>
+	 * layout ID는 jwViewerClass의 layout Annotation을 참조함으로<br>
+	 * 반드시 Viewer Class는 layout Annotation을 정의해야한다.
+	 * @param activity activity
+	 * @return JwViewer
+	 */
+	public static JwViewer getViewer(Class<?> jwViewerClass, Activity activity){
+		return JwViewer.getViewer(JwMemberMapper.injectionLayout(jwViewerClass), jwViewerClass, activity);
+	}
+	/**
+	 * R_layout_id에 jwViewerClass를 바인딩한 Viewer를 리턴한다.<br>
+	 * layout ID는 jwViewerClass의 layout Annotation을 참조함으로<br>
+	 * 반드시 Viewer Class는 layout Annotation을 정의해야한다.
+	 * @param Dialog dialog
+	 * @return JwViewer
+	 */
+	public static JwViewer getViewer(Class<?> jwViewerClass, Dialog dialog){
+		return JwViewer.getViewer(JwMemberMapper.injectionLayout(jwViewerClass), jwViewerClass, dialog);
+	}
+	
+	/**
+	 * R_layout_id에 jwViewerClass를 바인딩한 Viewer를 리턴한다.<br>
+	 * layout ID는 jwViewerClass의 layout Annotation을 참조함으로<br>
+	 * 반드시 Viewer Class는 layout Annotation을 정의해야한다.
+	 * @param JwViewer jwViewer
+	 * @return JwViewer
+	 */
+	public static JwViewer getViewer(Class<?> jwViewerClass, JwViewer jwViewer){
+		return JwViewer.getViewer(JwMemberMapper.injectionLayout(jwViewerClass), jwViewerClass, jwViewer);
+	}
+	
 	
 	/**
 	 * Viewer를 정의한 Xml의 id에 해당하는 Viewer를 반환한다.
@@ -486,9 +589,35 @@ public class JwViewer {
 	}
 	
 	private void removeAllViews(){
-		parentView.removeAllViews();
+		if(outAnimation!=null){
+			final View[] childArr = new View[parentView.getChildCount()];
+			for(int i=0;i<childArr.length;i++){
+				childArr[i] = parentView.getChildAt(i);
+				outAnimation.setAnimationListener(new RemoveAnimation(childArr[i]));
+				childArr[i].startAnimation(outAnimation);
+			}
+		}else{
+			parentView.removeAllViews();
+		}
 	}
-	
+	class RemoveAnimation implements AnimationListener{
+		View view;
+		public RemoveAnimation(View view){
+			this.view = view;
+		}
+		@Override
+		public void onAnimationEnd(Animation arg0) {
+		}
+		@Override
+		public void onAnimationRepeat(Animation arg0) {
+		}
+		@Override
+		public void onAnimationStart(Animation arg0) {
+			if(view!=null){
+				parentView.removeView(view);
+			}
+		}
+	}
 	/**
 	 * index에 해당하는 부모 ViewGroup아래 JwViewer를 추가한다.
 	 * @param parents 부모 ViewGroup
@@ -498,22 +627,24 @@ public class JwViewer {
 	private JwViewer add(ViewGroup parents, int index){
 		JwViewer jv = getViewer(getLayoutId(),jwViewerClass);
 		jv.parentView = parents;
+		jv.setParamStore(viewerParam);
+		jv.setAnimation(this.inAnimation, this.outAnimation, this.outEndAnimate);
 		if(jv.async){
 			jv.excute(TASK_APUT);
 		}else{
 			jv.viewerInit(true);
-			ViewGroup.LayoutParams lp = jv.viewer.getLayoutParams();
-			if(lp==null){
-				lp = parents.getLayoutParams();
-			}
 			if(index==-1){
-				parents.addView(jv.viewer, null);
+				jv.parentView.addView(jv.viewer);
 			}else{
-				parents.addView(jv.viewer,index,null);
+				jv.parentView.addView(jv.viewer);
 			}
 			jv.view_init();
 		}
 		return this;
+	}
+	private View getLayoutInfalter(int layout_id){
+		View v = ((LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(layout_id, null);
+		return v;
 	}
 	
 	/**
@@ -633,11 +764,11 @@ public class JwViewer {
 				removeAllViews();
 			}
 		}
-		//이부분 때문에 viewer랑 AsyncTask객체가 1:1만 이루어져야함
+		// TODO 이부분 때문에 Add시 viewer랑 AsyncTask객체가 1:1만 이루어져야함
 		//그래서 jwviewer instance 하나에 한번만 async가능 
-		//하느의 instance로 add를 연속적으로 할경우 문제 발생 가능성 큼
-		//수정요망
-		preViewer = (ViewGroup) Jwc.getViewInfalter( R_layout_id, getParent().getContext());
+		//하나의 instance로 add를 연속적으로 할경우 문제 발생 가능성 큼
+		//현재 새로운 객체를 생성해서 Add 하게함
+		preViewer = (ViewGroup) getLayoutInfalter(R_layout_id);
 		preViewer.setLayoutParams(getParent().getLayoutParams());
 		((ViewGroup)getParent()).addView(preViewer);
 		return (ViewGroup)preViewer;
@@ -1121,5 +1252,29 @@ public class JwViewer {
 	public JwViewer setInAnim(Animation inAnimation){
 		this.inAnimation = inAnimation;
 		return this;
+	}
+	public JwViewer setAnimation(Animation animation){
+		this.inAnimation = animation;
+		return this;
+	}
+	public JwViewer setAnimation(int R_anim_id){
+		return setAnimation(AnimationUtils.loadAnimation(getContext(), R_anim_id));
+	}
+	public JwViewer setAnimationOut(Animation animation){
+		this.outAnimation = animation;
+		return this;
+	}
+	public JwViewer setAnimationOut(int R_anim_id){
+		return setAnimationOut(AnimationUtils.loadAnimation(getContext(), R_anim_id));
+	}
+	boolean outEndAnimate=false;
+	public JwViewer setAnimation(Animation inAnimation,Animation outAnimation,boolean outEndAnimate){
+		this.inAnimation = inAnimation;
+		this.outAnimation = outAnimation;
+		this.outEndAnimate=outEndAnimate;
+		return this;
+	}
+	public JwViewer setAnimation(int R_anim_inId,int R_anim_outId,boolean outEndAnimate){
+		return setAnimation(AnimationUtils.loadAnimation(getContext(), R_anim_inId), AnimationUtils.loadAnimation(getContext(), R_anim_outId),outEndAnimate);
 	}
 }
