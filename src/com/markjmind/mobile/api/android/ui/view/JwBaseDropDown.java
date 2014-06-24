@@ -20,10 +20,19 @@ public class JwBaseDropDown extends Dialog implements OnClickListener{
 	private Animation animIn;
 	private Animation animOut;
 	
+	protected JwBaseDropDown(Context context){
+		super(context , android.R.style.Theme_Translucent_NoTitleBar);
+	}
+	
 	public JwBaseDropDown(Context context, View contentView) {
 		 super(context , android.R.style.Theme_Translucent_NoTitleBar);
 		 this.contentView = contentView;
 	}
+	
+	protected void setMainContentView(View contentView){
+		this.contentView = contentView;
+	}
+	
 	public void setAnimationIn(Animation animIn){
 		this.animIn = animIn;
 	}
@@ -44,7 +53,19 @@ public class JwBaseDropDown extends Dialog implements OnClickListener{
 	}
 
 	
-	public void show(View v) {
+	public void show(View onClickView) {
+		super.show();
+		int width = onClickView.getWidth();
+		int height = onClickView.getHeight();
+		int[] location = new int[2];
+		int[] flLoc = new int[2];
+		frame.getLocationInWindow(flLoc);
+		onClickView.getLocationInWindow(location);
+		location[1] = location[1]-getStatusBarHeight()+height;
+		frame.setPadding(location[0], location[1], 0, 0);
+	}
+	
+	public void show(View v,float childWidth, float childHeight) {
 		super.show();
 		int width = v.getWidth();
 		int height = v.getHeight();
@@ -86,7 +107,14 @@ public class JwBaseDropDown extends Dialog implements OnClickListener{
 				}
 			});
 			contentView.startAnimation(animOut);
+		}else{
+			super.dismiss();
 		}
 		
+	}
+	
+	@Override
+	public void onBackPressed() {
+		dismiss();
 	}
 }

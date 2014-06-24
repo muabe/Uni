@@ -19,6 +19,7 @@ public class JwGroup {
 	protected int maxBackCount = 10;
 	protected JwOnGroupSelect onGroupSelect;
 	private boolean isHistory = false; 
+	private boolean isReselected = false;
 	
 	public static enum Motion{
 		CLICK,
@@ -93,10 +94,10 @@ public class JwGroup {
 	
 
 	public void select(String name, Object param, boolean pushHistory){
-		if(name.equals(currView)){
+		if(name.equals(currView) && !isReselected){
 			return;
 		}
-		if(currView!=null){
+		if(currView!=null && !name.equals(currView)){
 			if(pushHistory){
 				if(maxBackCount <= history.size()){
 					history.remove(0);
@@ -151,6 +152,9 @@ public class JwGroup {
 		select(index);
 	}
 	
+	public void setReselected(boolean isReselected){
+		this.isReselected = isReselected;
+	}
 	
 	public int size(){
 		return group.size();
