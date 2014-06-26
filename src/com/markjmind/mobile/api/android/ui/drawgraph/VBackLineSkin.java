@@ -35,6 +35,14 @@ public class VBackLineSkin extends GraphSkin{
 		}
 	}
 	
+	@Override
+	public void add(int index, SimpleStyle style) {
+		int loc = getMaxMeasure()+1 - index;
+		if(loc>=0){
+			super.add(loc, style);
+		}
+	}
+	
 	public void addAll(SimpleStyle style){
 		for(int i=0;i<getMaxMeasure()+1;i++){
 			add(i,style);
