@@ -11,22 +11,38 @@ import com.markjmind.mobile.api.android.ui.JwGroup;
 import com.markjmind.mobile.api.android.ui.JwOnGroupSelect;
 
 public class JwDropDown extends JwBaseDropDown{
+	public interface ItemInit{
+		public void init(int index,String itemKey, View itemView, JwGroup jg);
+	}
+	
 	private ViewGroup boarder;
 	private ViewGroup parentsView;
 	private JwGroup jg;
 	private JwOnGroupSelect groupSelect;
 	private View onClickView;
+	private ItemInit itemInit;
 	
 	public JwDropDown(Context context) {
 		super(context);
 		parentsView = new LinearLayout(getContext());
+		((LinearLayout)parentsView).setOrientation(LinearLayout.VERTICAL);
+		parentsView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
 		boarder = parentsView;
 		jg = new JwGroup();
 		jg.setReselected(true);
+		jg.setOnGroupSelect(new JwOnGroupSelect() {
+			@Override
+			public void selected(View v, String itemKey, int index, Object param) {
+				dismiss();
+			}
+			@Override
+			public void deselected(View v, String itemKey, int index, Object param) {
+			}
+		});
 	}
 	
 	public JwDropDown(Context context,View onClickView) {
-		super(context);
+		this(context);
 		this.onClickView = onClickView;
 		this.onClickView.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -34,101 +50,129 @@ public class JwDropDown extends JwBaseDropDown{
 				show();
 			}
 		});
-		parentsView = new LinearLayout(getContext());
-		boarder = parentsView;
-		jg = new JwGroup();
-		jg.setReselected(false);
 	}
 	
 	/**
-	 * Row에 해당하는 View를 추가한다.
-	 * @param view Row에 해당하는 View
-	 * @param name Row명
+	 * Item들을 초기화한다.
+	 */
+	private void initItems(){
+		if(itemInit!=null){
+			for(int i=0;i<jg.size();i++){
+				String itemKey = jg.getName(i);
+				View itemView = jg.getView(i);
+				itemInit.init(i, itemKey, itemView, jg);
+			}
+		}
+	}
+	
+	/**
+	 * 각 Item의 layout에 대해 초기화할 내용을 설정한다. 
+	 * @param ItemInit
+	 */
+	public void setItemsInit(ItemInit itemInit){
+		this.itemInit = itemInit;
+	}
+	
+	/**
+	 * Item에 해당하는 View를 추가한다.
+	 * @param view Item에 해당하는 View
+	 * @param itemKey itemKey명
 	 * @param param select시 반환되는 param
 	 */
-	public void addRow(View view,String name, Object param){
+	public void addItem(View view,String itemKey, Object param){
 		parentsView.addView(view);
 		view.setClickable(true);
-		jg.add(name, view);
+		jg.add(itemKey, view, param);
 	}
 	/**
-	 * Row에 해당하는 View를 추가한다.<br>
+	 * Item에 해당하는 View를 추가한다.<br>
 	 * select시 반환되는 param은 null이 된다.
-	 * @param view Row에 해당하는 View
-	 * @param name Row명
+	 * @param view Item에 해당하는 View
+	 * @param itemKey itemKey명
 	 */
-	public void addRow(View view,String name){
-		this.addRow(view, name, null);
+	public void addItem(View view,String itemKey){
+		this.addItem(view, itemKey, null);
 	}
 	
 	/**
-	 * Row에 해당하는 View를 추가한다.<br>
-	 * select시 반환되는 name은 null이 된다.<br>
-	 * select시 반환되는 param은 null이 된다.
-	 * @param view Row에 해당하는 View
-	 */
-	public void addRow(View view){
-		this.addRow(view, null, null);
-	}
-	
-	/**
-	 * Row에 해당하는 View를 추가한다.
-	 * @param R_layout_id Row에 해당하는 layout id
-	 * @param name Row명
+	 * Item에 해당하는 View를 추가한다.
+	 * @param R_layout_id Item에 해당하는 layout id
+	 * @param itemKey itemKey명
 	 * @param param select시 반환되는 param
 	 */
-	public void addRow(int R_layout_id, String name, Object param){
+	public void addItem(int R_layout_id, String itemKey, Object param){
 		View view = Jwc.getViewInfalter(R_layout_id, getContext());
-		this.addRow(view, name, param);
+		this.addItem(view, itemKey, param);
 	}
 	
 	/**
-	 * Row에 해당하는 View를 추가한다.<br>
+	 * Item에 해당하는 View를 추가한다.<br>
 	 * select시 반환되는 param은 null이 된다.
-	 * @param R_layout_id Row에 해당하는 layout id
-	 * @param name Row명
+	 * @param R_layout_id Item에 해당하는 layout id
+	 * @param itemKey itemKey명
 	 */
-	public void addRow(int R_layout_id, String name) {
-		this.addRow(R_layout_id, name, null);
+	public void addItem(int R_layout_id, String itemKey) {
+		this.addItem(R_layout_id, itemKey, null);
 	}
 	
 	/**
-	 * Row에 해당하는 View를 추가한다.<br>
-	 * select시 반환되는 name은 null이 된다.<br>
+	 * Item에 해당하는 View를 추가한다.<br>
+	 * select시 반환되는 itemKey는 null이 된다.<br>
 	 * select시 반환되는 param은 null이 된다.
-	 * @param R_layout_id Row에 해당하는 layout id
+	 * @param R_layout_id Item에 해당하는 layout id
 	 */
-	public void addRow(int R_layout_id) {
-		this.addRow(R_layout_id, null, null);
+	public void addItem(int R_layout_id) {
+		this.addItem(R_layout_id, null, null);
 	}
 	
 	/**
-	 * 사용자가 선택한 Row에 대하여 select/deselect를 처리하는 이벤트 
-	 * @param groupSelect row에 대한 select listener
+	 * Item을 선택한다.
+	 * @param itemKey 선택할 Item itemKey
+	 */
+	public void select(String itemKey){
+		jg.select(itemKey);
+	}
+	
+	/**
+	 * Item을 선택한다.
+	 * @param index 선택할 Item index
+	 */
+	public void select(int index){
+		jg.select(index);
+	}
+	/**
+	 * 사용자가 선택한 Item에 대하여 select/deselect를 처리하는 이벤트 
+	 * @param groupSelect Item에 대한 select listener
 	 */
 	public void setOnSelected(JwOnGroupSelect groupSelect){
 		this.groupSelect = groupSelect;
 		jg.setOnGroupSelect(new JwOnGroupSelect() {
 			@Override
-			public void selected(View v, String name, int index, Object param) {
+			public void selected(View v, String itemKey, int index, Object param) {
 				if(JwDropDown.this.groupSelect!=null){
-					JwDropDown.this.groupSelect.selected(v, name, index, param);
+					JwDropDown.this.groupSelect.selected(v, itemKey, index, param);
 				}
 				dismiss();
 			}
 			@Override
-			public void deselected(View v, String name, int index, Object param) {
+			public void deselected(View v, String itemKey, int index, Object param) {
 				if(JwDropDown.this.groupSelect!=null){
-					JwDropDown.this.groupSelect.selected(v, name, index, param);
+					JwDropDown.this.groupSelect.deselected(v, itemKey, index, param);
 				}
 			}
 		});
 	}
 	
 	/**
+	 * item의 size를 반환한다.
+	 */
+	public int getItemSize(){
+		return jg.size(); 
+	}
+	/**
 	 * BoarderLayout을 설정한다.
 	 * @param R_layout_id boarder layout ID
-	 * @param add_view_group_id boarder 하위에 Row를 추가할 ViewGourp ID 
+	 * @param add_view_group_id boarder 하위에 Item를 추가할 ViewGourp ID 
 	 */
 	public void setBoarderLayout(ViewGroup boarder, int add_view_group_id){
 		this.boarder = boarder;
@@ -139,11 +183,19 @@ public class JwDropDown extends JwBaseDropDown{
 	/**
 	 * BoarderLayout을 설정한다.
 	 * @param R_layout_id boarder layout ID
-	 * @param add_view_group_id boarder 하위에 Row를 추가할 ViewGourp ID 
+	 * @param add_view_group_id boarder 하위에 Item를 추가할 ViewGourp ID 
 	 */
 	public void setBoarderLayout(int R_layout_id, int add_view_group_id){
 		ViewGroup mainView = (ViewGroup)Jwc.getViewInfalter(R_layout_id, getContext());
 		setBoarderLayout(mainView,add_view_group_id);
+	}
+		
+	/**
+	 * 설정된 Boarder의 Layout을 반환한다.
+	 * @return Boarder ViewGroup
+	 */
+	public ViewGroup getBoarderLayout(){
+		return boarder;
 	}
 	
 	/**
@@ -151,6 +203,7 @@ public class JwDropDown extends JwBaseDropDown{
 	 */
 	public void show(){
 		setMainContentView(boarder);
+		initItems();
 		super.show(onClickView);
 	}
 	
@@ -161,11 +214,12 @@ public class JwDropDown extends JwBaseDropDown{
 	 */
 	public void show(View onClickView){
 		setMainContentView(boarder);
+		initItems();
 		super.show(onClickView);
 	}
 	
 	/**
-	 * 선택된 Row가 재선택될수 있는지 여부<br>
+	 * 선택된 Item가 재선택될수 있는지 여부<br>
 	 * isReselected의 defalut는 false이다
 	 * @param isReselected
 	 */

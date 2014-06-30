@@ -13,9 +13,9 @@ public class JwGroup {
 	public Stack<HistoryInfo> history;
 	
 	public String currView = null;
-	public Object currParam = null;
+//	public Object currParam = null;
 	
-	protected Store group = new Store();
+	protected Store<Store<Object>> group = new Store<Store<Object>>();
 	protected int maxBackCount = 10;
 	protected JwOnGroupSelect onGroupSelect;
 	private boolean isHistory = false; 
@@ -42,9 +42,14 @@ public class JwGroup {
 	}
 	
 	public void add(String name, View click_view){
-		Store temp = new Store();
+		add(name, click_view,null);
+	}
+	
+	public void add(String name, View click_view, Object param){
+		Store<Object> temp = new Store<Object>();
 		temp.add("name", name);
 		temp.add("view", click_view);
+		temp.add("param", param);
 		group.add(name, temp);
 		click_view.setOnClickListener(new GroupOnClickListener(name));
 	}
@@ -58,7 +63,24 @@ public class JwGroup {
 		if(name==null){
 			return null;
 		}
-		Store temp = (Store)group.get(name);
+		Store<Object> temp = getViewStore(name);
+		if(temp!=null){
+			return (View)temp.get("view");
+		}else{
+			return null;
+		}
+	}
+	public String getName(int index){
+		Store<Object> temp = getViewStore(index);
+		if(temp!=null){
+			return (String)temp.get("name");
+		}else{
+			return null;
+		}
+	}
+	
+	public View getView(int index){
+		Store<Object> temp = getViewStore(index);
 		if(temp!=null){
 			return (View)temp.get("view");
 		}else{
@@ -66,6 +88,44 @@ public class JwGroup {
 		}
 	}
 	
+	public Store<Object> getViewStore(int index){
+		Store<Object> temp = group.getValue(index);
+		return temp;
+	}
+	
+	public Store<Object> getViewStore(String name){
+		Store<Object> temp = (Store<Object>)group.get(name);
+		return temp;
+	}
+	
+	public void setParam(int index, Object param){
+		Store<Object> temp = getViewStore(index);
+		temp.add("param", param);
+	}
+	
+	public void setParam(String name, Object param){
+		Store<Object> temp = getViewStore(name);
+		temp.add("param", param);
+	}
+	
+	
+	public Object getParam(int index){
+		Store<Object> temp = getViewStore(index);
+		if(temp!=null){
+			return temp.get("param");
+		}else{
+			return null;
+		}
+	}
+	public Object getParam(String name){
+		Store<Object> temp = getViewStore(name);
+		if(temp!=null){
+			return temp.get("param");
+		}else{
+			return null;
+		}
+	}
+		
 	public View getCurrentView(){
 		return getView(getCurrentName());
 	}
@@ -75,7 +135,7 @@ public class JwGroup {
 		switch (motion) {
 		case CLICK:
 			for(int i=0;i<keys.length;i++){
-				Store temp = (Store)group.get(keys[i]);
+				Store<Object> temp = (Store<Object>)group.get(keys[i]);
 				View click_view = (View)temp.get("view");
 				click_view.setOnClickListener(new GroupOnClickListener(keys[i]));
 				click_view.setOnTouchListener(null);
@@ -102,17 +162,19 @@ public class JwGroup {
 				if(maxBackCount <= history.size()){
 					history.remove(0);
 				}
-				history.push(new HistoryInfo(currView, currParam));
+				history.push(new HistoryInfo(currView, param));
 			}
 		}
 		currView = name;
-		currParam = param;
 		for(int i=0;i<group.size();i++){
-			Store temp = (Store)group.getValue(i);
+			Store<Object> temp = (Store<Object>)group.getValue(i);
 			String tempName =(String)temp.get("name");
 			View view =(View)temp.get("view");
+			Object vparam = temp.get("param");
 			if(onGroupSelect!=null){
 				if(name.equals(tempName)){
+					if(param==null)
+						param = vparam;
 					onGroupSelect.selected(view, name, i, param);
 				}else{
 					onGroupSelect.deselected(view, name, i, param);
@@ -120,7 +182,7 @@ public class JwGroup {
 			}
 		}
 	}
-
+	
 	public void select(String name, Object param){
 		select(name, param, isHistory);
 	}
@@ -133,12 +195,12 @@ public class JwGroup {
 	}
 	
 	public void select(int index, Object param){
-		Store temp = (Store)group.getValue(index);
+		Store<Object> temp = (Store<Object>)group.getValue(index);
 		select(temp.getString("name"),param);
 	}
 	
 	public void select(int index, Object param, boolean pushHistory){
-		Store temp = (Store)group.getValue(index);
+		Store<Object> temp = (Store<Object>)group.getValue(index);
 		select(temp.getString("name"), param, pushHistory);
 	}
 	
