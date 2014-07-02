@@ -142,14 +142,14 @@ public class PieLayout extends FrameLayout{
 		for(int i=0;i<arcs.size();i++){
 			Arc arc = (Arc)arcs.get(i);
 			arc.setStrokSize(getStrokSize());
-			arc.setSize(this.getWidth(), this.getHeight(),this.arcMargin);
-			arc.draw(canvas);
 			if(!isInitpieSkin){
 				for(int j=0;j<pieSkin.size();j++){
 					pieSkin.get(j).init(this);
 				}
 				isInitpieSkin = true;
 			}
+			arc.setSize(this.getWidth(), this.getHeight(),this.arcMargin);
+			arc.draw(canvas);
 			for(int j=0;j<pieSkin.size();j++){
 				pieSkin.get(j).draw(this, canvas, startAngle, maxAngle, arc.start, arc.end, i);
 			}
