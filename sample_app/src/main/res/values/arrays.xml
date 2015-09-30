@@ -1,0 +1,184 @@
+<resources>
+	<!-- 로그인 -->
+	<string-array name="login_result">
+		<item>0,성공</item>
+		<item>1,아이디 미존재</item>
+		<item>2,패스워드 불일치</item>
+	</string-array>
+
+	<!-- 혈당 측정 시점 -->
+	<string-array name="measure_point">
+		<item>10101001,아침식전</item>
+		<item>10101002,아침식후</item>
+		<item>10101003,점심식전</item>
+		<item>10101004,점심식후</item>
+		<item>10101005,저녁식전</item>
+		<item>10101006,저녁식후</item>
+		<item>10101007,취침전</item>
+		<item>10101008,운동전</item>
+<!-- 		<item>10101009,운동후</item>
+		<item>10101010,새벽</item>
+		<item>10101011,간식</item> -->
+		<item>10101012,기타</item> -->
+		<!-- <item>10101901,상관없음</item> -->
+	</string-array>
+
+	<!-- 주간 피드백 아이콘 -->
+	<string-array name="week_feedback_icon">
+		<item>U,상승 아이콘</item>
+		<item>P,긍정적 아이콘</item>
+		<item>W,경고성 아이콘</item>
+	</string-array>
+
+	<!-- 투약(복용) 시점 시점 -->
+	<string-array name="inject_drug_point">
+		<item>10101001,아침식전</item>
+		<item>10101002,아침식후</item>
+		<item>10101003,점심식전</item>
+		<item>10101004,점심식후</item>
+		<item>10101005,저녁식전</item>
+		<item>10101006,저녁식후</item>
+		<item>10101007,취침전</item>
+	</string-array>
+
+	<!-- 연락시간 -->
+	<string-array name="receive_time">
+		<item>30,30분 후</item>
+		<item>60,1시간 후</item>
+		<item>120,2시간 후</item>
+		<item>180,3시간 후</item>
+	</string-array>
+
+	<!-- 운동목표 코드 -->
+	<string-array name="exercise_goal_code">
+		<item>10302001,활동량</item>
+		<item>10302002,활동량+운동계획</item>
+		<item>10302003,활동량+처방운동</item>
+	</string-array>
+
+	<!-- 운동처방 타입 -->
+	<string-array name="exercise_type">
+		<item>A,AT 운동</item>
+		<item>C,권장 처방 운동</item>
+	</string-array>
+
+	<!-- 운동관리 목표걸음 수정 리스트 -->
+	<string-array name="exercise_goal_step_array">
+		<item>5000</item>
+		<item>6000</item>
+		<item>7000</item>
+		<item>8000</item>
+		<item>9000</item>
+		<item>10000</item>
+		<item>12000</item>
+		<item>15000</item>
+		<item>20000</item>
+	</string-array>
+	
+	<!-- 운동 카테고리 추가 - 왼쪽 메뉴 -->
+	<string-array name="exercise_category_array">
+	    <!-- <item>003,최근\n추가운동</item> -->
+		<item>00307500,팔/어깨</item>
+		<item>00307100,상체</item>
+		<item>00307200,몸통</item>
+		<item>00307300,하체</item>
+		<item>00307400,전신</item>
+		<item>00302002,유연성</item>
+		<item>00302003,유산소</item>
+		<item>00302004,생활체육</item>
+	</string-array>
+	
+	<!-- 권장운동 카테고리 추가 - 왼쪽 메뉴 -->
+	<string-array name="exercise_recommand_category_array">
+	    <item>00307500,팔/어깨</item>
+		<item>00307100,상체</item>
+		<item>00307200,몸통</item>
+		<item>00307300,하체</item>
+		<item>00307400,전신</item>
+		<item>00302002,유연성</item>
+		<item>00302003,유산소</item>
+		<item>00302004,생활체육</item>
+	</string-array>
+	
+	<!-- 처방운동 카테고리 메뉴 추가 -->
+	<string-array name="exercise_prescription_category_array">
+	    <item>00302001,근력</item>
+		<item>00302002,유연성</item>
+		<item>00302003,유산소</item>
+		<item>00302005,운동\n동영상</item>
+	</string-array>
+	
+	<!-- 운동 상세 - 유산소: 걷기, 뛰기 종류 -->
+	<string-array name="exercise_aerobic_array">
+	    <item>천천히 걷기</item>
+		<item>보통 걷기</item>
+		<item>빠르게 걷기</item>
+		<item>가벼운 조깅</item>
+		<item>천천히 뛰기</item>
+		<item>보통 뛰기</item>
+		<item>빠르게 뛰기</item>
+	</string-array>
+	
+	<!-- 운동상세 - 유산소: 걷기, 뛰기 기준값 -->
+	<string-array name="exercise_aerobic_value_array">
+	    <item>2.5</item>
+		<item>3.0</item>
+		<item>4.0</item>
+		<item>5.0</item>
+		<item>6.0</item>
+		<item>8.0</item>
+		<item>10.0</item>
+	</string-array>
+	
+	<!-- 마이페이지 1:1문의-문의분야 -->
+	<string-array name="myapge_question_field">
+		<!-- <item>00803005,서비스 상담</item> -->
+		<item>00803006,App사용</item>
+		<item>00803007,혈당기 관련</item>
+		<item>00803008,활동량계 관련</item>
+		<item>00803009,프로그램 관련</item>
+		<item>00803010,기타</item>		
+		
+	</string-array>
+	<!-- sns 메인 -->
+	<string-array name="sns_post_main_array">
+	    <item>A,모든 게시글</item>
+	    <item>M,나의 게시글</item>
+	    <item>P,인기 게시글</item>
+	    <item>E,운영진 게시글</item>
+	    <item>H,의료진 게시글</item>
+	</string-array>
+	
+	<!-- 요일 -->
+	<string-array name="day_of_the_week_kor_array">
+	    <item>일</item>
+	    <item>월</item>
+	    <item>화</item>
+	    <item>수</item>
+	    <item>목</item>
+	    <item>금</item>
+	    <item>토</item>
+	</string-array>
+	
+	<!-- 혈당 피드백 타입 -->
+	<string-array name="feedbackType">
+	    <item>hypo-for-AB,혈당이 낮습니다. 손에 땀이나고 가슴이 두근거리거나 어지러운 증상이 있나요?</item>
+	    <item>hypo-for-CD,혈당이 낮습니다. 손에 땀이나고 가슴이 두근거리거나 어지러운 증상이 있나요?</item>
+	    <item>hypo-for-AB-call,자세한 상태를 점검하기 위해 의료진과 연결됩니다.</item>
+	    <item>hypo-for-CD-retry,아직 혈당이 회복되지 않았군요! 당질 15g을 다시한번 섭취하시고 섭취한 음식을 클릭하세요.</item>
+	    <!-- <item>hypo-for-CD-fail,혈당이 회복되지 않는군요! 잠시 안전한 곳에서 휴식하세요. 원인을 파악하고 관리에 도움이 되도록 의료진과 연결합니다.</item> -->
+	    <item>hypo-for-CD-fail,아직 혈당이 회복되지 않았군요! 당질 15g을 다시한번 섭취하시고 섭취한 음식을 클릭하세요.</item>
+	    <item>near-hypo-snack-bed,혈당이 정상범위이나 내일 아침 저혈당의 가능성이 있는 수준입니다. 간식 섭취 후 수면을 취하는 것이 좋습니다. 다음중 선택하여 섭취 후 클릭하세요.</item>
+	    <item>near-hypo-snack-exercise,정상 중 낮은 수치로 운동 중 저혈당 위험이 있습니다. 간식 섭취 후 운동하시는 것이 안전합니다. 다음 중 선택하여 섭취 후 클릭하세요.</item>
+	    <item>danger-when-normal,혈당이 위험수준이군요! 수분 섭취를 충분히 하시고 휴식을 취하십시요. 콜센터로 지금 연결됩니다</item>
+	    <item>danger-when-fasting,연속 3일간 공복혈당이 높아 원인을 파악하고 관리에 도움이 되도록 의료진과 연결합니다.</item>
+	    <item>danger-when-bed,혈당이 위험 수준 이군요! 수분 섭취를 충분히 하시고 편안히 휴식을 취하다 주무세요. 내일 오전에 콜센터에서 연락 드리겠습니다.</item>
+	    <item>danger-when-exercise,혈당이 위험 수준이군요! 운동을 피하고 편안한 곳에서 수분 섭취를 충분히 하시고 잠시 휴식하세요. 콜센터로 지금 연결됩니다.</item>
+	    <item>danger-when-fasting_d_type_6step_up,연속 3일간 공복혈당이 높아 원인을 파악하고 관리에 도움이 되도록 의료진과 연결 합니다. 
+	        그리고 인슐린 용량을 6단위 증가하여 주사하세요.</item>
+	    <item>danger-when-fasting_d_type_7step_up,연속 3일간 공복혈당이 높아 원인을 파악하고 관리에 도움이 되도록 의료진과 연결 합니다. 
+	        그리고 인슐린 용량을 7단위 증가하여 주사하세요.
+	        </item>
+	</string-array>
+
+</resources>

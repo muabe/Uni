@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright(C) 2010-2010 RabiSoft -->
+<!-- GNU Lesser General Public License -->
+<resources>
+	<declare-styleable name="SlideSwitch">
+	    <attr name="orientation">
+	        <enum name="horizontal" value="0" />
+	        <enum name="vertical" value="1" />
+	    </attr>
+    </declare-styleable>
+    
+	<declare-styleable name="Switch">
+	    <attr name="checked" format="boolean" />
+	    <attr name="text" format="string" />
+    </declare-styleable>
+</resources>

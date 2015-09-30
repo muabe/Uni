@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/data1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#00ff00"
+            android:text="data1"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+        <TextView android:id="@+id/data2" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="#00ff00" android:text="data2"
+                  android:textAppearance="?android:attr/textAppearanceLarge"/>
+        <TextView android:id="@+id/data3" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="#00ff00" android:text="data3"
+                  android:textAppearance="?android:attr/textAppearanceLarge"/>
+        <TextView android:id="@+id/data4" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="#00ff00" android:text="data4"
+                  android:textAppearance="?android:attr/textAppearanceLarge"/>
+        <TextView android:id="@+id/data5" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="#00ff00" android:text="data5"
+                  android:textAppearance="?android:attr/textAppearanceLarge"/>
+        <TextView android:id="@+id/data6" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="#00ff00" android:text="data6"
+                  android:textAppearance="?android:attr/textAppearanceLarge"/>
+        <TextView android:id="@+id/data7" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="#00ff00" android:text="data7"
+                  android:textAppearance="?android:attr/textAppearanceLarge"/>
+        <TextView android:id="@+id/data8" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="#00ff00" android:text="data8"
+                  android:textAppearance="?android:attr/textAppearanceLarge"/>
+    </LinearLayout>
+
+
+</LinearLayout>
