@@ -894,16 +894,21 @@ public class Viewer {
 		return builder;
 	}
 
+	public static ViewerBuilder build(Class<? extends Viewer> jwViewerClass, Dialog dialog){
+		ViewerBuilder builder = new ViewerBuilder(jwViewerClass, dialog);
+		return builder;
+	}
+
     public static ViewerBuilder build(Class<? extends Viewer> jwViewerClass, Viewer viewer){
-        ViewerBuilder builder;
-        if(viewer.builder.mode.equals(ViewerBuilder.TYPE_MODE.ACTIVITY)){
-            return new ViewerBuilder(jwViewerClass, viewer.getActivity());
-        }else if(viewer.builder.mode.equals(ViewerBuilder.TYPE_MODE.DIALOG)){
-            return new ViewerBuilder(jwViewerClass, viewer.getDialog());
-        }else{
-            return null;
-        }
-    }
+		ViewerBuilder builder;
+		if(viewer.builder.mode.equals(ViewerBuilder.TYPE_MODE.ACTIVITY)){
+			return new ViewerBuilder(jwViewerClass, viewer.getActivity());
+		}else if(viewer.builder.mode.equals(ViewerBuilder.TYPE_MODE.DIALOG)){
+			return new ViewerBuilder(jwViewerClass, viewer.getDialog());
+		}else{
+			return null;
+		}
+	}
 
 
 
