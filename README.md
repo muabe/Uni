@@ -142,7 +142,7 @@ public void onPost(int requestCode) {
 Viewer는 Injection, method binding을 Annotation으로 지원하여  쉽고 빠르게
 UI Manipulation을 하도록 도와 줍니다.
 
-- [기존]
+- 기존
 
  ```java
 public class Main extends Activity{
