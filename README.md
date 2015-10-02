@@ -20,8 +20,8 @@ dependencies {
 
 
 <br>
-Uni Framework
-========
+#Uni Framework
+
 Activity와 Flagement의 onCreate() 메소드 안에 복잡하고 지저분한 코드들을 볼수 있습니다.<br>
 또한 Layout이 어디서 구현되어 있는지 소스코드를 이리저리 찾는것을 경험하게 됩니다.<br>
 
@@ -46,7 +46,7 @@ Uni 에는 다음과 같은 기능으로 개발 생산성을 향상시켜줍니�
  - 내부 코드분리
  - Code Less를 위한 Annotation 지원
 
-###동적 화면구성
+##동적 화면구성
  Fragment와 같은 방식으로 UI를 Replace하는 방식과 동일합니다.<br>
 하지만 Uni는 여러개의 화면을 구성하는데 있어서 매우 빠르고 쉽습니다.<br>
 Replace가 수행할때 비동기 방식으로 화면을 불러들일수 있으며 화면을 쉽게 구현하기 위한 많은 내부 함수들이 있습니다.<br>
@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
 ```
 
 
-###화면 재활용
+##화면 재활용
 
  화면을 재활용하기 위해 Layout을 분리하게 됩니다. 하지만 Layout을 구현하는 code는 Activity, Flagement에 의존적이여서 class를 구성하는데 어려움을 겪습니다.
 > 화면별 class 분리를 위해 Activity, Flagement를 반드시 참조해야한다.
