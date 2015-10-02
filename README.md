@@ -40,10 +40,11 @@ public class MainViewer extends Viewer{
 ```
 
 - 화면 재활용
+
  화면을 재활용하기 위해 Layout을 분리하게 됩니다. 하지만 Layout을 구현하는 code는 Activity, Flagement에 의존적이여서 class를 구성하는데 어려움을 겪습니다.
 > 화면별 class 분리를 위해 Activity, Flagement를 반드시 참조해야한다.
 
-Uni는 layout에 해당하는 업무를 완변히 분리해줍니다.<br>
+ Uni는 layout에 해당하는 업무를 완변히 분리해줍니다.<br>
 기존에 분리가 어려웠던 이유는 Activity, Flagement의 리소스를 사용할수 없기 때문입니다.<br>
 Uni에서는 기존에 동일한 패턴으로 리소스를 사용할수 있게 해줍니다.
 ```java
