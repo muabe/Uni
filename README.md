@@ -1,3 +1,11 @@
+
+안드로이드를 개발하다 보면 굉장히 어려운 UI Manipulation을 겪게 됩니다.<br>
+특히 Thread사용후 UI 화면전환은 개발에 큰 걸림돌이 되곤 합니다.<br>
+개발자에게 복잡한 GUI는 비지니스 로직에 투자할 시간을 GUI 코딩에 허비하게 만듭니다.<br>
+우리는 좀더 개발 생산성을 위해 새로운 패턴이 필요합니다.
+
+
+<br>
 ### Gradle
 ```
 repositories {
@@ -10,10 +18,6 @@ dependencies {
 }
 ```
 
-안드로이드를 개발하다 보면 굉장히 어려운 UI Manipulation을 겪게 됩니다.<br>
-특히 Thread사용후 UI 화면전환은 개발에 큰 걸림돌이 되곤 합니다.<br>
-개발자에게 복잡한 GUI는 비지니스 로직에 투자할 시간을 GUI 코딩에 허비하게 만듭니다.<br>
-우리는 좀더 개발 생산성을 위해 새로운 패턴이 필요합니다.
 
 <br>
 Uni Framework
@@ -21,10 +25,10 @@ Uni Framework
 Activity와 Flagement의 onCreate() 메소드 안에 복잡하고 지저분한 코드들을 볼수 있습니다.<br>
 또한 Layout이 어디서 구현되어 있는지 소스코드를 이리저리 찾는것을 경험하게 됩니다.<br>
 Uni는 Layout과 Class를 하나로 묶어주고 각각의 화면에 소스코드를 정의하는 패턴을 사용합니다.<br>
-Layout과 매핑되는 Class를 정의하고 각각의 업무를 구현합니다.<br>
 Uni는 여러개로 분리된 Layout들이 독립적으로 자기의 할일을 수행하는 방식을 말합니다.<br>
+다시말해 Layout에 해당하는 Class를 매핑하고 화면별로 업무를 정의합니다. <br>
 
-Uni에서는 Layout과 매핑되는 Class를 Viewer라고 합니다.<br>
+> Uni에서는 Layout과 매핑되는 Class를 Viewer라고 합니다.
 ```java
 @Layout(R.layout.main)
 public class MainViewer extends Viewer{
@@ -37,6 +41,7 @@ public class MainViewer extends Viewer{
 - 화면 재활용
  화면을 재활용하기 위해 Layout을 분리하게 됩니다. 하지만 Layout을 구현하는 code는 Activity, Flagement에 의존적이여서 class를 구성하는데 어려움을 겪습니다.
 > 화면별 class 분리를 위해 Activity, Flagement를 반드시 참조해야한다.
+Uni는 
 
 
 
