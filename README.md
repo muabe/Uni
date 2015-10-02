@@ -24,27 +24,36 @@ Uni Framework
 ========
 Activity와 Flagement의 onCreate() 메소드 안에 복잡하고 지저분한 코드들을 볼수 있습니다.<br>
 또한 Layout이 어디서 구현되어 있는지 소스코드를 이리저리 찾는것을 경험하게 됩니다.<br>
+
 Uni는 Layout과 Class를 하나로 묶어주고 각각의 화면에 소스코드를 정의하는 패턴을 사용합니다.<br>
 Uni는 여러개로 분리된 Layout들이 독립적으로 자기의 할일을 수행하는 방식을 말합니다.<br>
 다시말해 Layout에 해당하는 Class를 매핑하고 화면별로 업무를 정의합니다. <br>
-
 > Uni에서는 Layout과 매핑되는 Class를 Viewer라고 합니다.
+
 ```java
 @Layout(R.layout.main)
 public class MainViewer extends Viewer{
 	public void onPost(int requestCode){
-		// 해당화면 업무 수행
+		// 해당 화면업무 수행
 	}
 }
 ```
 
-- 화면 재활용
+### 화면 재활용
  화면을 재활용하기 위해 Layout을 분리하게 됩니다. 하지만 Layout을 구현하는 code는 Activity, Flagement에 의존적이여서 class를 구성하는데 어려움을 겪습니다.
 > 화면별 class 분리를 위해 Activity, Flagement를 반드시 참조해야한다.
-Uni는 
 
-
-
+Uni는 layout에 해당하는 업무를 완변히 분리해줍니다.<br>
+기존에 분리가 어려웠던 이유는 Activity, Flagement의 리소스를 사용할수 없기 때문입니다.<br>
+Uni에서는 기존에 동일한 패턴으로 리소스를 사용할수 있게 해줍니다.
+```java
+@Layout(R.layout.main)
+public class MainViewer extends Viewer{
+	public void onPost(int requestCode){
+		TextView text = (TextView)findById(R.id.text);
+	}
+}
+```
 
 
 
