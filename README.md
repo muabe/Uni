@@ -143,9 +143,9 @@ public void onPost(int requestCode) {
 Viewer는 Injection, method binding을 Annotation으로 지원하여  쉽고 빠르게
 UI Manipulation을 하도록 도와 줍니다.
 
-#### [기존]
+- [기존]
 
-```java
+ ```java
 public class Main extends Activity{
 	private TextView text;
 	private Button btn1;
@@ -167,11 +167,11 @@ public class Main extends Activity{
 	}
 }
 
-```
+ ```
 
-#### [Uni]
+- Uni
 
-```java
+ ```java
 @Layout(R.layout.main)
 public class MainViewer extends Viewer {
 	@GetView TextView text;
@@ -182,7 +182,7 @@ public class MainViewer extends Viewer {
 	}
 }
 
-```
+ ```
 
 
 
@@ -190,7 +190,7 @@ public class MainViewer extends Viewer {
 
 
 
-
+<br><br><br><br><br>
 ===================
 
 Uni 에는 다음과 같은 기능들이 있습니다.
