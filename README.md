@@ -1,6 +1,4 @@
-# Uni
-
-#### Gradle
+### Gradle
 ```
 repositories {
     jcenter()
@@ -8,24 +6,70 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.JaeWoongOh:Uni:0.5'
+    compile 'com.github.JaeWoongOh:Uni:+'
 }
 ```
 
+안드로이드를 개발하다 보면 굉장히 어려운 UI Manipulation을 겪게 됩니다.<br>
+특히 Thread사용후 UI 화면전환은 개발에 큰 걸림돌이 되곤 합니다.<br>
+개발자에게 복잡한 GUI는 비지니스 로직에 투자할 시간을 GUI 코딩에 허비하게 만듭니다.<br>
+우리는 좀더 개발 생산성을 위해 새로운 패턴이 필요합니다.
+
 Uni Framework
 ========
-안드로이드를 개발하다 보면 굉장히 어려운 UI Manipulation을 겪게 됩니다.<br>
-특히 AsyncTask와 UI 화면전환은 개발에 큰 걸림돌이 되곤 합니다.<br>
-개발자에게 복잡한 GUI는 비지니스 로직에 투자할 시간을 GUI 코딩에 허비하게 만듭니다.<br>
+Layout이 어디서 구현되어 있는지 소스코드를 이리저리 찾는것을 누구나 겪어 보았을것 입니다.<br>
+Uni는 Layout과 Class를 하나로 묶어주고 각각의 화면에 소스코드를 정의하는 패턴을 사용합니다.<br>
+Uni에서는 Layout과 매핑되는 Class를 Viewer라고 합니다.<br>
+Viewer는 Layout이 정의하는데 필요한 많은 기능들을 제공합니다.<br>
+Viewer는 Async한 화면을 구성하기 위한 Thread가 내장되어 있으며 
 
-### dd
 
 Uni 에는 다음과 같은 기능들이 있습니다.
-- Less Code
 - Quick and easy UI Manipulation
+- Less Code
 - Convenient Async Callback
 - Binding
 - Support multiple versions
+
+##Quick and easy UI Manipulation
+현실적으로 GUI 개발에 있어서 안드로이드는 매우 취약합니다. <br>
+전체적인 layout 구조와 설계와 이벤트에 따른 동적 화면을 표현 하기가 쉽지 않습니다.<br> 
+XML Layout을 구현하는 code는 Activity, Flagement 등에 의존적이여서 code의 분류와 구성또한 어렵습니다.<br>
+Uni는 Activity, Flagement에 영향을 받지 않아 code를 화면별 조각인 Viewer로 분류하고 
+Viewer를 조합하여 새로운 화면을 구성합니다.
+하나의 Layout에 필요한 Viewer를 조합하여 동적으로 바인딩하는것을 기본으로 합니다.<br>
+이런점은 이벤트나 특정 상황에서 쉽게 동적인 표현을 할수 있게 해줍니다.<br>
+다시말해 컴퍼넌트 형식 처리로 Layout에 전체가 아닌 특정 부분만 바인딩하여
+시스템 자원과 개발 시간을 단축할 수 있습니다.<br>
+여기에 Viewer에 내장된 Injection, Async init, method binding 기능은 쉽고 빠르게
+UI Manipulation을 하도록 도와 줍니다.
+
+##Convenient Async UI Manipulation<br>
+Viewer는 바인딩 되기전 AsyncTask를 수행할수 있는 기능을 지원합니다.<br>
+Viewer 내부의 loading 메소드를 재정의 함으로써 쉽게 AsyncTask를 사용할수 있으며
+AsyncTask가 수행하는 동안 Viewer load 화면을 설정 할수 있습니다.
+
+[채팅 화면을 Async로 갱신하는 예제]
+```java
+.... 
+//Async로 화면 바인딩
+getViewer(R.layout.sub,Test.class).change(ParentsView);
+....
+
+//바인딩을 받는 Viewer
+public class Test extends Viewer{
+	@Override
+	public boolean onLoading() {
+		/* 네트워크 및 Thread 작업 실행 */
+		setLoadingParameter("say", "What's up?");//결과 설정
+		return true;
+	}
+	@Override
+	public void onPost() {
+		TextView(R.id.say_text).setText((String)getLoadingParameter("say"));
+	}
+}
+```
 
 ##Less Code
 View Injection 을 활용할수 있는 Annotion과 UI Controller를 이용하면
@@ -101,7 +145,7 @@ ex) 아래는 같은 동일한 역할을 하는 소스코드 비교 예제입니
 	
   [Uni]
  ```java
-	public class MainViewer extends JwViewer{
+	public class MainViewer extends Viewer{
 		@getViewClick Button btn1; // Annotion injection
 		@getViewClick Button btn2;
 		@getViewClick Button btn3
@@ -126,49 +170,6 @@ ex) 아래는 같은 동일한 역할을 하는 소스코드 비교 예제입니
 		}
 	}
 ```
-
-##Quick and easy UI Manipulation
-현실적으로 GUI 개발에 있어서 안드로이드는 매우 취약합니다. <br>
-원하는 디자인과 구성을 위해때론 많을 시간을 소비해야할 때가 많습니다.<br>
-기본 View에 복잡한 디자인 적용이 어렵고 이벤트에 따른 동적 화면을 표현 하기가 쉽지 않습니다.<br> 
-XML Layout을 구현하는 code는 Activity, Flagement 등에 의존적이여서 code의 분류와 구성또한 어렵습니다.<br>
-Uni는 Activity, Flagement에 영향을 받지 않아 code를 화면별 조각인 Viewer로 분류하고 
-Viewer를 조합하여 새로운 화면을 구성합니다.
-하나의 Layout에 필요한 Viewer를 조합하여 동적으로 바인딩하는것을 기본으로 합니다.<br>
-이런점은 이벤트나 특정 상황에서 쉽게 동적인 표현을 할수 있게 해줍니다.<br>
-다시말해 컴퍼넌트 형식 처리로 Layout에 전체가 아닌 특정 부분만 바인딩하여
-시스템 자원과 개발 시간을 단축할 수 있습니다.<br>
-여기에 Viewer에 내장된 Injection, Async init, method binding 기능은 쉽고 빠르게
-UI Manipulation을 하도록 도와 줍니다.
-
-##Convenient Async UI Manipulation<br>
-Viewer는 바인딩 되기전 AsyncTask를 수행할수 있는 기능을 지원합니다.<br>
-Viewer 내부의 loading 메소드를 재정의 함으로써 쉽게 AsyncTask를 사용할수 있으며
-AsyncTask가 수행하는 동안 Viewer load 화면을 설정 할수 있습니다.
-
-[채팅 화면을 Async로 갱신하는 예제]
-```java
-.... 
-//Async로 화면 바인딩
-getViewer(R.layout.sub,Test.class).change(ParentsView);
-....
-
-//바인딩을 받는 Viewer
-public class Test extends JwViewer{
-	@Override
-	public boolean loading() {
-		/* 네트워크 및 Thread 작업 실행 */
-		setLoadingParameter("say", "What's up?");//결과 설정
-		return true;
-	}
-	@Override
-	public void view_init() {
-		TextView(R.id.say_text).setText((String)getLoadingParameter("say"));
-	}
-}
-```
-
-
 
 ##Binding
 Uni를 사용하면 Listener를 사용하기 편리해 집니다. <br>
