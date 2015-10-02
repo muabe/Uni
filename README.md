@@ -42,11 +42,11 @@ public class MainViewer extends Viewer{
 }
 ```
 
-Uni 에는 다음과 같은 기능으로 개발 생산성을 향상시켜줍니다.
+Uni 에는 다음과 같은 내용으로 개발 생산성을 향상시켜줍니다.
  - 동적 화면 구성
  - 화면 재활용
  - 비동기 지원
- - 내부 코드분리
+ - 업무별 기능 분리
  - Code Less를 위한 Annotation 지원
 
 <br>
@@ -61,7 +61,9 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity);
-		Viewer.build(MainViewer.class, this).change(R.id.frame);
+		Viewer.build(MainViewer.class, this)
+			.addParam("param1","hello").addParam("param2","world") //파라미터를 쉽게 전달할수 있음
+			.change(R.id.frame);
 	}
 }
 ```
@@ -84,17 +86,20 @@ public class MainViewer extends Viewer{
 }
  ```
 
-###비동기 지원
+<br>
+##비동기 지원
 
  Viewer는 네트워크 등 비동기 화면을 구성하기 위한 Thread가 내장되어 있습니다.<br>
 AsyncTask와 같은 패턴으로 구현되어 있어 개발 접근성이 매우 높습니다.<br>
-이로써 
+
+Viewer가 화면에 add될때 Background 작업을 할수 있는 onLoad()를 함수를 제공되어 별도의 Thread를 구현할 필요가 없습니다.
  ```java
 @Layout(R.layout.main)
 public class MainViewer extends Viewer{
     public boolean onLoad(int requestCode, UpdateEvent event) {
 	//통신후 결과 저장
 	addParam("result", resultClass);
+	return true;
     }
     public void onPost(int requestCode) {
     	//결과에 대한 UI 구성
@@ -102,7 +107,88 @@ public class MainViewer extends Viewer{
     }
 }
  ```
+ 
 
+ 
+<br> 
+##업무별 기능 분리
+화면 refresh하거나 기능별 화면을 구성할때 requestCode로 구분하여 기능을 분리 할수 있습니다.<br>
+이처럼 업무별 기능을 분리함으로써 코드 재활용 및 간결한 코드패턴이 가능합니다.
+```java
+ public boolean onLoad(int requestCode, UpdateEvent event) {
+
+	 switch (requestCode){
+    		case 1:
+    			//A 업무 통신
+    		case 2:
+    			//B 업무 통신
+    	}
+    	//결과 저장
+	addParam("result", resultClass);
+	return true;
+}
+	
+public void onPost(int requestCode) {
+    	resultClass = getParam("result");
+    	switch (requestCode){
+    		case 1:
+    			//A 화면 기능정의
+    		case 2:
+    			//B 화면 기능정의
+	}
+}
+```
+
+##Code Less를 위한 Annotation 지원
+Viewer는 Injection, method binding을 Annotation으로 지원하여  쉽고 빠르게
+UI Manipulation을 하도록 도와 줍니다.
+>[기존]
+```java
+public class Main extends Activity{
+	private TextView text;
+	private Button btn1;
+	private Button btn2;
+	private Button btn3;
+	private Button subActivity;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity);
+		text = (TextView)findById(R.id.text);
+		btn1 = (Button)findById(R.id.btn1);
+		btn2 = (Button)findById(R.id.btn2);
+		btn3 = (Button)findById(R.id.btn3);
+		subActivity = (Button)findById(R.id.subActivity);
+		
+		text.setText("hello");
+	}
+}
+
+```
+
+>[Uni]
+```java
+@Layout(R.layout.main)
+public class MainViewer extends Viewer {
+	@GetView TextView text;
+	@GetView Button btn1, btn2, btn3, subActivity;
+	
+	public void onPost(int requestCode){
+		text.setText("hello");
+	}
+}
+
+```
+
+
+
+
+
+
+
+
+===================
 
 Uni 에는 다음과 같은 기능들이 있습니다.
 - Quick and easy UI Manipulation
@@ -139,7 +225,7 @@ getViewer(R.layout.sub,Test.class).change(ParentsView);
 //바인딩을 받는 Viewer
 public class Test extends Viewer{
 	@Override
-	public boolean onLoading() {
+	public boolean onLoad() {
 		/* 네트워크 및 Thread 작업 실행 */
 		setLoadingParameter("say", "What's up?");//결과 설정
 		return true;
