@@ -28,7 +28,10 @@ Activity와 Flagement의 onCreate() 메소드 안에 복잡하고 지저분한 �
 Uni는 Layout과 Class를 하나로 묶어주고 각각의 화면에 소스코드를 정의하는 패턴을 사용합니다.<br>
 Uni는 여러개로 분리된 Layout들이 독립적으로 자기의 할일을 수행하는 방식을 말합니다.<br>
 다시말해 Layout에 해당하는 Class를 매핑하고 화면별로 업무를 정의합니다. <br>
-> Uni에서는 Layout과 매핑되는 Class를 Viewer라고 합니다.
+
+Uni에서는 Layout과 매핑되는 Class를 Viewer라고 합니다.<br>
+Viewer방식으로 화면별/기능별로 Viewer를 분류하므로써 기존코드를 활용하고
+간결하며 직관적인 코드로 관리할수 있습니다.<br>
 
 ```java
 @Layout(R.layout.main)
@@ -46,6 +49,7 @@ Uni 에는 다음과 같은 기능으로 개발 생산성을 향상시켜줍니�
  - 내부 코드분리
  - Code Less를 위한 Annotation 지원
 
+<br>
 ##동적 화면구성
  Fragment와 같은 방식으로 UI를 Replace하는 방식과 동일합니다.<br>
 하지만 Uni는 여러개의 화면을 구성하는데 있어서 매우 빠르고 쉽습니다.<br>
@@ -62,7 +66,7 @@ public class MainActivity extends Activity {
 }
 ```
 
-
+<br>
 ##화면 재활용
 
  화면을 재활용하기 위해 Layout을 분리하게 됩니다. 하지만 Layout을 구현하는 code는 Activity, Flagement에 의존적이여서 class를 구성하는데 어려움을 겪습니다.
