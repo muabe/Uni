@@ -15,12 +15,30 @@ dependencies {
 개발자에게 복잡한 GUI는 비지니스 로직에 투자할 시간을 GUI 코딩에 허비하게 만듭니다.<br>
 우리는 좀더 개발 생산성을 위해 새로운 패턴이 필요합니다.
 
+<br>
 Uni Framework
 ========
-Layout이 어디서 구현되어 있는지 소스코드를 이리저리 찾는것을 누구나 겪어 보았을것 입니다.<br>
+Layout이 어디서 구현되어 있는지 소스코드를 이리저리 찾는것을 경험하게 됩니다.<br>
 Uni는 Layout과 Class를 하나로 묶어주고 각각의 화면에 소스코드를 정의하는 패턴을 사용합니다.<br>
 Uni에서는 Layout과 매핑되는 Class를 Viewer라고 합니다.<br>
-Viewer는 Layout이 정의하는데 필요한 많은 기능들을 제공합니다.<br>
+Viewer는 여러개로 분리된 Layout들이 독립적으로 자기의 할일을 수행하는 방식을 말합니다.
+```java
+@Layout(R.layout.main)
+public class MainViewer extends Viewer{
+	public void onPost(int requestCode){
+		// 해당화면 업무 수행
+	}
+}
+```
+
+- 화면 재활용
+ Activity, Flagement의 onCreate() 함수 안에 복잡하고 매우 지저분한 코드를 볼수 있습니다.
+ 화면을 재활용하기 위해 Layout을 분리하게 됩니다. 하지만 Layout을 구현하는 code는 Activity, Flagement에 의존적이여서
+
+
+
+
+
 Viewer는 Async한 화면을 구성하기 위한 Thread가 내장되어 있으며 
 
 
