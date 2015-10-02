@@ -142,7 +142,9 @@ public void onPost(int requestCode) {
 ##Code Less를 위한 Annotation 지원
 Viewer는 Injection, method binding을 Annotation으로 지원하여  쉽고 빠르게
 UI Manipulation을 하도록 도와 줍니다.
+
 >[기존]
+
 ```java
 public class Main extends Activity{
 	private TextView text;
@@ -168,6 +170,7 @@ public class Main extends Activity{
 ```
 
 >[Uni]
+
 ```java
 @Layout(R.layout.main)
 public class MainViewer extends Viewer {
