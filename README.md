@@ -50,7 +50,7 @@ Uni 에는 다음과 같은 내용으로 개발 생산성을 향상시켜줍니�
  - Code Less를 위한 Annotation 지원
 
 <br>
-##동적 화면구성
+###동적 화면구성
  Fragment와 같은 방식으로 UI를 Replace하는 방식과 동일합니다.<br>
 하지만 Uni는 여러개의 화면을 구성하는데 있어서 매우 빠르고 쉽습니다.<br>
 Replace가 수행할때 비동기 방식으로 화면을 불러들일수 있으며 화면을 쉽게 구현하기 위한 많은 내부 함수들이 있습니다.<br>
@@ -69,7 +69,7 @@ public class MainActivity extends Activity {
 ```
 
 <br>
-##화면 재활용
+###화면 재활용
 
  화면을 재활용하기 위해 Layout을 분리하게 됩니다. 하지만 Layout을 구현하는 code는 Activity, Flagement에 의존적이여서 class를 구성하는데 어려움을 겪습니다.
 > 화면별 class 분리를 위해 Activity, Flagement를 반드시 참조해야한다.
@@ -87,7 +87,7 @@ public class MainViewer extends Viewer{
  ```
 
 <br>
-##비동기 지원
+###비동기 지원
 
  Viewer는 네트워크 등 비동기 화면을 구성하기 위한 Thread가 내장되어 있습니다.<br>
 AsyncTask와 같은 패턴으로 구현되어 있어 개발 접근성이 매우 높습니다.<br>
@@ -108,10 +108,8 @@ public class MainViewer extends Viewer{
 }
  ```
  
-
- 
 <br> 
-##업무별 기능 분리
+###업무별 기능 분리
 화면 refresh하거나 기능별 화면을 구성할때 requestCode로 구분하여 기능을 분리 할수 있습니다.<br>
 이처럼 업무별 기능을 분리함으로써 코드 재활용 및 간결한 코드패턴이 가능합니다.
 ```java
@@ -139,7 +137,8 @@ public void onPost(int requestCode) {
 }
 ```
 
-##Code Less를 위한 Annotation 지원
+<br>
+###Code Less를 위한 Annotation 지원
 Viewer는 Injection, method binding을 Annotation으로 지원하여  쉽고 빠르게
 UI Manipulation을 하도록 도와 줍니다.
 
