@@ -39,7 +39,31 @@ public class MainViewer extends Viewer{
 }
 ```
 
-- 화면 재활용
+Uni 에는 다음과 같은 기능으로 개발 생산성을 향상시켜줍니다.
+ - 동적 화면 구성
+ - 화면 재활용
+ - 비동기 지원
+ - 내부 코드분리
+ - Code Less를 위한 Annotation 지원
+
+###동적 화면구성
+ Fragment와 같은 방식으로 UI를 Replace하는 방식과 동일합니다.<br>
+하지만 Uni는 여러개의 화면을 구성하는데 있어서 매우 빠르고 쉽습니다.<br>
+Replace가 수행할때 비동기 방식으로 화면을 불러들일수 있으며 화면을 쉽게 구현하기 위한 많은 내부 함수들이 있습니다.<br>
+Fragment를 큰 뼈대를 잡고 하위 UI를 Viewer로 구성하는데 매우 적합 합니다.
+```java
+public class MainActivity extends Activity {
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity);
+		Viewer.build(MainViewer.class, this).change(R.id.frame);
+	}
+}
+```
+
+
+###화면 재활용
 
  화면을 재활용하기 위해 Layout을 분리하게 됩니다. 하지만 Layout을 구현하는 code는 Activity, Flagement에 의존적이여서 class를 구성하는데 어려움을 겪습니다.
 > 화면별 class 분리를 위해 Activity, Flagement를 반드시 참조해야한다.
@@ -47,20 +71,33 @@ public class MainViewer extends Viewer{
  Uni는 layout에 해당하는 업무를 완변히 분리해줍니다.<br>
 기존에 분리가 어려웠던 이유는 Activity, Flagement의 리소스를 사용할수 없기 때문입니다.<br>
 Uni에서는 기존에 동일한 패턴으로 리소스를 사용할수 있게 해줍니다.
-```java
+ ```java
 @Layout(R.layout.main)
 public class MainViewer extends Viewer{
 	public void onPost(int requestCode){
 		TextView text = (TextView)findById(R.id.text);
 	}
 }
-```
+ ```
 
+###비동기 지원
 
-
-
-
-Viewer는 Async한 화면을 구성하기 위한 Thread가 내장되어 있으며 
+ Viewer는 네트워크 등 비동기 화면을 구성하기 위한 Thread가 내장되어 있습니다.<br>
+AsyncTask와 같은 패턴으로 구현되어 있어 개발 접근성이 매우 높습니다.<br>
+이로써 
+ ```java
+@Layout(R.layout.main)
+public class MainViewer extends Viewer{
+    public boolean onLoad(int requestCode, UpdateEvent event) {
+	//통신후 결과 저장
+	addParam("result", resultClass);
+    }
+    public void onPost(int requestCode) {
+    	//결과에 대한 UI 구성
+    	resultClass = getParam("result");
+    }
+}
+ ```
 
 
 Uni 에는 다음과 같은 기능들이 있습니다.
