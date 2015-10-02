@@ -114,13 +114,12 @@ public class MainViewer extends Viewer{
 이처럼 업무별 기능을 분리함으로써 코드 재활용 및 간결한 코드패턴이 가능합니다.
 ```java
  public boolean onLoad(int requestCode, UpdateEvent event) {
-
 	 switch (requestCode){
     		case 1:
-    			//A 업무 통신
+    		//A 업무 통신
     		case 2:
-    			//B 업무 통신
-    	}
+    		//B 업무 통신
+	}
     	//결과 저장
 	addParam("result", resultClass);
 	return true;
@@ -130,9 +129,9 @@ public void onPost(int requestCode) {
     	resultClass = getParam("result");
     	switch (requestCode){
     		case 1:
-    			//A 화면 기능정의
+    		//A 화면 기능정의
     		case 2:
-    			//B 화면 기능정의
+    		//B 화면 기능정의
 	}
 }
 ```
@@ -144,44 +143,44 @@ UI Manipulation을 하도록 도와 줍니다.
 
 - 기존
 
- ```java
-public class Main extends Activity{
-	private TextView text;
-	private Button btn1;
-	private Button btn2;
-	private Button btn3;
-	private Button subActivity;
+	```java
+	public class Main extends Activity{
+		private TextView text;
+		private Button btn1;
+		private Button btn2;
+		private Button btn3;
+		private Button subActivity;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity);
-		text = (TextView)findById(R.id.text);
-		btn1 = (Button)findById(R.id.btn1);
-		btn2 = (Button)findById(R.id.btn2);
-		btn3 = (Button)findById(R.id.btn3);
-		subActivity = (Button)findById(R.id.subActivity);
+		@Override
+		protected void onCreate(Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+			setContentView(R.layout.activity);
+			text = (TextView)findById(R.id.text);
+			btn1 = (Button)findById(R.id.btn1);
+			btn2 = (Button)findById(R.id.btn2);
+			btn3 = (Button)findById(R.id.btn3);
+			subActivity = (Button)findById(R.id.subActivity);
 		
-		text.setText("hello");
+			text.setText("hello");
+		}
 	}
-}
 
- ```
+	```
 
 - Uni
 
- ```java
-@Layout(R.layout.main)
-public class MainViewer extends Viewer {
-	@GetView TextView text;
-	@GetView Button btn1, btn2, btn3, subActivity;
+	```java
+	@Layout(R.layout.main)
+	public class MainViewer extends Viewer {
+		@GetView TextView text;
+		@GetView Button btn1, btn2, btn3, subActivity;
 	
-	public void onPost(int requestCode){
-		text.setText("hello");
+		public void onPost(int requestCode){
+			text.setText("hello");
+		}
 	}
-}
 
- ```
+	```
 
 
 
