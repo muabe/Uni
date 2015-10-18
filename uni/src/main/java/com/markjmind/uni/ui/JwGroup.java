@@ -1,13 +1,13 @@
 package com.markjmind.uni.ui;
 
-import java.util.Stack;
-
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 
 import com.markjmind.uni.hub.Store;
+
+import java.util.Stack;
 
 public class JwGroup {
 	public Stack<HistoryInfo> history;
@@ -57,6 +57,18 @@ public class JwGroup {
 	public void clear(){
 		group.clear();
 		history.clear();
+	}
+
+	public void deSelectAll(){
+		for(int i=0;i<group.size();i++){
+			Store<Object> temp = (Store<Object>)group.getValue(i);
+			String tempName =(String)temp.get("name");
+			View view =(View)temp.get("view");
+			Object vparam = temp.get("param");
+			if(onGroupSelect!=null){
+				onGroupSelect.deselected(view, tempName, i, vparam);
+			}
+		}
 	}
 	
 	public View getView(String name){
@@ -177,7 +189,7 @@ public class JwGroup {
 						param = vparam;
 					onGroupSelect.selected(view, name, i, param);
 				}else{
-					onGroupSelect.deselected(view, name, i, param);
+					onGroupSelect.deselected(view, tempName, i, param);
 				}
 			}
 		}
