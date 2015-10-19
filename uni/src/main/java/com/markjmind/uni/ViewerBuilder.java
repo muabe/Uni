@@ -116,8 +116,9 @@ public class ViewerBuilder {
 		return loadView;
 	}
 
-	public void setRequestCode(Integer requestCode){
+	public ViewerBuilder setRequestCode(Integer requestCode){
 		this.requestCode = requestCode;
+		return this;
 	}
 
 	public Integer getRequestCode(){
