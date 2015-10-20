@@ -1,12 +1,12 @@
 package com.markjmind.uni;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * start : 2013.11.17<br>
@@ -75,7 +75,7 @@ public class OnClickListenerReceiver implements OnClickListener{
 	  * @param receiver 함수를 호출할 클래스 객체
 	  * @param methodName 함수명
 	  * @param R_id_view 이벤트를 등록할 view id
-	 * @param activity 해당 activity
+	  * @param activity 해당 activity
 	 */
 	public static void setOnClickListener(Object receiver, String methodName,int R_id_view, Activity activity){
 		activity.findViewById(R_id_view).setOnClickListener(getOnClickListener(receiver,methodName));
