@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 public @interface OnClick
 {
     int value() default -1;
-    int[] list() default {};
+    int[] ids() default {};
 }

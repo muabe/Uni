@@ -22,7 +22,7 @@ public class MainViewer extends Viewer {
         Viewer.build(ExerciseViewer.class,getActivity()).change(R.id.main_frame);
     }
 
-    @OnClick(list={R.id.menu1, R.id.menu2, R.id.menu3, R.id.menu4})
+    @OnClick(ids={R.id.menu1, R.id.menu2, R.id.menu3, R.id.menu4})
     public void click(View view){
         if(view.getId()==R.id.menu1) {
             Viewer.build(ExerciseViewer.class, getActivity()).change(R.id.main_frame);
