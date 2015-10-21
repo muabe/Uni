@@ -17,6 +17,9 @@ import android.widget.TextView;
 
 import com.markjmind.uni.hub.Store;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+
 
 /**
  * start : 2013.11.17<br>
@@ -51,21 +54,17 @@ public class Viewer {
 	FrameLayout frame;
 	View viewer;
 	protected ViewGroup parentView;
-	private OnClickListenerReceiver oclReceiver;
 	private String id;
 	private int layoutId;
-	private Store<Object> param;
+	private Store<?> param;
 
 	ViewerBuilder builder;
-
-	public static Store<Object> asyncStore = new Store<Object>();
-
 
 	/**
 	 * 기본생성자
 	 */
 	protected Viewer(){
-		param = new Store<Object>();
+		param = new Store<>();
 	}
 
 /***************************************** 초기화 관련 ********************************************/
@@ -106,7 +105,8 @@ public class Viewer {
 	void makeViewer(){
 		//뷰어를 새로만듬
 		viewer = (ViewGroup)getLayoutInfalter(layoutId);
-		JwMemberMapper.injectField(Viewer.this);
+		JwMemberMapper.injectField(this);
+		JwMemberMapper.injectionMethod(this);
 	}
 
 	void removeAfterOutAnim(){
@@ -308,7 +308,7 @@ public class Viewer {
 			builder.loadView = null;
 		}
 
-		//FIXME hashCode가 구조상 유일 아이디가 될수 있는지 확인
+		//hashCode가 구조상 유일 아이디가 될수있음을 확인했음
 		int hashId = frame.hashCode();
 		frame.setId(hashId);
 		if(findViewById(hashId)!=null){
@@ -471,7 +471,7 @@ public class Viewer {
 	 * 다른 Viewer로 전달한 파라미터 Store를 받는다.
 	 * @return Parameter store
 	 */
-	public Store<Object> getParamStore(){
+	public Store<?> getParamStore(){
 		return param;
 	}
 	
@@ -635,100 +635,35 @@ public class Viewer {
 	public Resources getResources(){
 		return builder.context.getResources();
 	}
-	
-	
-	/**
-	 * id에 해당하는 뷰에 이벤트를  등록한다.
-	 * @param methodName 메소드명
-	 * @param R_id_view 이벤트를 등록할 id
-	 */
-	public void setOnClickListener(String methodName, int R_id_view){
-//		if(oclReceiver==null){
-			oclReceiver = new OnClickListenerReceiver(builder.context);
-//		}
-		oclReceiver.setOnClickListener(this, methodName, R_id_view, viewer);
+
+	//TODO 현재 작업중 2015.10.21
+	private HashMap<Integer, OnClickListenerReceiver> onClickParams = new HashMap<>();
+	public void setOnClickParam(View view, Object... clickParam){
+		if(onClickParams.containsKey(view.hashCode())){
+			OnClickListenerReceiver rec = onClickParams.get(view.hashCode());
+			rec.setParam(clickParam);
+		}
 	}
-	/**
-	 * view에 해당하는 이벤트를  등록한다.
-	 * @param methodName 메소드명
-	 * @param view view 
-	 */
-	public void setOnClickListener(String methodName, View view){
-//		if(oclReceiver==null){
-			oclReceiver = new OnClickListenerReceiver(builder.context);
-//		}
-		oclReceiver.setOnClickListener(this, methodName, view);
+
+	public Viewer setOnClickListener(View view, String methodName){
+		try {
+			Method method = getClass().getMethod(methodName, View.class);
+			return this.setOnClickListener(view, method);
+		} catch (NoSuchMethodException e) {
+			int lineNumber = Thread.currentThread().getStackTrace()[3].getLineNumber();
+			throw new JwMapperException("\n"+getClass().getName()+"."+methodName+""+lineNumber+"(View view), method가 존재하지 않습니다.",e);
+		}
 	}
-	
-	/**
-	 * parents의 child view중 tag에 해당하는 뷰에 이벤트를  등록한다.
-	 * @param methodName 메소드명
-	 * @param tag 이벤트를 등록할 tag
-	 * @param parents tag를 찾을 parents view
-	 */
-	public void setOnClickListener(String methodName, String tag, View parents){
-		setOnClickListener(methodName, getViewTag(tag, parents));
+
+	protected Viewer setOnClickListener(View view, Method method){
+		OnClickListenerReceiver	oclReceiver = new OnClickListenerReceiver(this);
+		oclReceiver.setOnClickListener(view, method);
+		onClickParams.put(view.hashCode(), oclReceiver);
+		return this;
 	}
 
 
 
-	/**
-	 * tag에 해당하는 뷰에 이벤트를  등록한다.
-	 * @param methodName 메소드명
-	 * @param tag 이벤트를 등록할 tag
-	 */
-	public void setOnClickListener(String methodName, String tag){
-		setOnClickListener(methodName, tag, viewer);
-	}
-
-	/**
-	 * tag에 해당하는 뷰에 이벤트를  등록한다.
-	 * @param methodName 메소드명
-	 * @param tag 이벤트를 등록할 tag
-	 */
-	public void setOnClickParamListener(String methodName, String tag, Object param){
-		setOnClickParamListener(methodName, tag, viewer, param);
-	}
-	
-	/**
-	 * id에 해당하는 뷰에 이벤트를  등록한다.
-	 * @param methodName 메소드명
-	 * @param R_id_view 이벤트를 등록할 id
-	 */
-	public void setOnClickParamListener(String methodName, int R_id_view, Object param){
-		oclReceiver = new OnClickListenerReceiver(builder.context);
-		oclReceiver.setOnClickParamListener(this, methodName, R_id_view, viewer, param);
-	}
-	/**
-	 * parents의 child view중 tag에 해당하는 뷰에 이벤트를  등록한다.
-	 * @param methodName 메소드명
-	 * @param view 이벤트를 등록할 view
-	 * @param param 이벤트 함수에 넘겨줄 파라미터
-	 */
-	public void setOnClickParamListener(String methodName, View view, Object param){
-		oclReceiver = new OnClickListenerReceiver(builder.context);
-		oclReceiver.setOnClickParamListener(this, methodName, view, param);
-	}
-	/**
-	 * parents의 child view중 tag에 해당하는 뷰에 이벤트를  등록한다.
-	 * @param methodName 메소드명
-	 * @param tag 이벤트를 등록할 tag
-	 * @param parents tag를 찾을 parents view 
-	 */
-	public void setOnClickParamListener(String methodName, String tag, View parents, Object param){
-		setOnClickParamListener(methodName, getViewTag(tag, parents), param);
-	}
-	
-
-	
-	/**
-	 * tag명과 동일한 메소드를 찾아 해당하는 뷰에 이벤트를  등록한다.
-	 * @param tag 이벤트를 등록할 tag
-	 */
-	public void setOnClickListenerByTag(String tag){
-		setOnClickListener(tag, tag, viewer);
-	}
-	
 	/**
 	 * 부모의 view를  반환한다.
 	 * @return 부모 View

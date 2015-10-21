@@ -88,11 +88,7 @@ public class Jwc extends JwViewController{
 	public static int getColor(String color){
 		return Color.parseColor(color);
 	}
-	
-	public static void setOnClickListener(Object receiver, String methodName, int R_id_view, Activity activity){
-		OnClickListenerReceiver.setOnClickListener(receiver, methodName, R_id_view, activity);
-	}
-	
+
 	public static float getDensity(Context context){
 		return  context.getResources().getDisplayMetrics().density;
 	}

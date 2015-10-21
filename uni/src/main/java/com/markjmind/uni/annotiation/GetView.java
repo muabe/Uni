@@ -10,6 +10,5 @@ import java.lang.annotation.Target;
 public @interface GetView
 {
 	int value() default -1;
-	String click() default "";
 }
 
