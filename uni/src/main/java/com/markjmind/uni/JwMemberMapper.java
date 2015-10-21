@@ -56,7 +56,7 @@ public class JwMemberMapper {
 		for(int i=0;i<methods.length;i++){
 			if(methods[i].isAnnotationPresent(OnClick.class)){
 				OnClick oc = methods[i].getAnnotation(OnClick.class);
-				int[] list = oc.list();
+				int[] list = oc.ids();
 				if(list.length==0){
 					int id = oc.value();
 					if(id==-1) {
