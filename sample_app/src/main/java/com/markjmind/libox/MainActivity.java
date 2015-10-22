@@ -15,7 +15,8 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity);
 
 		Viewer.build(LoginViewer.class, this)
-				.setAsync(false)
+				.setAsync(true)
+				.setPreLayout(true)
 				.change(R.id.frame);
 
 

@@ -30,7 +30,6 @@ class ViewerAsyncTask extends AsyncTask<Void, Object, Boolean> implements Update
 //            jv.frame.addView(jv.viewer, jv.parentView.getLayoutParams());
 //        }
 //        jv.inner_pre();
-
         if(!jv.TASK_LOAD.equals(jv.task)){
             if (jv.builder.isPreLayout()) {
                 jv.removeAfterOutAnim();
@@ -39,11 +38,16 @@ class ViewerAsyncTask extends AsyncTask<Void, Object, Boolean> implements Update
             }
             if(jv.builder.hasLoadView && jv.builder.loadView!=null) {//로딩뷰 띄우기
                 jv.removeAfterOutAnim();
-                jv.parentView.addView(jv.frame,jv. parentView.getLayoutParams());
+                jv.parentView.addView(jv.frame, jv.parentView.getLayoutParams());
                 jv.frame.addView(jv.builder.loadView);
-                Log.e("sd", "sd");
             }
             jv.inner_pre();
+        }else{
+            if(jv.builder.hasLoadView && jv.builder.loadView!=null) {//로딩뷰 띄우기
+                jv.removeAfterOutAnim();
+                jv.parentView.addView(jv.frame, jv.parentView.getLayoutParams());
+                jv.frame.addView(jv.builder.loadView);
+            }
         }
     }
 

@@ -57,6 +57,7 @@ public class Viewer {
 	private String id;
 	private int layoutId;
 	private Store<?> param;
+	private HashMap<Integer, OnClickListenerReceiver> onClickParams = new HashMap<>();
 
 	ViewerBuilder builder;
 
@@ -105,8 +106,8 @@ public class Viewer {
 	void makeViewer(){
 		//뷰어를 새로만듬
 		viewer = (ViewGroup)getLayoutInfalter(layoutId);
-		JwMemberMapper.injectField(this);
-		JwMemberMapper.injectionMethod(this);
+		onClickParams.clear();
+		JwMemberMapper.injection(this);
 	}
 
 	void removeAfterOutAnim(){
@@ -486,7 +487,29 @@ public class Viewer {
 	public static String[] getBox(Class<?> viewerClass){
 		return JwMemberMapper.injectionBox(viewerClass);
 	}
-	
+
+/*************************************************** onClick 관련 *********************************************/
+	public void setOnClickParam(View view, Object... clickParam){
+		if(onClickParams.containsKey(view.hashCode())){
+			OnClickListenerReceiver rec = onClickParams.get(view.hashCode());
+			rec.setParam(clickParam);
+		}
+	}
+
+	public Viewer setOnClickListener(View view, String methodName, Class<?>... paramClassTypes){
+		OnClickListenerReceiver	oclReceiver = new OnClickListenerReceiver(this);
+		oclReceiver.setOnClickListener(view, methodName, paramClassTypes);
+		onClickParams.put(view.hashCode(), oclReceiver);
+		return this;
+	}
+
+	public Viewer setOnClickListener(View view, Method method){
+		OnClickListenerReceiver	oclReceiver = new OnClickListenerReceiver(this);
+		oclReceiver.setOnClickListener(view, method);
+		onClickParams.put(view.hashCode(), oclReceiver);
+		return this;
+	}
+
 /*************************************************** Task 관련 *********************************************/
 	public final static String TASK_ACV="acv"; //어싱크 뷰 체인지 뷰어
 	public final static String TASK_APUT="aput"; //어싱크 뷰 인풋 뷰어
@@ -635,34 +658,6 @@ public class Viewer {
 	public Resources getResources(){
 		return builder.context.getResources();
 	}
-
-	//TODO 현재 작업중 2015.10.21
-	private HashMap<Integer, OnClickListenerReceiver> onClickParams = new HashMap<>();
-	public void setOnClickParam(View view, Object... clickParam){
-		if(onClickParams.containsKey(view.hashCode())){
-			OnClickListenerReceiver rec = onClickParams.get(view.hashCode());
-			rec.setParam(clickParam);
-		}
-	}
-
-	public Viewer setOnClickListener(View view, String methodName){
-		try {
-			Method method = getClass().getMethod(methodName, View.class);
-			return this.setOnClickListener(view, method);
-		} catch (NoSuchMethodException e) {
-			int lineNumber = Thread.currentThread().getStackTrace()[3].getLineNumber();
-			throw new JwMapperException("\n"+getClass().getName()+"."+methodName+""+lineNumber+"(View view), method가 존재하지 않습니다.",e);
-		}
-	}
-
-	protected Viewer setOnClickListener(View view, Method method){
-		OnClickListenerReceiver	oclReceiver = new OnClickListenerReceiver(this);
-		oclReceiver.setOnClickListener(view, method);
-		onClickParams.put(view.hashCode(), oclReceiver);
-		return this;
-	}
-
-
 
 	/**
 	 * 부모의 view를  반환한다.
@@ -843,6 +838,22 @@ public class Viewer {
 		}else{
 			return null;
 		}
+	}
+
+	public void setLoadView(View loadView, UpdateListener updateListener){
+		boolean enableLoad = builder.hasLoadView;
+		builder.setLoadView(loadView, updateListener);
+		builder.hasLoadView = enableLoad;
+	}
+
+	public void setLoadView(int R_layout_id, UpdateListener updateListener){
+		boolean enableLoad = builder.hasLoadView;
+		builder.setLoadView(R_layout_id, updateListener);
+		builder.hasLoadView = enableLoad;
+	}
+
+	public void enableLoadView(boolean enable){
+		builder.hasLoadView = enable;
 	}
 
 

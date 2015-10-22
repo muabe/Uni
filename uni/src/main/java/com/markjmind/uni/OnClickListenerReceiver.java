@@ -92,4 +92,22 @@ public class OnClickListenerReceiver implements OnClickListener{
 		this.method = method;
 		target.setOnClickListener(this);
 	}
+	public void setOnClickListener(View view, String methodName, Class<?>... paramClassType){
+		try {
+			int paramCount = 1;
+			if(paramClassType!=null){
+				paramCount = paramClassType.length+1;
+			}
+			Class<?>[] types = new Class[paramCount];
+			types[0]=View.class;
+			for(int i=0;i<paramClassType.length;i++){
+				types[i+1] = paramClassType[i];
+			}
+			Method method = getClass().getMethod(methodName, types);
+			setOnClickListener(view, method);
+		} catch (NoSuchMethodException e) {
+			int lineNumber = Thread.currentThread().getStackTrace()[3].getLineNumber();
+			throw new JwMapperException("\n"+getClass().getName()+"."+methodName+"(View view), method가 존재하지 않습니다.",e);
+		}
+	}
 }
