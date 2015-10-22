@@ -76,9 +76,9 @@ UI Manipulation을 하도록 도와 줍니다.
 				this.msg = msg;
 			}
 			@Override
-		        public void onClick(View v) {
-		            text.setText(msg);
-		        }
+			public void onClick(View v) {
+				text.setText(msg);
+			}
 		}
 	}
 
