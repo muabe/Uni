@@ -33,7 +33,7 @@ public class Test2 extends Viewer {
                     .setPreLayout(true)
                     .setLoadView(R.layout.loading, new UpdateListener() {
                         @Override
-                        public void onUpdate(View loadView, Object value) {
+                        public void onUpdate(int requestCode, View loadView, Object value) {
 
                         }
                     });

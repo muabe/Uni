@@ -23,7 +23,10 @@ public class Test1 extends Viewer {
              .setPreLayout(true)
              .setLoadView(R.layout.progress, new UpdateListener() {
                  @Override
-                 public void onUpdate(View loadView, Object value) {
+                 public void init(int requestCode, View loadView) {
+                 }
+                 @Override
+                 public void onUpdate(int requestCode, View loadView, Object value) {
                      ((ProgressBar)loadView.findViewById(R.id.progress)).setProgress((int) value);
                  }
              })

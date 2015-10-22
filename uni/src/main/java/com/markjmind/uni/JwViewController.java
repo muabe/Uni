@@ -22,10 +22,10 @@ import android.widget.ListView;
  * @author 오재웅
  * @version 2012.08.30
  */
-public class JwViewController {
+class JwViewController {
 	
 	public static View lastChild(ViewGroup parantView){
-		return parantView.getChildAt(parantView.getChildCount()-1);
+		return parantView.getChildAt(parantView.getChildCount() - 1);
 	}
 	
 	public static View addLayout(View childView, ViewGroup parantView){
@@ -35,18 +35,18 @@ public class JwViewController {
 	public static View addLayout(int child_layout_id, ViewGroup parantView){
 		
 //		return lastChild((ViewGroup)View.inflate(parantView.getContext(),child_layout_id, parantView));
-		return lastChild((ViewGroup)((LayoutInflater)parantView.getContext().getSystemService(parantView.getContext().LAYOUT_INFLATER_SERVICE)).inflate(child_layout_id, parantView));
+		return lastChild((ViewGroup) ((LayoutInflater) parantView.getContext().getSystemService(parantView.getContext().LAYOUT_INFLATER_SERVICE)).inflate(child_layout_id, parantView));
 	}
 	
 	
 	public static View addLayout(View childView, int parant_gourp_id,Activity activity){
-		ViewGroup parantView =(ViewGroup)getView(parant_gourp_id,activity);
+		ViewGroup parantView =(ViewGroup)findViewById(parant_gourp_id, activity);
 		return addLayout(childView,parantView);
 	}
 	
 	
 	public static View addLayout(int child_layout_id, int parant_gourp_id, Activity activity){
-		ViewGroup parantView =(ViewGroup)getView(parant_gourp_id, activity);
+		ViewGroup parantView =(ViewGroup)findViewById(parant_gourp_id, activity);
 		return addLayout(child_layout_id,parantView);
 	}
 	
@@ -67,14 +67,14 @@ public class JwViewController {
 	
 	
 	public static View changeLayout(View childView, int parant_gourp_id, Activity activity){
-		ViewGroup parantView =(ViewGroup)getView(parant_gourp_id,activity);
+		ViewGroup parantView =(ViewGroup)findViewById(parant_gourp_id, activity);
 		parantView.removeAllViews();
 		return addLayout(childView,parantView);
 	}
 	
 	
 	public static View changeLayout(int child_layout_id, int parant_gourp_id, Activity context){
-		ViewGroup parantView =(ViewGroup)getView(parant_gourp_id,context);
+		ViewGroup parantView =(ViewGroup)findViewById(parant_gourp_id, context);
 		parantView.removeAllViews();
 		return addLayout(child_layout_id,parantView);		
 	}
@@ -114,32 +114,27 @@ public class JwViewController {
 //		return View.inflate(context, layout_id,null);
 	}
 	
-	public static View getView(int R_id, Activity activity){
+	public static View findViewById(int R_id, Activity activity){
 		return activity.findViewById(R_id);
 	}
-	public static View getView(int R_id, Dialog dialog){
+	public static View findViewById(int R_id, Dialog dialog){
 		return dialog.findViewById(R_id);
 	}
 	
-	public static View getView(int R_id, View view){
+	public static View findViewById(int R_id, View view){
 		return view.findViewById(R_id);
 	}
 	
-	public static View getViewTag(Object tag, int parants_id, Activity activity){
-		return getTagView(tag, getView(parants_id,activity));
+	public static View findViewWithTag(Object tag, int parants_id, Activity activity){
+		return findViewWithTag(tag, findViewById(parants_id, activity));
 	}
-	public static View getViewTag(Object tag, int parants_id, Dialog dialog){
-		return getTagView(tag, getView(parants_id,dialog));
+	public static View findViewWithTag(Object tag, int parants_id, Dialog dialog){
+		return findViewWithTag(tag, findViewById(parants_id, dialog));
 	}
 	
 	
-	public static View getViewTag(Object tag, View parants){
+	public static View findViewWithTag(Object tag, View parants){
 		return parants.findViewWithTag(tag);
 	}
-	public static View getTagView(Object tag, View parants){
-		return parants.findViewWithTag(tag);
-	}
-	
-	
-	
+
 }

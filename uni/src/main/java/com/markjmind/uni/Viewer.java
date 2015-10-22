@@ -11,9 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.markjmind.uni.hub.Store;
 
@@ -275,7 +273,7 @@ public class Viewer {
 	void inner_update(Object value){
 		onUpdate(builder.requestCode, value);
 		if(builder.updateListener!=null){
-			builder.updateListener.onUpdate(builder.getLoadView(), value);
+			builder.updateListener.onUpdate(builder.requestCode, builder.getLoadView(), value);
 		}
 	}
 
@@ -303,6 +301,7 @@ public class Viewer {
 		}
 
 		// 로딩뷰를 설정했는지 여부에따라 로딩뷰를 삭제한다.
+		// 로딩뷰는 한번뜨고 메모리에서 사라진다.(재사용시 데이터 초기화 문제)
 		if(builder.hasLoadView && builder.loadView!=null){
 			frame.removeView(builder.loadView);
 			builder.hasLoadView = false;
@@ -312,7 +311,7 @@ public class Viewer {
 		//hashCode가 구조상 유일 아이디가 될수있음을 확인했음
 		int hashId = frame.hashCode();
 		frame.setId(hashId);
-		if(findViewById(hashId)!=null){
+		if(findGobalView(hashId)!=null){
 			setStatus(Status.Post);
 			onPost(builder.requestCode);
 			setStatus(Status.Complete);
@@ -688,8 +687,8 @@ public class Viewer {
 	 * @param R_id_view 찾을 View ID
 	 * @return View 해당 View
 	 */
-	public View findViewById(int R_id_view){
-		return builder.findViewById(R_id_view);
+	public View findGobalView(int R_id_view){
+		return builder.findGobalView(R_id_view);
 	}
 	
 	/**
@@ -697,16 +696,16 @@ public class Viewer {
 	 * @param R_id_view 찾을 View ID
 	 * @return View 해당 View
 	 */
-	public View getView(int R_id_view){
-		return Jwc.getView(R_id_view, viewer);
+	public View findViewById(int R_id_view){
+		return Jwc.findViewById(R_id_view, viewer);
 	}
 	/**
 	 * parents에 속해있는 View를 찾는다
 	 * @param R_id_view 찾을 View ID
 	 * @return View  해당 View
 	 */
-	public View getView(int R_id_view,View parents){
-		return Jwc.getView(R_id_view, parents);
+	public View findViewById(int R_id_view, View parents){
+		return Jwc.findViewById(R_id_view, parents);
 	}
 	
 	/**
@@ -714,55 +713,20 @@ public class Viewer {
 	 * @param tag 찾을 tag
 	 * @return View 해당 View
 	 */
-	public View getViewTag(String tag){
-		return getViewTag(tag, viewer);
+	public View findViewWithTag(String tag){
+		return findViewWithTag(tag, viewer);
 	}
-	
+
 	/**
 	 * parnets에 속해있는 View를 tag로 찾는다
 	 * @param tag 찾을 tag
 	 * @param parents parnets View
 	 * @return View 해당 View
 	 */
-	public View getViewTag(String tag,View parents){
-		return Jwc.getViewTag(tag, parents);
+	public View findViewWithTag(String tag,View parents){
+		return Jwc.findViewWithTag(tag, parents);
 	}
 
-	/**
-	 * ID에 해당하는 Button을 리턴함
-	 * @param R_id_view button ID
-	 * @return Button 해당 Button
-	 */
-	public Button Button(int R_id_view){
-		return (Button)getView(R_id_view);
-	}
-	/**
-	 * 해당 parents 아래 ID해당하는 Button을 리턴함
-	 * @param R_id_view button ID
-	 * @param parents parnets View
-	 * @return 해당 Button
-	 */
-	public Button Button(int R_id_view,View parents){
-		return (Button)getView(R_id_view,parents);
-	}
-	/**
-	 * ID에 해당하는 TextView을 리턴함
-	 * @param R_id_view TextView ID
-	 * @return TextView
-	 */
-	public TextView TextView(int R_id_view){
-		return (TextView)getView(R_id_view);
-	}
-	/**
-	 * 해당 parents 아래 ID해당하는 TextView를 리턴함
-	 * @param R_id_view TextView ID
-	 * @param parents parnets View
-	 * @returnTextView
-	 */
-	public TextView TextView(int R_id_view,View parents){
-		return (TextView)getView(R_id_view,parents);
-	}
-	
 	/**
 	 * Viewer를 visible한다.
 	 */
@@ -841,20 +805,20 @@ public class Viewer {
 	}
 
 	public void setLoadView(View loadView, UpdateListener updateListener){
-		boolean enableLoad = builder.hasLoadView;
+//		boolean enableLoad = builder.hasLoadView;
 		builder.setLoadView(loadView, updateListener);
-		builder.hasLoadView = enableLoad;
+//		builder.hasLoadView = enableLoad;
 	}
 
 	public void setLoadView(int R_layout_id, UpdateListener updateListener){
-		boolean enableLoad = builder.hasLoadView;
+//		boolean enableLoad = builder.hasLoadView;
 		builder.setLoadView(R_layout_id, updateListener);
-		builder.hasLoadView = enableLoad;
+//		builder.hasLoadView = enableLoad;
 	}
 
-	public void enableLoadView(boolean enable){
-		builder.hasLoadView = enable;
-	}
+//	public void enableLoadView(boolean enable){
+//		builder.hasLoadView = enable;
+//	}
 
 
 

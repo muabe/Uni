@@ -62,7 +62,6 @@ public class JwMemberMapper {
 			}
 		}
 
-
 		/** field **/
 		Field[] fields = obj.getClass().getDeclaredFields();
 		for(Field field:fields){
@@ -75,38 +74,10 @@ public class JwMemberMapper {
 				setField(obj, id, field, viewHash);
 			}
 		}
-
-
 	}
 
-//	public static void injectionMethod(Viewer obj){
-//		Method[] methods = obj.getClass().getDeclaredMethods();
-//		for(int i=0;i<methods.length;i++){
-//			if(methods[i].isAnnotationPresent(OnClick.class)){
-//				OnClick oc = methods[i].getAnnotation(OnClick.class);
-//				int[] list = oc.ids();
-//				if(list.length==0){
-//					int id = oc.value();
-//					if(id==-1) {
-//						id = JwStringID.getID(methods[i].getName(), obj.getActivity().getApplication());
-//					}
-//					if(true) { //TODO 이미 field에서 injection된 객체가 없다면
-//						obj.setOnClickListener(obj.getView(id), methods[i]);
-//					}
-//				}else{
-//					for(int k=0;k<list.length;k++){
-//						int id = list[k];
-//						if(true) { //TODO 이미 field에서 injection된 객체가 없다면
-//							obj.setOnClickListener(obj.getView(id), methods[i]);
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
-
 	private static View setMethod(Viewer obj, Integer id, Method method){
-		View view = obj.getView(id);
+		View view = obj.findViewById(id);
 		if(view==null){ // view가 없을경우
 			throw new JwMapperException("\n["+obj.getClass().getName()+""+", method에 해당하는 ID(Null)가 잘못 지정되었습니다.",null);
 		}
@@ -119,7 +90,7 @@ public class JwMemberMapper {
 		if(viewHash.containsKey(id)){
 			v = viewHash.get(id);
 		}else{
-			v = obj.getView(id);
+			v = obj.findViewById(id);
 		}
 
 		if(v==null){

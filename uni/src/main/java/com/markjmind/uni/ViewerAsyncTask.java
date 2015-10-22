@@ -31,22 +31,26 @@ class ViewerAsyncTask extends AsyncTask<Void, Object, Boolean> implements Update
 //        }
 //        jv.inner_pre();
         if(!jv.TASK_LOAD.equals(jv.task)){
-            if (jv.builder.isPreLayout()) {
-                jv.removeAfterOutAnim();
-                jv.parentView.addView(jv.frame,jv. parentView.getLayoutParams());
-                jv.frame.addView(jv.viewer);
+            if (jv.builder.isPreLayout()) { // preView를 설정했을 경우
+                jv.removeAfterOutAnim();  // 이전에 있던 뷰를 지우고
+                jv.parentView.addView(jv.frame,jv. parentView.getLayoutParams()); // layout에  viewer.frame를 넣는다
+                jv.frame.addView(jv.viewer); // viewer.frame에 실제 layout을 넣는다.
             }
-            if(jv.builder.hasLoadView && jv.builder.loadView!=null) {//로딩뷰 띄우기
-                jv.removeAfterOutAnim();
-                jv.parentView.addView(jv.frame, jv.parentView.getLayoutParams());
-                jv.frame.addView(jv.builder.loadView);
+            if(jv.builder.hasLoadView && jv.builder.loadView!=null) { //로딩뷰를 설정했을경우
+                jv.removeAfterOutAnim(); // 이전에 있던 뷰를 지우고
+                jv.parentView.addView(jv.frame, jv.parentView.getLayoutParams()); // layout에 viewer frame를 넣는다
+                jv.frame.addView(jv.builder.loadView); //로딩뷰 띄우기
+                if(jv.builder.updateListener!=null) { //updateListener 있으면 init을 호출해준다.
+                    jv.builder.updateListener.init(jv.builder.requestCode, jv.builder.loadView);
+                }
             }
-            jv.inner_pre();
-        }else{
-            if(jv.builder.hasLoadView && jv.builder.loadView!=null) {//로딩뷰 띄우기
-                jv.removeAfterOutAnim();
-                jv.parentView.addView(jv.frame, jv.parentView.getLayoutParams());
-                jv.frame.addView(jv.builder.loadView);
+            jv.inner_pre(); //onPre 호출
+        }else{ // runLoad일경우
+            if(jv.builder.hasLoadView && jv.builder.loadView!=null) {  //로딩뷰를 설정했을경우
+                jv.frame.addView(jv.builder.loadView); // 이전에 있던 뷰를 지우고
+                if(jv.builder.updateListener!=null) { //updateListener 있으면 init을 호출해준다.
+                    jv.builder.updateListener.init(jv.builder.requestCode, jv.builder.loadView);
+                }
             }
         }
     }

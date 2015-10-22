@@ -1,15 +1,16 @@
 package com.markjmind.libox.login;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.markjmind.libox.MainViewer;
 import com.markjmind.libox.R;
 import com.markjmind.libox.common.Web;
 import com.markjmind.uni.UpdateEvent;
+import com.markjmind.uni.UpdateListener;
 import com.markjmind.uni.Viewer;
 import com.markjmind.uni.annotiation.GetView;
 import com.markjmind.uni.annotiation.Layout;
@@ -36,11 +37,20 @@ public class LoginViewer extends Viewer {
     Store<String> webParam = new Store<String>();
 
     @Override
+    public void onPre(int requestCode) {
+        super.onPre(requestCode);
+    }
+
+    @Override
     public boolean onLoad(int requestCode, UpdateEvent event) {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if(requestCode==1) {
             Web web = new Web();
             try {
-                Log.e("dsd", "여기1");
                 result = web.addParam(webParam).postDM("IF-HLO-DM-0001");
                 webParam.clear();
                 return true;
@@ -55,12 +65,10 @@ public class LoginViewer extends Viewer {
 
     @Override
     public void onPost(int requestCode) {
-        Log.e("dsd", "여기2");
         if(requestCode==1){
             Toast.makeText(getContext(),"로그인 되었습니다.",Toast.LENGTH_SHORT);
             Viewer.build(MainViewer.class, getActivity()).change(this);
         }else{
-            Log.e("dsd", "여기3");
             loginBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -68,8 +76,16 @@ public class LoginViewer extends Viewer {
                             .add("userPw", editPass.getText().toString())
                             .add("reqDate", "20150916095826")
                             .add("registrationId", "");
-                    setLoadView(R.layout.loading, null);
-                    enableLoadView(true);
+                    setLoadView(R.layout.loading, new UpdateListener() {
+                        @Override
+                        public void init(int requestCode, View loadView) {
+                        }
+                        @Override
+                        public void onUpdate(int requestCode, View loadView, Object value) {
+                            TextView loading_text = (TextView)loadView.findViewById(R.id.loading_text);
+                            loading_text.setText("1");
+                        }
+                    });
                     runLoad(1);
                 }
             });

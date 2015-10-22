@@ -98,7 +98,7 @@ public class ViewerBuilder {
 	public boolean isPreLayout(){
 		return this.isPreLayout;
 	}
-	
+
 	public ViewerBuilder setLoadView(View loadView, UpdateListener updateListener){
 		hasLoadView = true;
 		this.loadView = loadView;
@@ -157,7 +157,7 @@ public class ViewerBuilder {
 	 * @return
 	 */
 	public Viewer change(int R_id_parents){
-		return this.change((ViewGroup)findViewById(R_id_parents));
+		return this.change((ViewGroup)findGobalView(R_id_parents));
 	}
 
 	public Viewer change(Viewer viewer){
@@ -178,7 +178,7 @@ public class ViewerBuilder {
 
 
 	public Viewer add(int R_id_parents, int index) {
-		ViewGroup parents = (ViewGroup)findViewById(R_id_parents);
+		ViewGroup parents = (ViewGroup)findGobalView(R_id_parents);
 		return add(parents, index);
 	}
 
@@ -199,7 +199,7 @@ public class ViewerBuilder {
 	 * @return
 	 */
 	public Viewer add(int R_id_parents) {
-		ViewGroup parents = (ViewGroup)findViewById(R_id_parents);
+		ViewGroup parents = (ViewGroup)findGobalView(R_id_parents);
 		return add(parents);
 	}
 
@@ -302,7 +302,7 @@ public class ViewerBuilder {
 	 * @param R_id_view 찾을 View ID
 	 * @return View 해당 View
 	 */
-	View findViewById(int R_id_view){
+	View findGobalView(int R_id_view){
 		if(mode.equals(TYPE_MODE.ACTIVITY)){
 			return activity.findViewById(R_id_view);
 		}else if(mode.equals(TYPE_MODE.DIALOG)){
