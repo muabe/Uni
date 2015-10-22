@@ -35,11 +35,75 @@ public class MainViewer extends Viewer{
 ```
 
 Uni 에는 다음과 같은 내용으로 개발 생산성을 향상시켜줍니다.
+ - Code Less를 위한 Annotation 지원
  - 동적 화면 구성
  - 화면 재활용
  - 비동기 지원
  - 업무별 기능 분리
- - Code Less를 위한 Annotation 지원
+ 
+
+###Code Less를 위한 Annotation 지원
+Viewer는 Injection, method binding을 Annotation으로 지원하여  쉽고 빠르게
+UI Manipulation을 하도록 도와 줍니다.
+
+- before
+
+	```java
+	public class Main extends Activity{
+		private TextView text;
+		private Button btn1;
+		private Button btn2;
+		private Button btn3;
+		private Button subActivity;
+
+		@Override
+		protected void onCreate(Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+			setContentView(R.layout.activity);
+			text = (TextView)findById(R.id.text);
+			btn1 = (Button)findById(R.id.btn1);
+			btn2 = (Button)findById(R.id.btn2);
+			btn3 = (Button)findById(R.id.btn3);
+			subActivity = (Button)findById(R.id.subActivity);
+		
+			text.setText("hello");
+			btn1.setOnClickListener(new ResetText("Uni"));
+		}
+		
+		class ResetText impelements OnClickListener{
+			String msg;
+			public ResetText(String msg){
+				this.msg = msg;
+			}
+			@Override
+		        public void onClick(View v) {
+		            text.setText(msg);
+		        }
+		}
+	}
+
+	```
+
+- Uni
+
+	```java
+	@Layout(R.layout.main)
+	public class MainViewer extends Viewer {
+		@GetView TextView text;
+		@GetView Button btn1, btn2, btn3, subActivity;
+	
+		public void onPost(int requestCode){
+			text.setText("hello");
+			setOnClickParam("Uni");
+		}
+		
+		@OnClick
+		public void btn3(View view, String msg){
+			text.setText(msg);
+		}
+	}
+
+	```
 
 <br>
 ###동적 화면구성
@@ -129,50 +193,7 @@ public void onPost(int requestCode) {
 ```
 
 <br>
-###Code Less를 위한 Annotation 지원
-Viewer는 Injection, method binding을 Annotation으로 지원하여  쉽고 빠르게
-UI Manipulation을 하도록 도와 줍니다.
 
-- 기존
-
-	```java
-	public class Main extends Activity{
-		private TextView text;
-		private Button btn1;
-		private Button btn2;
-		private Button btn3;
-		private Button subActivity;
-
-		@Override
-		protected void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			setContentView(R.layout.activity);
-			text = (TextView)findById(R.id.text);
-			btn1 = (Button)findById(R.id.btn1);
-			btn2 = (Button)findById(R.id.btn2);
-			btn3 = (Button)findById(R.id.btn3);
-			subActivity = (Button)findById(R.id.subActivity);
-		
-			text.setText("hello");
-		}
-	}
-
-	```
-
-- Uni
-
-	```java
-	@Layout(R.layout.main)
-	public class MainViewer extends Viewer {
-		@GetView TextView text;
-		@GetView Button btn1, btn2, btn3, subActivity;
-	
-		public void onPost(int requestCode){
-			text.setText("hello");
-		}
-	}
-
-	```
 
 
 
