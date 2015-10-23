@@ -16,7 +16,6 @@ public class MainActivity extends Activity {
 
 		Viewer.build(LoginViewer.class, this)
 				.setAsync(true)
-				.setLoadView(R.layout.loading, null)
 				.setPreLayout(true)
 				.change(R.id.frame);
 

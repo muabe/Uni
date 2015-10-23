@@ -59,6 +59,8 @@ public class Viewer {
 
 	ViewerBuilder builder;
 
+	private RefreshBuilder reBuilder;
+
 	/**
 	 * 기본생성자
 	 */
@@ -231,7 +233,7 @@ public class Viewer {
 	 * Viewer를 재정의해야할 함수<br>
 	 * Viewer에 데이터값이나 셋팅하거나 view표현되어야할 값들 셋팅한다.
 	 */
-	public boolean onLoad(int requestCode, UpdateEvent event){ return true; }
+	public boolean onLoad(int requestCode, UpdateEvent event) throws Exception{ return true; }
 
 	public void onUpdate(int requestCode, Object value){}
 
@@ -241,7 +243,7 @@ public class Viewer {
 	 * onloading() 리턴값이 false일때 호출된다.<br>
 	 * 로딩이 실패했을 경우 표현해야할 화면을 정의한다.
 	 */
-	public void onFail(Integer requestCode){}
+	public void onFail(Integer requestCode, Exception e){}
 
 	public void onCancelled(Integer requestCode){}
 
@@ -266,14 +268,14 @@ public class Viewer {
 		onPre(builder.requestCode);
 	}
 
-	boolean inner_load(UpdateEvent event){
+	boolean inner_load(UpdateEvent event) throws Exception{
 		return onLoad(builder.requestCode, event);
 	}
 
 	void inner_update(Object value){
 		onUpdate(builder.requestCode, value);
-		if(builder.updateListener!=null){
-			builder.updateListener.onUpdate(builder.requestCode, builder.getLoadView(), value);
+		if(builder.loadController.updateListener!=null){
+			builder.loadController.updateListener.onUpdate(builder.requestCode, builder.loadController.loadView, value);
 		}
 	}
 
@@ -302,10 +304,8 @@ public class Viewer {
 
 		// 로딩뷰를 설정했는지 여부에따라 로딩뷰를 삭제한다.
 		// 로딩뷰는 한번뜨고 메모리에서 사라진다.(재사용시 데이터 초기화 문제)
-		if(builder.hasLoadView && builder.loadView!=null){
-			frame.removeView(builder.loadView);
-			builder.hasLoadView = false;
-			builder.loadView = null;
+		if(builder.loadController.isEnable()){
+			builder.loadController.onDestroy(builder.requestCode, frame);
 		}
 
 		//hashCode가 구조상 유일 아이디가 될수있음을 확인했음
@@ -326,10 +326,8 @@ public class Viewer {
 	void inner_cancelled(){
 		if(getParent()!=null && frame!=null){
 			// 로딩뷰를 설정했는지 여부에따라 로딩뷰를 삭제한다.
-			if(builder.hasLoadView && builder.loadView!=null){
-				frame.removeView(builder.loadView);
-				builder.hasLoadView = false;
-				builder.loadView = null;
+			if(builder.loadController.isEnable()){
+				builder.loadController.onDestroy(builder.requestCode, frame);
 			}
 		}
 		setStatus(Status.Cancel);
@@ -341,23 +339,20 @@ public class Viewer {
 	 * 네트워크등 Thread 처리 관련 내용을 정의한다.
 	 * @return
 	 */
-	void inner_view_fail(){
+	void inner_view_fail(Exception e){
 		if(getParent()!=null && frame!=null){
 			// 로딩뷰를 설정했는지 여부에따라 로딩뷰를 삭제한다.
-			if(builder.hasLoadView && builder.loadView!=null){
-				frame.removeView(builder.loadView);
-				builder.hasLoadView = false;
-				builder.loadView = null;
+			if(builder.loadController.isEnable()){
+				builder.loadController.onDestroy(builder.requestCode, frame);
 			}
 		}
 		setStatus(Status.Fail);
-		onFail(builder.requestCode);
+		onFail(builder.requestCode, e);
 		setStatus(Status.Complete);
 		builder.requestCode = REQUEST_CODE_NONE;
 	}
 
-	public void runPre(Integer requestCode){
-		builder.requestCode = requestCode;
+	void runPre(){
 		if(currentStatus!=Status.None) {
 			cancelTaskAcv();
 			removeViewer();
@@ -367,25 +362,14 @@ public class Viewer {
 		}
 		builder.requestCode = REQUEST_CODE_NONE;
 	}
-	public void runPre(){
-		this.runPre(Viewer.REQUEST_CODE_NONE);
-	}
 
-	public void runLoad(Integer requestCode){
-		builder.requestCode = requestCode;
+	void runLoad(){
 		excute(TASK_LOAD);
 	}
-	public void runLoad(){
-		this.runLoad(Viewer.REQUEST_CODE_NONE);
-	}
 
-	public void runPost(Integer requestCode){
-		builder.requestCode = requestCode;
+	void runPost(){
 		cancelTaskAcv();
 		inner_post();
-	}
-	public void runPost(){
-		this.runPost(Viewer.REQUEST_CODE_NONE);
 	}
 
 
@@ -804,21 +788,33 @@ public class Viewer {
 		}
 	}
 
-	public void setLoadView(View loadView, UpdateListener updateListener){
-//		boolean enableLoad = builder.hasLoadView;
-		builder.setLoadView(loadView, updateListener);
-//		builder.hasLoadView = enableLoad;
+	public RefreshBuilder reBuild(int requestCode){
+		if(reBuilder==null){
+			reBuilder = new RefreshBuilder(this);
+		}
+		reBuilder.setRequestCode(requestCode);
+		return reBuilder;
 	}
 
-	public void setLoadView(int R_layout_id, UpdateListener updateListener){
-//		boolean enableLoad = builder.hasLoadView;
-		builder.setLoadView(R_layout_id, updateListener);
-//		builder.hasLoadView = enableLoad;
+	public RefreshBuilder reBuild(){
+		return this.reBuild(REQUEST_CODE_NONE);
 	}
 
-//	public void enableLoadView(boolean enable){
-//		builder.hasLoadView = enable;
+//	public void setLoadView(View loadView, UpdateListener updateListener){
+////		boolean enableLoad = builder.hasLoadView;
+//		builder.setLoadView(loadView, updateListener);
+////		builder.hasLoadView = enableLoad;
 //	}
+//
+//	public void setLoadView(int R_layout_id, UpdateListener updateListener){
+////		boolean enableLoad = builder.hasLoadView;
+//		builder.setLoadView(R_layout_id, updateListener);
+////		builder.hasLoadView = enableLoad;
+//	}
+//
+////	public void enableLoadView(boolean enable){
+////		builder.hasLoadView = enable;
+////	}
 
 
 

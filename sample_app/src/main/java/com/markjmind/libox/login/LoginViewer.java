@@ -12,6 +12,7 @@ import com.markjmind.libox.common.Web;
 import com.markjmind.uni.UpdateEvent;
 import com.markjmind.uni.UpdateListener;
 import com.markjmind.uni.Viewer;
+import com.markjmind.uni.ViewerBuilder;
 import com.markjmind.uni.annotiation.GetView;
 import com.markjmind.uni.annotiation.Layout;
 import com.markjmind.uni.hub.Store;
@@ -35,6 +36,21 @@ public class LoginViewer extends Viewer {
 
     String result=null;
     Store<String> webParam = new Store<String>();
+
+    @Override
+    public void onBind(int requestCode, ViewerBuilder build) {
+        build.setLoadLayout(R.layout.loading, new UpdateListener(){
+            @Override
+            public void onCreate(int requestCode, View loadView) {
+                TextView text = (TextView)loadView.findViewById(R.id.loading_text);
+                if(requestCode==1){
+                    text.setText("로그인을 확인합니다.");
+                }else{
+                    text.setText("로딩중..");
+                }
+            }
+        }).setAsync(true);
+    }
 
     @Override
     public void onPre(int requestCode) {
@@ -76,17 +92,7 @@ public class LoginViewer extends Viewer {
                             .add("userPw", editPass.getText().toString())
                             .add("reqDate", "20150916095826")
                             .add("registrationId", "");
-                    setLoadView(R.layout.loading, new UpdateListener() {
-                        @Override
-                        public void init(int requestCode, View loadView) {
-                        }
-                        @Override
-                        public void onUpdate(int requestCode, View loadView, Object value) {
-                            TextView loading_text = (TextView)loadView.findViewById(R.id.loading_text);
-                            loading_text.setText("1");
-                        }
-                    });
-                    runLoad(1);
+                    reBuild(1).setEnableLoadLayout(true).onLoad();
                 }
             });
         }
@@ -95,7 +101,7 @@ public class LoginViewer extends Viewer {
     }
 
     @Override
-    public void onFail(Integer requestCode) {
+    public void onFail(Integer requestCode, Exception e) {
         Toast.makeText(getContext(),"로그인 실패",Toast.LENGTH_SHORT);
     }
 }

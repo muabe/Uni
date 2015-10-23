@@ -36,28 +36,30 @@ class ViewerAsyncTask extends AsyncTask<Void, Object, Boolean> implements Update
                 jv.parentView.addView(jv.frame,jv. parentView.getLayoutParams()); // layout에  viewer.frame를 넣는다
                 jv.frame.addView(jv.viewer); // viewer.frame에 실제 layout을 넣는다.
             }
-            if(jv.builder.hasLoadView && jv.builder.loadView!=null) { //로딩뷰를 설정했을경우
+            if(jv.builder.loadController.isEnable()){ //로딩뷰를 설정했을경우
                 jv.removeAfterOutAnim(); // 이전에 있던 뷰를 지우고
                 jv.parentView.addView(jv.frame, jv.parentView.getLayoutParams()); // layout에 viewer frame를 넣는다
-                jv.frame.addView(jv.builder.loadView); //로딩뷰 띄우기
-                if(jv.builder.updateListener!=null) { //updateListener 있으면 init을 호출해준다.
-                    jv.builder.updateListener.init(jv.builder.requestCode, jv.builder.loadView);
-                }
+                //frame에 있는 LoadView를 add하여 화면에 보이게 한다.
+                jv.builder.loadController.show(jv.builder.requestCode, jv.frame);
             }
             jv.inner_pre(); //onPre 호출
         }else{ // runLoad일경우
-            if(jv.builder.hasLoadView && jv.builder.loadView!=null) {  //로딩뷰를 설정했을경우
-                jv.frame.addView(jv.builder.loadView); // 이전에 있던 뷰를 지우고
-                if(jv.builder.updateListener!=null) { //updateListener 있으면 init을 호출해준다.
-                    jv.builder.updateListener.init(jv.builder.requestCode, jv.builder.loadView);
-                }
+            if(jv.builder.loadController.isEnable()) {  //로딩뷰를 설정했을경우
+                //frame에 있는 LoadView를 add하여 화면에 보이게 한다.
+                jv.builder.loadController.show(jv.builder.requestCode, jv.frame);
             }
         }
     }
 
+    private Exception doInBackException=null;
     @Override
     protected Boolean doInBackground(Void... params) {
-        return jv.inner_load(this); //데이터 가져오기
+        try{
+            return jv.inner_load(this); //데이터 가져오기
+        }catch(Exception e){
+            doInBackException = e;
+            return false;
+        }
     }
 
     @Override
@@ -66,7 +68,7 @@ class ViewerAsyncTask extends AsyncTask<Void, Object, Boolean> implements Update
             jv.builder.requestCode = Viewer.REQUEST_CODE_NONE;
             return;
         }
-        if(values!=null){
+        if(values != null) {
             jv.inner_update(values[0]);
         }else{
             jv.inner_update(null);
@@ -98,7 +100,8 @@ class ViewerAsyncTask extends AsyncTask<Void, Object, Boolean> implements Update
                 jv.inner_post();
             }
         }else{ // 실패의 경우
-            jv.inner_view_fail();
+            jv.inner_view_fail(doInBackException);
+            doInBackException = null;
         }
         jv.asyncTaskPool.remove(taskKey);
     }

@@ -21,10 +21,12 @@ public class Test1 extends Viewer {
     public void onBind(int requestCode, ViewerBuilder build) {
         build.setAsync(true)
              .setPreLayout(true)
-             .setLoadView(R.layout.progress, new UpdateListener() {
+             .setLoadLayout(R.layout.progress, new UpdateListener() {
                  @Override
-                 public void init(int requestCode, View loadView) {
+                 public void onCreate(int requestCode, View loadView) {
+
                  }
+
                  @Override
                  public void onUpdate(int requestCode, View loadView, Object value) {
                      ((ProgressBar)loadView.findViewById(R.id.progress)).setProgress((int) value);
@@ -51,11 +53,6 @@ public class Test1 extends Viewer {
     }
 
     @Override
-    public void onUpdate(int requestCode, Object value) {
-
-    }
-
-    @Override
     public void onCancelled(Integer requestCode) {
 
     }
@@ -66,7 +63,7 @@ public class Test1 extends Viewer {
     }
 
     @Override
-    public void onFail(Integer requestCode) {
+    public void onFail(Integer requestCode, Exception e) {
         Toast.makeText(getContext(), "실패", Toast.LENGTH_LONG).show();
     }
 }

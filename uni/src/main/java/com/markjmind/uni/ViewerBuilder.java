@@ -3,7 +3,6 @@ package com.markjmind.uni;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -34,11 +33,11 @@ public class ViewerBuilder {
 	protected TYPE_MODE mode;
 	protected boolean isAsync = true;
 	protected boolean isPreLayout = false;
-	protected boolean hasLoadView = false;
-	protected View loadView;
+//	protected boolean hasLoadView = false;
+//	protected View loadView;
 	protected Store<Object> param;
-	protected UpdateListener updateListener;
 	protected int requestCode;
+	protected LoadViewController loadController;
 
 	
 	/**
@@ -47,7 +46,7 @@ public class ViewerBuilder {
 	 * @param jwViewerClass
 	 * @param activity
 	 */
-	public ViewerBuilder(int R_layout_id, Class<? extends Viewer> jwViewerClass, Activity activity){
+	protected ViewerBuilder(int R_layout_id, Class<? extends Viewer> jwViewerClass, Activity activity){
 		this.jwViewerClass = jwViewerClass;
 		this.activity = activity;
 		this.context = activity;
@@ -55,6 +54,7 @@ public class ViewerBuilder {
 		this.mode = TYPE_MODE.ACTIVITY;
 		this.param = new Store<Object>();
 		this.requestCode = Viewer.REQUEST_CODE_NONE;
+		loadController = new LoadViewController();
 	}
 	public ViewerBuilder(Class<? extends Viewer> jwViewerClass, Activity activity){
 		this(JwMemberMapper.injectionLayout(jwViewerClass), jwViewerClass, activity);
@@ -99,24 +99,26 @@ public class ViewerBuilder {
 		return this.isPreLayout;
 	}
 
-	public ViewerBuilder setLoadView(View loadView, UpdateListener updateListener){
-		hasLoadView = true;
-		this.loadView = loadView;
-		this.loadView.setClickable(true);
-		this.updateListener = updateListener;
+//	public ViewerBuilder setLoadView(View loadView, UpdateListener updateListener){
+//		hasLoadView = true;
+//		this.loadView = loadView;
+//		this.loadView.setClickable(true);
+//		this.updateListener = updateListener;
+//		return this;
+//	}
+
+	public ViewerBuilder setLoadLayout(int R_layout_id, UpdateListener updateListener){
+//		return this.setLoadView(getLayoutInfalter(R_layout_id), updateListener);
+		loadController.setLoadView(R_layout_id, updateListener);
 		return this;
 	}
 
-	public ViewerBuilder setLoadView(int R_layout_id, UpdateListener updateListener){
-		return this.setLoadView(getLayoutInfalter(R_layout_id), updateListener);
+	public ViewerBuilder setEnableLoadLayout(boolean enable){
+		loadController.setEnable(enable);
+		return this;
 	}
 
-
-	public View getLoadView(){
-		return loadView;
-	}
-
-	public ViewerBuilder setRequestCode(Integer requestCode){
+	public ViewerBuilder setRequestCode(int requestCode){
 		this.requestCode = requestCode;
 		return this;
 	}
@@ -292,10 +294,10 @@ public class ViewerBuilder {
 	}
 
 /************************************************* 화면 컨트롤 관련 ************************************/
-	private View getLayoutInfalter(int layout_id){
-		View v = ((LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(layout_id, null);
-		return v;
-	}
+//	private View getLayoutInfalter(int layout_id){
+//		View v = ((LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(layout_id, null);
+//		return v;
+//	}
 
 	/**
 	 * activity안에 있는 View를 찾는다
