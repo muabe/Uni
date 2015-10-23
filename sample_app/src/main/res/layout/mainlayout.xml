@@ -16,10 +16,10 @@
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="운동"
+            android:text="menu1"
             android:id="@+id/menu1" android:layout_weight="1"/>
-        <Button android:layout_width="0dp" android:layout_height="wrap_content" android:text="식이" android:id="@+id/menu2" android:layout_weight="1"/>
-        <Button android:layout_width="0dp" android:layout_height="wrap_content" android:text="혈당" android:id="@+id/menu3" android:layout_weight="1"/>
-        <Button android:layout_width="0dp" android:layout_height="wrap_content" android:text="설정" android:id="@+id/menu4" android:layout_weight="1"/>
+        <Button android:layout_width="0dp" android:layout_height="wrap_content" android:text="menu2" android:id="@+id/menu2" android:layout_weight="1"/>
+        <Button android:layout_width="0dp" android:layout_height="wrap_content" android:text="menu3" android:id="@+id/menu3" android:layout_weight="1"/>
+        <Button android:layout_width="0dp" android:layout_height="wrap_content" android:text="menu4" android:id="@+id/menu4" android:layout_weight="1"/>
     </LinearLayout>
 </LinearLayout>

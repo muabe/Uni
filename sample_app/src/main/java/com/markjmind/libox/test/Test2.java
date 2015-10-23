@@ -36,12 +36,7 @@ public class Test2 extends Viewer {
                     .setLoadLayout(R.layout.loading, new UpdateListener() {
                         @Override
                         public void onCreate(int requestCode, View loadView) {
-
-                        }
-
-                        @Override
-                        public void onUpdate(int requestCode, View loadView, Object value) {
-
+                            ((TextView)loadView.findViewById(R.id.loading_text)).setText("Loading");
                         }
                     });
         }

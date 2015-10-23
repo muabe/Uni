@@ -9,4 +9,10 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:id="@+id/progress" android:layout_marginTop="10dp" android:indeterminate="false"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/progress_text" android:layout_marginTop="5dp"/>
 </LinearLayout>

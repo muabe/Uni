@@ -24,12 +24,13 @@ public class Test1 extends Viewer {
              .setLoadLayout(R.layout.progress, new UpdateListener() {
                  @Override
                  public void onCreate(int requestCode, View loadView) {
-
+                     ((TextView)loadView.findViewById(R.id.progress_text)).setText("");
                  }
 
                  @Override
                  public void onUpdate(int requestCode, View loadView, Object value) {
                      ((ProgressBar)loadView.findViewById(R.id.progress)).setProgress((int) value);
+                     ((TextView)loadView.findViewById(R.id.progress_text)).setText((int)value+"/100%");
                  }
              })
              .addParam("p2", "내부");
@@ -38,15 +39,15 @@ public class Test1 extends Viewer {
     @Override
     public void onPre(int requestCode) {
         textView1 = (TextView)findViewById(R.id.textView1);
-        textView1.setText("로딩중 입니다.");
+        textView1.setText("Loading..");
     }
 
     @Override
     public boolean onLoad(int requestCode, UpdateEvent event) {
         for(int i=0;i<=100;i++) {
             try {
-                event.update((i+11));
-                Thread.sleep(50);
+                event.update(i);
+                Thread.sleep(20);
             } catch (InterruptedException e) {}
         }
         return true;
