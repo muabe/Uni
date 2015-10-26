@@ -90,7 +90,9 @@ class ViewerAsyncTask extends AsyncTask<Void, Object, Boolean> implements Update
                 if (!jv.builder.isPreLayout()) { // PreLayout이 아닐때
                     jv.removeAfterOutAnim();
                     jv.parentView.addView(jv.frame, jv.parentView.getLayoutParams());
-                    jv.frame.addView(jv.viewer);
+                    if(jv.isEnablePostView()) {
+                        jv.frame.addView(jv.viewer);
+                    }
 //                    if (jv.asyncBind(jv, jv.task)) {
 //                        jv.inner_post();
 //                    }

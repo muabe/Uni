@@ -61,11 +61,31 @@ public class Viewer {
 
 	private RefreshBuilder reBuilder;
 
+	private boolean enablePostView;
+	/**
+	 * onPost시 view를 enable할지 여부
+	 * @return
+	 */
+	public boolean isEnablePostView() {
+		return enablePostView;
+	}
+
+	/**
+	 * onPost시 view를 enable할지 여부 결정
+	 * @return
+	 */
+	public void setEnablePostView(boolean enablePostView) {
+		this.enablePostView = enablePostView;
+	}
+
+
+
 	/**
 	 * 기본생성자
 	 */
 	protected Viewer(){
 		param = new Store<>();
+		this.enablePostView = true;
 	}
 
 /***************************************** 초기화 관련 ********************************************/
@@ -269,13 +289,14 @@ public class Viewer {
 	}
 
 	boolean inner_load(UpdateEvent event) throws Exception{
+		setEnablePostView(true);
 		return onLoad(builder.requestCode, event);
 	}
 
 	void inner_update(Object value){
 		onUpdate(builder.requestCode, value);
-		if(builder.loadController.updateListener!=null){
-			builder.loadController.updateListener.onUpdate(builder.requestCode, builder.loadController.loadView, value);
+		if(builder.loadController.loadViewListener !=null){
+			builder.loadController.loadViewListener.loadUpdate(builder.requestCode, builder.loadController.loadView, value);
 		}
 	}
 

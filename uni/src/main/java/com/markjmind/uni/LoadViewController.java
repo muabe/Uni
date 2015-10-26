@@ -12,16 +12,16 @@ class LoadViewController {
     protected int layoutId;
     protected View loadView;
     protected boolean enable;
-    protected UpdateListener updateListener;
+    protected LoadViewListener loadViewListener;
 
     public LoadViewController(){
         this.layoutId = -1;
         this.enable = true;
     }
 
-    protected void setLoadView(int layoutId, UpdateListener updateListener){
+    protected void setLoadView(int layoutId, LoadViewListener loadViewListener){
         this.layoutId = layoutId;
-        this.updateListener = updateListener;
+        this.loadViewListener = loadViewListener;
     }
 
     protected void setEnable(boolean enable){
@@ -45,16 +45,16 @@ class LoadViewController {
         loadView = ((LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(layoutId, null);
         loadView.setClickable(true);
         frame.addView(loadView); //로딩뷰 띄우기
-        if(updateListener!=null){
-            updateListener.onCreate(requestCode, loadView);
+        if(loadViewListener !=null){
+            loadViewListener.loadCreate(requestCode, loadView);
         }
     }
 
     protected void onDestroy(int requestCode, ViewGroup parents){
         parents.removeView(loadView);
         loadView = null;
-        if(updateListener!=null){
-            updateListener.onDestroy(requestCode);
+        if(loadViewListener !=null){
+            loadViewListener.loadDestroy(requestCode);
         }
     }
 }

@@ -35,11 +35,10 @@ public class ViewerBuilder {
 	protected boolean isPreLayout = false;
 //	protected boolean hasLoadView = false;
 //	protected View loadView;
-	protected Store<Object> param;
+	protected Store<?> param;
 	protected int requestCode;
 	protected LoadViewController loadController;
 
-	
 	/**
 	 * Activity build 생성자
 	 * @param R_layout_id
@@ -52,7 +51,7 @@ public class ViewerBuilder {
 		this.context = activity;
 		this.layout_id = R_layout_id;
 		this.mode = TYPE_MODE.ACTIVITY;
-		this.param = new Store<Object>();
+		this.param = new Store<>();
 		this.requestCode = Viewer.REQUEST_CODE_NONE;
 		loadController = new LoadViewController();
 	}
@@ -107,9 +106,9 @@ public class ViewerBuilder {
 //		return this;
 //	}
 
-	public ViewerBuilder setLoadLayout(int R_layout_id, UpdateListener updateListener){
+	public ViewerBuilder setLoadLayout(int R_layout_id, LoadViewListener loadViewListener){
 //		return this.setLoadView(getLayoutInfalter(R_layout_id), updateListener);
-		loadController.setLoadView(R_layout_id, updateListener);
+		loadController.setLoadView(R_layout_id, loadViewListener);
 		return this;
 	}
 
@@ -205,7 +204,8 @@ public class ViewerBuilder {
 		return add(parents);
 	}
 
-/************************************************* 파라 미터 ************************************/
+
+	/************************************************* 파라 미터 ************************************/
 	/**
 	 * 다른 Viewer로 넘기는 파라미터를 설정한다.
 	 * @param key Parameter Key
@@ -281,14 +281,14 @@ public class ViewerBuilder {
 	 * 다른 Viewer로 전달한 파라미터 Store를 받는다.
 	 * @return Parameter store
 	 */
-	public Store<Object> getParamStore(){
+	public Store<?> getParamStore(){
 		return param;
 	}
 
 	/**
 	 *  다른 Viewer로 전달한 파라미터 Store를 설정한다.
 	 */
-	public ViewerBuilder setParamStore(Store<Object> store){
+	public ViewerBuilder setParamStore(Store<?> store){
 		param = store;
 		return this;
 	}

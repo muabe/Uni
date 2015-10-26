@@ -32,8 +32,8 @@ public class RefreshBuilder{
         return this;
     }
 
-    public RefreshBuilder setLoadLayout(int R_layout_id, UpdateListener updateListener){
-        builder.setLoadLayout(R_layout_id, updateListener);
+    public RefreshBuilder setLoadLayout(int R_layout_id, LoadViewListener loadViewListener){
+        builder.setLoadLayout(R_layout_id, loadViewListener);
         return this;
     }
 
@@ -60,7 +60,7 @@ public class RefreshBuilder{
     /**
      *  다른 Viewer로 전달한 파라미터 Store를 설정한다.
      */
-    public RefreshBuilder setParamStore(Store<Object> store){
+    public RefreshBuilder setParamStore(Store<?> store){
         builder.setParamStore(store);
         return this;
     }
