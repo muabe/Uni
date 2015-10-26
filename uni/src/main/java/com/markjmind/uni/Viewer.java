@@ -45,7 +45,7 @@ public class Viewer {
 		Fail,
 		Error
 	}
-	public static final Integer REQUEST_CODE_NONE = -1;
+	public static final int REQUEST_CODE_NONE = -1;
 	public Status currentStatus;
 	static Store<ViewerAsyncTask> asyncTaskPool = new Store<ViewerAsyncTask>();
 	private static int taskIndex = 0;
