@@ -55,11 +55,7 @@ public class ViewerBuilder {
 		this.requestCode = Viewer.REQUEST_CODE_NONE;
 		loadController = new LoadViewController();
 	}
-	public ViewerBuilder(Class<? extends Viewer> jwViewerClass, Activity activity){
-		this(JwMemberMapper.injectionLayout(jwViewerClass), jwViewerClass, activity);
-	}
-	
-	
+
 	/**
 	 * Dialog build 생성자
 	 * @param R_layout_id
@@ -72,7 +68,15 @@ public class ViewerBuilder {
 		this.context = dialog.getContext();
 		this.layout_id = R_layout_id;
 		this.mode = TYPE_MODE.DIALOG;
+		this.param = new Store<>();
+		this.requestCode = Viewer.REQUEST_CODE_NONE;
+		loadController = new LoadViewController();
 	}
+
+	public ViewerBuilder(Class<? extends Viewer> jwViewerClass, Activity activity){
+		this(JwMemberMapper.injectionLayout(jwViewerClass), jwViewerClass, activity);
+	}
+
 	public ViewerBuilder(Class<? extends Viewer> jwViewerClass, Dialog dialog){
 		this(JwMemberMapper.injectionLayout(jwViewerClass), jwViewerClass, dialog);
 	}
