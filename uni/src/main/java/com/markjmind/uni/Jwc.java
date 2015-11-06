@@ -43,5 +43,13 @@ public class Jwc extends JwViewController{
 	public static float getDensity(View view){
 		return  view.getContext().getResources().getDisplayMetrics().density;
 	}
+
+	public static int getDp(Context context, int pix){
+		return (int)(pix/context.getResources().getDisplayMetrics().density);
+	}
+
+	public static int getPix(Context context, int dp){
+		return (int)(dp*context.getResources().getDisplayMetrics().density);
+	}
 	
 }
