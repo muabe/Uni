@@ -47,8 +47,8 @@ public class Viewer {
 	}
 	public static final int REQUEST_CODE_NONE = -1;
 	public Status currentStatus;
-	static Store<ViewerAsyncTask> asyncTaskPool = new Store<ViewerAsyncTask>();
-	private static int taskIndex = 0;
+	protected Store<InnerAsyncTask> asyncTaskPool = new Store<InnerAsyncTask>();
+	private int taskIndex = 0;
 	FrameLayout frame;
 	View viewer;
 	protected ViewGroup parentView;
@@ -535,13 +535,13 @@ public class Viewer {
 			cancelTaskAput();
 			cancelTaskAcv();
 		}
-		ViewerAsyncTask viewerAsyncTask = new ViewerAsyncTask(taskKey, this);
-		asyncTaskPool.add(taskKey, viewerAsyncTask);
+		InnerAsyncTask innerAsyncTask = new InnerAsyncTask(taskKey, this);
+		asyncTaskPool.add(taskKey, innerAsyncTask);
 
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
-			viewerAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			innerAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		} else {
-			viewerAsyncTask.execute();
+			innerAsyncTask.execute();
 		}
 	}
 	
@@ -553,18 +553,18 @@ public class Viewer {
 		return taskKey;
 	}
 	
-	public static void cancelTask(String taskKey){
-		ViewerAsyncTask viewerAsyncTask = asyncTaskPool.get(taskKey);
-		if(viewerAsyncTask!=null){
-			viewerAsyncTask.stop();
+	public void cancelTask(String taskKey){
+		InnerAsyncTask innerAsyncTask = asyncTaskPool.get(taskKey);
+		if(innerAsyncTask !=null){
+			innerAsyncTask.stop();
 		}
 	}
 	
-	public static void cancelTaskAcv(View parents){
+	public void cancelTaskAcv(View parents){
 		String taskKey = TASK_ACV+"_"+parents.hashCode();
 		cancelTask(taskKey);
 	}
-	public static void cancelTaskAput(View parents){
+	public void cancelTaskAput(View parents){
 		String[] keys = getRunTaskKeys();
 		for(int i=0;i<keys.length;i++){
 			String tempKey = TASK_APUT+"_"+parents.hashCode();
@@ -590,11 +590,11 @@ public class Viewer {
 	public void cancelTaskAput(int taskIndex){
 		cancelTaskAput(parentView, taskIndex);
 	}
-	public static int getRunTaskCount(){
+	public int getRunTaskCount(){
 		return asyncTaskPool.size();
 	}
 	
-	public static String[] getRunTaskKeys(){
+	public String[] getRunTaskKeys(){
 		return asyncTaskPool.getKeys();
 	}
 

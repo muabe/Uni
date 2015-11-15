@@ -3,17 +3,14 @@ package com.markjmind.uni;
 import android.os.AsyncTask;
 import android.util.Log;
 
-/**
- * Created by MarkJ on 2015-11-14.
- */
-public class ViewerAsyncTask extends AsyncTask<Void, Object, Boolean> implements UpdateEvent{
+class InnerAsyncTask extends AsyncTask<Void, Object, Boolean> implements UpdateEvent{
     private String taskKey;
     private boolean isStop;
     private Viewer jv;
     private UpdateEvent event;
 
 
-    public ViewerAsyncTask(String taskKey, Viewer jv){
+    public InnerAsyncTask(String taskKey, Viewer jv){
         this.taskKey = taskKey;
         this.isStop = false;
         this.jv = jv;
@@ -22,6 +19,17 @@ public class ViewerAsyncTask extends AsyncTask<Void, Object, Boolean> implements
 
     @Override
     protected void onPreExecute() {
+//        if(jv.TASK_ACV.equals(jv.task)){
+//            jv.removeAfterOutAnim();
+//        }
+//        jv.parentView.addView(jv.frame, jv.parentView.getLayoutParams());
+//        if(jv.builder.isPreLayout()){
+////            jv.makeViewer(true);
+//            //FIXME Viewer의 바인드부분을 잘비교하기 바람
+//            jv.frame.removeAllViews();
+//            jv.frame.addView(jv.viewer, jv.parentView.getLayoutParams());
+//        }
+//        jv.inner_pre();
         if(!jv.TASK_LOAD.equals(jv.task)){
             if (jv.builder.isPreLayout()) { // preView를 설정했을 경우
                 jv.removeAfterOutAnim();  // 이전에 있던 뷰를 지우고
@@ -119,6 +127,6 @@ public class ViewerAsyncTask extends AsyncTask<Void, Object, Boolean> implements
     @Override
     public void update(Object value) {
         this.publishProgress(value);
-    }
+     }
 
 }

@@ -3,8 +3,11 @@ package com.markjmind.uni;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 
 /**
  * start : 2012.08.30<br>
@@ -51,5 +54,21 @@ public class Jwc extends JwViewController{
 	public static int getPix(Context context, int dp){
 		return (int)(dp*context.getResources().getDisplayMetrics().density);
 	}
-	
+
+	public static int getWindowHeight(Context context){
+		WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+		Display display = wm.getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		return size.y;
+	}
+
+	public static int getWindowWidth(Context context){
+		WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+		Display display = wm.getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		return size.x;
+	}
+
 }
