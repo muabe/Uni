@@ -9,8 +9,8 @@ import android.widget.Toast;
 import com.markjmind.libox.MainViewer;
 import com.markjmind.libox.R;
 import com.markjmind.libox.common.Web;
+import com.markjmind.uni.LoadViewListener;
 import com.markjmind.uni.UpdateEvent;
-import com.markjmind.uni.UpdateListener;
 import com.markjmind.uni.Viewer;
 import com.markjmind.uni.ViewerBuilder;
 import com.markjmind.uni.annotiation.GetView;
@@ -39,15 +39,26 @@ public class LoginViewer extends Viewer {
 
     @Override
     public void onBind(int requestCode, ViewerBuilder build) {
-        build.setLoadLayout(R.layout.loading, new UpdateListener(){
+        build.setLoadLayout(R.layout.loading, new LoadViewListener(){
+
             @Override
-            public void onCreate(int requestCode, View loadView) {
+            public void loadCreate(int requestCode, View loadView) {
                 TextView text = (TextView)loadView.findViewById(R.id.loading_text);
                 if(requestCode==1){
                     text.setText("로그인을 확인합니다.");
                 }else{
                     text.setText("로딩중..");
                 }
+            }
+
+            @Override
+            public void loadUpdate(int requestCode, View loadView, Object value) {
+
+            }
+
+            @Override
+            public void loadDestroy(int requestCode) {
+
             }
         }).setAsync(true);
     }
@@ -101,7 +112,7 @@ public class LoginViewer extends Viewer {
     }
 
     @Override
-    public void onFail(Integer requestCode, Exception e) {
+    public void onFail(int requestCode, Exception e) {
         Toast.makeText(getContext(),"로그인 실패",Toast.LENGTH_SHORT);
     }
 }

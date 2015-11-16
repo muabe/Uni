@@ -32,7 +32,7 @@ import java.util.HashMap;
  * @version 2013.11.17
  */
 
-public class Viewer {
+public class Viewer{
 
 	public static enum Status{
 		None,
@@ -62,6 +62,9 @@ public class Viewer {
 	private RefreshBuilder reBuilder;
 
 	private boolean enablePostView;
+	private ViewerListener viewerListener;
+
+
 	/**
 	 * onPost시 view를 enable할지 여부
 	 * @return
@@ -86,7 +89,154 @@ public class Viewer {
 	protected Viewer(){
 		param = new Store<>();
 		this.enablePostView = true;
+		viewerListener = new ViewerListener() {
+			@Override
+			public void onBind(int requestCode, ViewerBuilder build, Viewer viewer) {
+				viewer.onBind(requestCode, build);
+				if(build.getParamStore().size()>0) {
+					param.putAll(build.getParamStore());
+				}
+				setStatus(Status.Bind);
+				build.getParamStore().clear();
+			}
+			@Override
+			public void onPre(int requestCode, Viewer viewer) {
+				//		if(builder.hasLoadView && builder.loadView!=null) {
+//			frame.addView(builder.loadView);
+//			Log.e("sd","sd");
+//		}
+				setStatus(Status.Pre);
+				viewer.onPre(requestCode);
+			}
+
+			@Override
+			public boolean onLoad(int requestCode, UpdateEvent event, Viewer viewer) throws Exception {
+				setEnablePostView(true);
+				return viewer.onLoad(requestCode, event);
+			}
+
+			@Override
+			public void onUpdate(int requestCode, Object value, Viewer viewer) {
+				viewer.onUpdate(requestCode, value);
+				if(builder.loadController.loadViewListener !=null){
+					builder.loadController.loadViewListener.loadUpdate(builder.requestCode, builder.loadController.loadView, value);
+				}
+			}
+
+			@Override
+			public void onPost(int requestCode, Viewer viewer) {
+				if(getParent()==null || frame==null){
+					return;
+				}
+
+				//액티비티나 다이얼로그가 종료되다면 cancel한다.
+				if(builder.mode.equals(ViewerBuilder.TYPE_MODE.ACTIVITY)){
+					if(getActivity().isFinishing()){
+						cancelTask(getViewerTaskKey(TASK_ACV));
+						builder.requestCode = REQUEST_CODE_NONE;
+						return;
+					}
+				}else if(builder.mode.equals(ViewerBuilder.TYPE_MODE.DIALOG)){
+					if(!getDialog().isShowing()){
+						cancelTask(getViewerTaskKey(TASK_ACV));
+						builder.requestCode = REQUEST_CODE_NONE;
+						return;
+					}
+				}else{
+					builder.requestCode = REQUEST_CODE_NONE;
+					return;
+				}
+
+				// 로딩뷰를 설정했는지 여부에따라 로딩뷰를 삭제한다.
+				// 로딩뷰는 한번뜨고 메모리에서 사라진다.(재사용시 데이터 초기화 문제)
+				if(builder.loadController.isEnable()){
+					builder.loadController.onDestroy(builder.requestCode, frame);
+				}
+
+				//hashCode가 구조상 유일 아이디가 될수있음을 확인함
+				int hashId = frame.hashCode();
+				frame.setId(hashId);
+				if(findGobalView(hashId)!=null){
+					setStatus(Status.Post);
+					viewer.onPost(builder.requestCode);
+					setStatus(Status.Complete);
+				}else{
+					setStatus(Status.Error);
+				}
+				frame.setId(-1);
+				builder.requestCode = REQUEST_CODE_NONE;
+			}
+
+			@Override
+			public void onFail(int requestCode, Exception e, Viewer viewer) {
+				if(getParent()!=null && frame!=null){
+					// 로딩뷰를 설정했는지 여부에따라 로딩뷰를 삭제한다.
+					if(builder.loadController.isEnable()){
+						builder.loadController.onDestroy(builder.requestCode, frame);
+					}
+				}
+				setStatus(Status.Fail);
+				viewer.onFail(builder.requestCode, e);
+				setStatus(Status.Complete);
+				builder.requestCode = REQUEST_CODE_NONE;
+			}
+
+			@Override
+			public void onCancelled(int requestCode, Viewer viewer) {
+				if(getParent()!=null && frame!=null){
+					// 로딩뷰를 설정했는지 여부에따라 로딩뷰를 삭제한다.
+					if(builder.loadController.isEnable()){
+						builder.loadController.onDestroy(builder.requestCode, frame);
+					}
+				}
+				setStatus(Status.Cancel);
+				viewer.onCancelled(builder.requestCode);
+				builder.requestCode = REQUEST_CODE_NONE;
+			}
+		};
 	}
+
+	/***************************************** 외부 인터페이스 ********************************************/
+
+	public void onBind(int requestCode, ViewerBuilder build){}
+
+	public void onPre(int requestCode){}
+
+	public boolean onLoad(int requestCode, UpdateEvent event) throws Exception{ return true; }
+
+	public void onUpdate(int requestCode, Object value){}
+
+	public void onPost(int requestCode){}
+
+	public void onFail(int requestCode, Exception e){}
+
+	public void onCancelled(int requestCode){}
+
+	void runPre(){
+		if(currentStatus!=Status.None) {
+			cancelTask(getViewerTaskKey(TASK_ACV));
+			removeViewer();
+			makeViewer();
+			frame.addView(viewer);
+			viewerListener.onPre(builder.requestCode, this);
+		}
+		builder.requestCode = REQUEST_CODE_NONE;
+	}
+
+	void runLoad(){
+		excute(TASK_LOAD, getViewerTaskKey(TASK_LOAD));
+	}
+
+	void runPost(){
+		cancelTask(getViewerTaskKey(TASK_ACV));
+		viewerListener.onPost(builder.requestCode, this);
+	}
+
+
+	private void setStatus(Status status){
+		currentStatus = status;
+	}
+
 
 /***************************************** 초기화 관련 ********************************************/
 
@@ -200,18 +350,18 @@ public class Viewer {
 	 */
 	public Viewer add(ViewGroup parents, int index){
 		parentView = parents;
-		inner_bind();
+		viewerListener.onBind(builder.requestCode, builder, this);
 		if(builder.isAsync()){
-			excute(TASK_APUT);
+			excute(TASK_APUT, getViewerTaskKey(TASK_APUT));
 		}else{
-			cancelTaskAcv();
+			cancelTask(getViewerTaskKey(TASK_ACV));
 			frame.addView(viewer);
 			if(index==-1){
 				parentView.addView(frame);
 			}else{
 				parentView.addView(frame, index);
 			}
-			inner_post();
+			viewerListener.onPost(builder.requestCode, this);
 		}
 		return this;
 	}
@@ -224,15 +374,15 @@ public class Viewer {
 	 */
 	public Viewer change(ViewGroup parents){
 		parentView = parents;
-		inner_bind();
-		cancelTaskAcv();
+		viewerListener.onBind(builder.requestCode, builder, this);
+		cancelTask(getViewerTaskKey(TASK_ACV));
 		if(builder.isAsync()){ // Ansync 일때
-			excute(TASK_ACV);
+			excute(TASK_ACV, getViewerTaskKey(TASK_ACV));
 		}else{
 			removeAfterOutAnim();
 			frame.addView(viewer);
 			parentView.addView(frame, parentView.getLayoutParams());
-			inner_post();
+			viewerListener.onPost(builder.requestCode, this);
 		}
 		return this;
 	}
@@ -242,161 +392,7 @@ public class Viewer {
 	}
 
 	
-/***************************************** 외부 인터페이스 ********************************************/
 
-	public void onBind(int requestCode, ViewerBuilder build){}
-
-	public void onPre(int requestCode){}
-
-	/**
-	 * loading() 리턴값이 true 일때 호출된다.<br>
-	 * Viewer를 재정의해야할 함수<br>
-	 * Viewer에 데이터값이나 셋팅하거나 view표현되어야할 값들 셋팅한다.
-	 */
-	public boolean onLoad(int requestCode, UpdateEvent event) throws Exception{ return true; }
-
-	public void onUpdate(int requestCode, Object value){}
-
-	public void onPost(int requestCode){}
-
-	/**
-	 * onloading() 리턴값이 false일때 호출된다.<br>
-	 * 로딩이 실패했을 경우 표현해야할 화면을 정의한다.
-	 */
-	public void onFail(Integer requestCode, Exception e){}
-
-	public void onCancelled(Integer requestCode){}
-
-
-	//////////////// inner 작업 ///////////////////////////////////////////////////
-
-	void inner_bind(){
-		onBind(builder.requestCode, builder);
-		if(builder.getParamStore().size()>0) {
-			param.putAll(builder.getParamStore());
-		}
-		setStatus(Status.Bind);
-		builder.getParamStore().clear();
-	}
-
-	void inner_pre(){
-//		if(builder.hasLoadView && builder.loadView!=null) {
-//			frame.addView(builder.loadView);
-//			Log.e("sd","sd");
-//		}
-		setStatus(Status.Pre);
-		onPre(builder.requestCode);
-	}
-
-	boolean inner_load(UpdateEvent event) throws Exception{
-		setEnablePostView(true);
-		return onLoad(builder.requestCode, event);
-	}
-
-	void inner_update(Object value){
-		onUpdate(builder.requestCode, value);
-		if(builder.loadController.loadViewListener !=null){
-			builder.loadController.loadViewListener.loadUpdate(builder.requestCode, builder.loadController.loadView, value);
-		}
-	}
-
-	boolean inner_post(){
-		if(getParent()==null || frame==null){
-			return false;
-		}
-
-		//액티비티나 다이얼로그가 종료되다면 cancel한다.
-		if(builder.mode.equals(ViewerBuilder.TYPE_MODE.ACTIVITY)){
-			if(getActivity().isFinishing()){
-				cancelTaskAcv();
-				builder.requestCode = REQUEST_CODE_NONE;
-				return false;
-			}
-		}else if(builder.mode.equals(ViewerBuilder.TYPE_MODE.DIALOG)){
-			if(!getDialog().isShowing()){
-				cancelTaskAcv();
-				builder.requestCode = REQUEST_CODE_NONE;
-				return false;
-			}
-		}else{
-			builder.requestCode = REQUEST_CODE_NONE;
-			return false;
-		}
-
-		// 로딩뷰를 설정했는지 여부에따라 로딩뷰를 삭제한다.
-		// 로딩뷰는 한번뜨고 메모리에서 사라진다.(재사용시 데이터 초기화 문제)
-		if(builder.loadController.isEnable()){
-			builder.loadController.onDestroy(builder.requestCode, frame);
-		}
-
-		//hashCode가 구조상 유일 아이디가 될수있음을 확인했음
-		int hashId = frame.hashCode();
-		frame.setId(hashId);
-		if(findGobalView(hashId)!=null){
-			setStatus(Status.Post);
-			onPost(builder.requestCode);
-			setStatus(Status.Complete);
-		}else{
-			setStatus(Status.Error);
-		}
-		frame.setId(-1);
-		builder.requestCode = REQUEST_CODE_NONE;
-		return true;
-	}
-
-	void inner_cancelled(){
-		if(getParent()!=null && frame!=null){
-			// 로딩뷰를 설정했는지 여부에따라 로딩뷰를 삭제한다.
-			if(builder.loadController.isEnable()){
-				builder.loadController.onDestroy(builder.requestCode, frame);
-			}
-		}
-		setStatus(Status.Cancel);
-		onCancelled(builder.requestCode);
-		builder.requestCode = REQUEST_CODE_NONE;
-	}
-
-	/**
-	 * 네트워크등 Thread 처리 관련 내용을 정의한다.
-	 * @return
-	 */
-	void inner_view_fail(Exception e){
-		if(getParent()!=null && frame!=null){
-			// 로딩뷰를 설정했는지 여부에따라 로딩뷰를 삭제한다.
-			if(builder.loadController.isEnable()){
-				builder.loadController.onDestroy(builder.requestCode, frame);
-			}
-		}
-		setStatus(Status.Fail);
-		onFail(builder.requestCode, e);
-		setStatus(Status.Complete);
-		builder.requestCode = REQUEST_CODE_NONE;
-	}
-
-	void runPre(){
-		if(currentStatus!=Status.None) {
-			cancelTaskAcv();
-			removeViewer();
-			makeViewer();
-			frame.addView(viewer);
-			inner_pre();
-		}
-		builder.requestCode = REQUEST_CODE_NONE;
-	}
-
-	void runLoad(){
-		excute(TASK_LOAD);
-	}
-
-	void runPost(){
-		cancelTaskAcv();
-		inner_post();
-	}
-
-
-	private void setStatus(Status status){
-		currentStatus = status;
-	}
 
 	
 /************************************************* 파라미터 관련 ************************************/
@@ -515,27 +511,27 @@ public class Viewer {
 	}
 
 /*************************************************** Task 관련 *********************************************/
-	public final static String TASK_ACV="acv"; //어싱크 뷰 체인지 뷰어
-	public final static String TASK_APUT="aput"; //어싱크 뷰 인풋 뷰어
-	public final static String TASK_LOAD="load"; //어싱크 로딩만
-	String task;
+	public final static String TASK_ACV = "acv"; //어싱크 뷰 체인지 뷰어
+	public final static String TASK_APUT = "aput"; //어싱크 뷰 인풋 뷰어
+	public final static String TASK_LOAD = "load"; //어싱크 로딩만
+	public final static String TASK_EXCUTE ="excute"; //전체를 로딩하지않고 스레드만사용
+	String state;
 
 	public String getTaskName(){
-		return task;
+		return state;
 	}
 
 
-	private void excute(String taskName){
-		this.task = taskName;
-		String taskKey = getTaskKey(taskName);
-		if(TASK_APUT.equals(taskName)){
-			taskIndex++;
+	private void excute(String state, String taskKey){
+		this.state = state;
+		if(TASK_APUT.equals(state)){
+			taskIndex++; // viewer.add 일경우 task를 cancel하지 않는다.
 		}
 		else{
-			cancelTaskAput();
-			cancelTaskAcv();
+			cancelTaskAput(parentView);
+			cancelTask(getViewerTaskKey(TASK_ACV));
 		}
-		InnerAsyncTask innerAsyncTask = new InnerAsyncTask(taskKey, this);
+		InnerAsyncTask innerAsyncTask = new InnerAsyncTask(taskKey, state, this, builder, viewerListener);
 		asyncTaskPool.add(taskKey, innerAsyncTask);
 
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
@@ -544,8 +540,24 @@ public class Viewer {
 			innerAsyncTask.execute();
 		}
 	}
+
+	public String excute(ViewerListener vListener){
+		String taskKey = TASK_EXCUTE +"_"+vListener.hashCode();
+		cancelTask(taskKey);
+		InnerAsyncTask innerAsyncTask = new InnerAsyncTask(taskKey, TASK_EXCUTE, this, null, vListener);
+		asyncTaskPool.add(taskKey, innerAsyncTask);
+
+
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
+			innerAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		} else {
+			innerAsyncTask.execute();
+		}
+
+		return taskKey;
+	}
 	
-	public String getTaskKey(String taskName){
+	private String getViewerTaskKey(String taskName){
 		String taskKey = taskName+"_"+parentView.hashCode();
 		if(TASK_APUT.equals(taskName)){
 			taskKey+=taskIndex;
@@ -560,10 +572,12 @@ public class Viewer {
 		}
 	}
 	
-	public void cancelTaskAcv(View parents){
-		String taskKey = TASK_ACV+"_"+parents.hashCode();
-		cancelTask(taskKey);
-	}
+	/**
+	 * viewer.add 일경우 cancel task
+	 * add의 경우 tackKey 마지막에 index가 붙는데
+	 * for문을 돌면서 해당 add의 이름을 가진 task를 전부 해제한다.
+	 * @param parents
+	 */
 	public void cancelTaskAput(View parents){
 		String[] keys = getRunTaskKeys();
 		for(int i=0;i<keys.length;i++){
@@ -573,23 +587,8 @@ public class Viewer {
 			}
 		}
 	}
-	
-	public void cancelTaskAput(){
-		cancelTaskAput(parentView);
-	}
-	
-	public void cancelTaskAcv(){
-		String taskKey = getTaskKey(TASK_ACV);
-		cancelTask(taskKey);
-	}
-	
-	public void cancelTaskAput(View parents, int taskIndex){
-		String taskKey = TASK_APUT+"_"+parents.hashCode()+"_"+taskIndex;
-		cancelTask(taskKey);
-	}
-	public void cancelTaskAput(int taskIndex){
-		cancelTaskAput(parentView, taskIndex);
-	}
+
+
 	public int getRunTaskCount(){
 		return asyncTaskPool.size();
 	}
@@ -820,23 +819,6 @@ public class Viewer {
 	public RefreshBuilder reBuild(){
 		return this.reBuild(REQUEST_CODE_NONE);
 	}
-
-//	public void setLoadView(View loadView, UpdateListener updateListener){
-////		boolean enableLoad = builder.hasLoadView;
-//		builder.setLoadView(loadView, updateListener);
-////		builder.hasLoadView = enableLoad;
-//	}
-//
-//	public void setLoadView(int R_layout_id, UpdateListener updateListener){
-////		boolean enableLoad = builder.hasLoadView;
-//		builder.setLoadView(R_layout_id, updateListener);
-////		builder.hasLoadView = enableLoad;
-//	}
-//
-////	public void enableLoadView(boolean enable){
-////		builder.hasLoadView = enable;
-////	}
-
 
 
 /*************************************************** 캐쉬 관련 *********************************************/

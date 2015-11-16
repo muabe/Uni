@@ -6,8 +6,8 @@ import android.widget.Toast;
 
 import com.markjmind.libox.R;
 import com.markjmind.libox.common.Web;
+import com.markjmind.uni.LoadViewListener;
 import com.markjmind.uni.UpdateEvent;
-import com.markjmind.uni.UpdateListener;
 import com.markjmind.uni.Viewer;
 import com.markjmind.uni.ViewerBuilder;
 import com.markjmind.uni.annotiation.GetView;
@@ -33,10 +33,20 @@ public class Test2 extends Viewer {
         public void onBind(int requestCode, ViewerBuilder build) {
             build.setAsync(true)
                     .setPreLayout(true)
-                    .setLoadLayout(R.layout.loading, new UpdateListener() {
+                    .setLoadLayout(R.layout.loading, new LoadViewListener() {
                         @Override
-                        public void onCreate(int requestCode, View loadView) {
+                        public void loadCreate(int requestCode, View loadView) {
                             ((TextView)loadView.findViewById(R.id.loading_text)).setText("Loading");
+                        }
+
+                        @Override
+                        public void loadUpdate(int requestCode, View loadView, Object value) {
+
+                        }
+
+                        @Override
+                        public void loadDestroy(int requestCode) {
+
                         }
                     });
         }
@@ -71,7 +81,7 @@ public class Test2 extends Viewer {
         }
 
         @Override
-        public void onFail(Integer requestCode, Exception e) {
+        public void onFail(int requestCode, Exception e) {
             Toast.makeText(getContext(), "실패", Toast.LENGTH_LONG).show();
         }
 }
