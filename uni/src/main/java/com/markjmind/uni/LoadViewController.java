@@ -13,6 +13,7 @@ class LoadViewController {
     protected View loadView;
     protected boolean enable;
     protected LoadViewListener loadViewListener;
+    private int loadCount = 0;
 
     public LoadViewController(){
         this.layoutId = -1;
@@ -35,26 +36,43 @@ class LoadViewController {
         return this.enable;
     }
 
+    protected boolean isShow(ViewGroup frame){
+        if(loadView!=null){
+            if(frame.indexOfChild(loadView)>0){
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * frame에 있는 LoadView를 add하여 화면에 보이게 한다.
      * @param requestCode
      * @param frame
      */
-    protected void show(int requestCode, ViewGroup frame){
-        Context context = frame.getContext();
-        loadView = ((LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(layoutId, null);
-        loadView.setClickable(true);
-        frame.addView(loadView); //로딩뷰 띄우기
-        if(loadViewListener !=null){
-            loadViewListener.loadCreate(requestCode, loadView);
+    protected synchronized void show(int requestCode, ViewGroup frame){
+        if(isEnable()) {
+            loadCount++;
+            if (!isShow(frame)) {
+                Context context = frame.getContext();
+                loadView = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(layoutId, null);
+//                loadView.setClickable(true);
+                frame.addView(loadView); //로딩뷰 띄우기
+            }
+            if (loadViewListener != null) {
+                loadViewListener.loadCreate(requestCode, loadView);
+            }
         }
     }
 
-    protected void onDestroy(int requestCode, ViewGroup parents){
-        parents.removeView(loadView);
-        loadView = null;
+    protected synchronized void onDestroy(int requestCode, ViewGroup parents){
+        if(--loadCount==0) {
+            parents.removeView(loadView);
+            loadView = null;
+        }
         if(loadViewListener !=null){
             loadViewListener.loadDestroy(requestCode);
         }
+
     }
 }

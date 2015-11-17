@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import android.app.Activity;
 import android.app.Application;
 
 /**
@@ -35,9 +34,9 @@ public class JwStringID {
 			}
 			isInit = true;
 		} catch (IllegalAccessException e) {
-			throw new JwMapperException("해당 ID를 가져올수 없습니다.", e);
+			throw new UinMapperException("해당 ID를 가져올수 없습니다.", e);
 		} catch (InstantiationException e) {
-			throw new JwMapperException("R.layout의 인스턴스를 생성할수 없습니다.", e);
+			throw new UinMapperException("R.layout의 인스턴스를 생성할수 없습니다.", e);
 		}
 	}
 	
@@ -76,7 +75,7 @@ public class JwStringID {
 		return result;
 	}
 	
-	public static int getLayoutID(String idName, Application app) throws JwMapperException{
+	public static int getLayoutID(String idName, Application app) throws UinMapperException {
 		Class cls = getRClass("layout",app);
 		Field field;
 		try {
@@ -84,17 +83,17 @@ public class JwStringID {
 			int value = field.getInt(null);
 			return value;
 		} catch (SecurityException e) {
-			throw new JwMapperException("[R.layout."+idName+"] SecurityException",e);
+			throw new UinMapperException("[R.layout."+idName+"] SecurityException",e);
 		} catch (NoSuchFieldException e) {
-			throw new JwMapperException("[R.layout."+idName+"] 필드가 존재하지 않습니다.",e);
+			throw new UinMapperException("[R.layout."+idName+"] 필드가 존재하지 않습니다.",e);
 		} catch (IllegalArgumentException e) {
-			throw new JwMapperException("[R.layout."+idName+"] IllegalArgumentException",e);
+			throw new UinMapperException("[R.layout."+idName+"] IllegalArgumentException",e);
 		} catch (IllegalAccessException e) {
-			throw new JwMapperException("[R.layout."+idName+"] 접근권한이 없는 필드입니다.",e);
+			throw new UinMapperException("[R.layout."+idName+"] 접근권한이 없는 필드입니다.",e);
 		}
 	}
 	
-	public static int getID(String idName, Application app) throws JwMapperException{
+	public static int getID(String idName, Application app) throws UinMapperException {
 		Class cls = getRClass("id",app);
 		Field field;
 		try {
@@ -102,22 +101,22 @@ public class JwStringID {
 			int value = field.getInt(null);
 			return value;
 		} catch (SecurityException e) {
-			throw new JwMapperException("[R.id."+idName+"] SecurityException",e);
+			throw new UinMapperException("[R.id."+idName+"] SecurityException",e);
 		} catch (NoSuchFieldException e) {
-			throw new JwMapperException("[R.id."+idName+"] 필드가 존재하지 않습니다.",e);
+			throw new UinMapperException("[R.id."+idName+"] 필드가 존재하지 않습니다.",e);
 		} catch (IllegalArgumentException e) {
-			throw new JwMapperException("[R.id."+idName+"] 잘못된 Field가 지정되었습니다.",e);
+			throw new UinMapperException("[R.id."+idName+"] 잘못된 Field가 지정되었습니다.",e);
 		} catch (IllegalAccessException e) {
-			throw new JwMapperException("[R.id."+idName+"] 접근권한이 없는 필드입니다.",e);
+			throw new UinMapperException("[R.id."+idName+"] 접근권한이 없는 필드입니다.",e);
 		}
 	}
 	
-	public static Class getRClass(String innerClassName, Application app) throws JwMapperException{
+	public static Class getRClass(String innerClassName, Application app) throws UinMapperException {
 		String fullName = app.getPackageName()+".R$"+innerClassName;
 		try {
 			return Class.forName(fullName);
 		} catch (ClassNotFoundException e) {
-			throw new JwMapperException("-"+ fullName+"- [R."+innerClassName+"] 클래스가 존재하지 않습니다.",e);
+			throw new UinMapperException("-"+ fullName+"- [R."+innerClassName+"] 클래스가 존재하지 않습니다.",e);
 		}
 	}
 }

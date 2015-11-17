@@ -15,10 +15,6 @@ public class RefreshBuilder{
         this.builder = jv.builder;
     }
 
-    public void onPre(){
-        jv.runPre();
-    }
-
     public void onLoad(){
         jv.runLoad();
     }

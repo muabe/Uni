@@ -69,7 +69,7 @@ public class OnClickListenerReceiver implements OnClickListener{
 			Class<?>[] paramTypes = method.getParameterTypes();
 
 			if(paramTypes==null || paramTypes.length==0 || paramTypes[0] != View.class){
-				throw new JwMapperException("\n["+receiver.getClass().getName()+"."+method.getName()+", 첫번째 Parameter인 View를 지정하지 않았습니다.",null);
+				throw new UinMapperException("\n["+receiver.getClass().getName()+"."+method.getName()+", 첫번째 Parameter인 View를 지정하지 않았습니다.",null);
 			}
 
 			//TODO 파라미터가 index를 넘어 버린다면??
@@ -80,11 +80,11 @@ public class OnClickListenerReceiver implements OnClickListener{
 			method.invoke(receiver, param.toArray());
 
 		} catch (IllegalArgumentException e) {
-			throw new JwMapperException("\n["+receiver.getClass().getName()+"."+method.getName()+", 함수에 매개변수가 잘못 지정되었습니다.",e);
+			throw new UinMapperException("\n["+receiver.getClass().getName()+"."+method.getName()+", 함수에 매개변수가 잘못 지정되었습니다.",e);
 		} catch (IllegalAccessException e) {
-			throw new JwMapperException("\n["+receiver.getClass().getName()+"."+method.getName()+", 접근권한이 없는 함수입니다.",e);
+			throw new UinMapperException("\n["+receiver.getClass().getName()+"."+method.getName()+", 접근권한이 없는 함수입니다.",e);
 		} catch (InvocationTargetException e) {
-			throw new JwMapperException("\n["+receiver.getClass().getName()+"."+method.getName()+", 함수를 실행하는중 Exception이 발생하였습니다.",e);
+			throw new UinMapperException("\n["+receiver.getClass().getName()+"."+method.getName()+", 함수를 실행하는중 Exception이 발생하였습니다.",e);
 		}
 	}
 	 
@@ -107,7 +107,7 @@ public class OnClickListenerReceiver implements OnClickListener{
 			setOnClickListener(view, method);
 		} catch (NoSuchMethodException e) {
 			int lineNumber = Thread.currentThread().getStackTrace()[3].getLineNumber();
-			throw new JwMapperException("\n"+getClass().getName()+"."+methodName+"(View view), method가 존재하지 않습니다.",e);
+			throw new UinMapperException("\n"+getClass().getName()+"."+methodName+"(View view), method가 존재하지 않습니다.",e);
 		}
 	}
 }

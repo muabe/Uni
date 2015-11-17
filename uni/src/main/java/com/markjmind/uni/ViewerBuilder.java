@@ -74,11 +74,11 @@ public class ViewerBuilder {
 	}
 
 	public ViewerBuilder(Class<? extends Viewer> jwViewerClass, Activity activity){
-		this(JwMemberMapper.injectionLayout(jwViewerClass), jwViewerClass, activity);
+		this(UniMemberMapper.injectionLayout(jwViewerClass), jwViewerClass, activity);
 	}
 
 	public ViewerBuilder(Class<? extends Viewer> jwViewerClass, Dialog dialog){
-		this(JwMemberMapper.injectionLayout(jwViewerClass), jwViewerClass, dialog);
+		this(UniMemberMapper.injectionLayout(jwViewerClass), jwViewerClass, dialog);
 	}
 
 

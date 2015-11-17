@@ -7,18 +7,18 @@ package com.markjmind.uni;
  * @author 오재웅
  * @version 2013.11.17
  */
-public class JwMapperException extends RuntimeException {
+public class UinMapperException extends RuntimeException {
 	
 	public String message;
 	private Throwable exception;
 	
-    public JwMapperException(String message, Throwable exception) {
+    public UinMapperException(String message, Throwable exception) {
         super(message, exception);
         this.message = message;
         this.exception = exception;
     }
     
-    public JwMapperException(String message) {
+    public UinMapperException(String message) {
         super(message);
     }
     public Throwable getCause() {

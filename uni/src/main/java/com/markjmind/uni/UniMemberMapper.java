@@ -17,14 +17,14 @@ import java.util.HashMap;
  * @email markjmind@gmail.com
  */
 
-public class JwMemberMapper {
+public class UniMemberMapper {
 	
 	public static String[] injectionBox(Class<?> viewerClass){
 		if(viewerClass.isAnnotationPresent(Box.class)){
 			Box par = viewerClass.getAnnotation(Box.class);
 			return par.value();
 		}else{
-			throw new JwMapperException("\n["+viewerClass.getName()+"] 해당 Viewer에 @params을 지정하는 annotation의 value가 잘못되었습니다..",null);
+			throw new UinMapperException("\n["+viewerClass.getName()+"] 해당 Viewer에 @params을 지정하는 annotation의 value가 잘못되었습니다..",null);
 		}
 	}
 	
@@ -33,7 +33,7 @@ public class JwMemberMapper {
 			Layout lytId = viewerClass.getAnnotation(Layout.class);
 			return lytId.value();
 		}else{
-			throw new JwMapperException("\n["+viewerClass.getName()+"] 해당 Viewer에 @layout을 지정하는 annotation의 value가 잘못되었습니다.",null);
+			throw new UinMapperException("\n["+viewerClass.getName()+"] 해당 Viewer에 @layout을 지정하는 annotation의 value가 잘못되었습니다.",null);
 		}
 		
 	}
@@ -79,7 +79,7 @@ public class JwMemberMapper {
 	private static View setMethod(Viewer obj, Integer id, Method method){
 		View view = obj.findViewById(id);
 		if(view==null){ // view가 없을경우
-			throw new JwMapperException("\n["+obj.getClass().getName()+""+", method에 해당하는 ID(Null)가 잘못 지정되었습니다.",null);
+			throw new UinMapperException("\n["+obj.getClass().getName()+""+", method에 해당하는 ID(Null)가 잘못 지정되었습니다.",null);
 		}
 		obj.setOnClickListener(view, method);
 		return view;
@@ -94,15 +94,15 @@ public class JwMemberMapper {
 		}
 
 		if(v==null){
-			throw new JwMapperException("\n["+obj.getClass().getName()+"] Field:"+field.getName()+", Filed에 해당하는 ID(Null)가 잘못 지정되었습니다.",null);
+			throw new UinMapperException("\n["+obj.getClass().getName()+"] Field:"+field.getName()+", Filed에 해당하는 ID(Null)가 잘못 지정되었습니다.",null);
 		}
 		try {
 			field.setAccessible(true);
 			field.set(obj, v);
 		} catch (IllegalArgumentException e) {
-			throw new JwMapperException("\n["+obj.getClass().getName()+"] Field:"+field.getName()+", 잘못된 Field에 해당하는 ID를 찾을수 없습니다.",e);
+			throw new UinMapperException("\n["+obj.getClass().getName()+"] Field:"+field.getName()+", 잘못된 Field에 해당하는 ID를 찾을수 없습니다.",e);
 		} catch (IllegalAccessException e) {
-			throw new JwMapperException("\n["+obj.getClass().getName()+"] Field:"+field.getName()+", 접근권한이 없는 필드입니다.",e);
+			throw new UinMapperException("\n["+obj.getClass().getName()+"] Field:"+field.getName()+", 접근권한이 없는 필드입니다.",e);
 		}
 		return v;
 	}

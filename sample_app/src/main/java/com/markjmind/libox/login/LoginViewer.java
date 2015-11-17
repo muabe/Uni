@@ -13,6 +13,7 @@ import com.markjmind.uni.LoadViewListener;
 import com.markjmind.uni.UpdateEvent;
 import com.markjmind.uni.Viewer;
 import com.markjmind.uni.ViewerBuilder;
+import com.markjmind.uni.UniAsyncTask;
 import com.markjmind.uni.annotiation.GetView;
 import com.markjmind.uni.annotiation.Layout;
 import com.markjmind.uni.hub.Store;
@@ -93,7 +94,7 @@ public class LoginViewer extends Viewer {
     @Override
     public void onPost(int requestCode) {
         if(requestCode==1){
-            Toast.makeText(getContext(),"로그인 되었습니다.",Toast.LENGTH_SHORT);
+            Toast.makeText(getContext(), "로그인 되었습니다.", Toast.LENGTH_SHORT);
             Viewer.build(MainViewer.class, getActivity()).change(this);
         }else{
             loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +105,27 @@ public class LoginViewer extends Viewer {
                             .add("reqDate", "20150916095826")
                             .add("registrationId", "");
                     reBuild(1).setEnableLoadLayout(true).onLoad();
+                }
+            });
+            findIdPwBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    excute(new UniAsyncTask() {
+                        @Override
+                        public boolean onLoad(int requestCode, UpdateEvent event, Viewer viewer) throws Exception {
+                            try {
+                                Thread.sleep(3000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            return true;
+                        }
+
+                        @Override
+                        public void onPost(int requestCode, Viewer viewer) {
+                            Toast.makeText(getContext(), "하이", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
         }
