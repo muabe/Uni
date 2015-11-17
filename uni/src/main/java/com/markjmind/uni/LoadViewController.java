@@ -56,7 +56,7 @@ class LoadViewController {
             if (!isShow(frame)) {
                 Context context = frame.getContext();
                 loadView = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(layoutId, null);
-//                loadView.setClickable(true);
+                loadView.setClickable(true);
                 frame.addView(loadView); //로딩뷰 띄우기
             }
             if (loadViewListener != null) {

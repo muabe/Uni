@@ -89,13 +89,13 @@ public abstract class UniAsyncTask {
         //액티비티나 다이얼로그가 종료되다면 cancel한다.
         if(viewer.builder.mode.equals(ViewerBuilder.TYPE_MODE.ACTIVITY)){
             if(viewer.getActivity().isFinishing()){
-                Viewer.cancelTaskAync();
+                Viewer.cancelTaskAync(viewer);
                 viewer.builder.requestCode = Viewer.REQUEST_CODE_NONE;
                 return;
             }
         }else if(viewer.builder.mode.equals(ViewerBuilder.TYPE_MODE.DIALOG)){
             if(!viewer.getDialog().isShowing()){
-                Viewer.cancelTaskAync();
+                Viewer.cancelTaskAync(viewer);
                 viewer.builder.requestCode = Viewer.REQUEST_CODE_NONE;
                 return;
             }
@@ -114,9 +114,7 @@ public abstract class UniAsyncTask {
         int hashId = viewer.frame.hashCode();
         viewer.frame.setId(hashId);
         if(viewer.findGobalView(hashId)!=null){
-            if(viewer.getActivity().findViewById(hashId)!=null) {
-                this.onPost(requestCode, viewer);
-            }
+           this.onPost(requestCode, viewer);
         }
         viewer.frame.setId(-1);
         viewer.builder.requestCode = Viewer.REQUEST_CODE_NONE;
