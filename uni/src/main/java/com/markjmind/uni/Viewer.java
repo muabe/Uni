@@ -137,7 +137,7 @@ public class Viewer{
 	void runPost(){
 //		cancelTask(getTaskKey(TASK_CHANGE));
 		cancelTaskAync();
-		uniAsyncTask.onPost(builder.requestCode, this);
+		uniAsyncTask.post(builder.requestCode, this);
 	}
 
 
@@ -252,7 +252,7 @@ public class Viewer{
 	 */
 	public Viewer add(ViewGroup parents, int index){
 		parentView = parents;
-		uniAsyncTask.onBind(builder.requestCode, builder, this);
+		uniAsyncTask.bind(builder.requestCode, builder, this);
 		if(builder.isAsync()){
 			excute(TASK_ADD, getTaskKey(TASK_ADD, uniAsyncTask));
 		}else{
@@ -263,7 +263,7 @@ public class Viewer{
 			}else{
 				parentView.addView(frame, index);
 			}
-			uniAsyncTask.onPost(builder.requestCode, this);
+			uniAsyncTask.post(builder.requestCode, this);
 		}
 		return this;
 	}
@@ -277,14 +277,14 @@ public class Viewer{
 	public Viewer change(ViewGroup parents){
 		parentView = parents;
 		cancelTaskAync();
-		uniAsyncTask.onBind(builder.requestCode, builder, this);
+		uniAsyncTask.bind(builder.requestCode, builder, this);
 		if(builder.isAsync()){ // Ansync 일때
 			excute(TASK_CHANGE, getTaskKey(TASK_CHANGE, uniAsyncTask));
 		}else{
 			removeAfterOutAnim();
 			frame.addView(viewer);
 			parentView.addView(frame, parentView.getLayoutParams());
-			uniAsyncTask.onPost(builder.requestCode, this);
+			uniAsyncTask.post(builder.requestCode, this);
 		}
 		return this;
 	}
