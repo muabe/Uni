@@ -49,7 +49,7 @@ public class UniMemberMapper {
 				if(list.length==0){
 					int id = oc.value();
 					if(id==-1) {
-						id = JwStringID.getID(method.getName(), obj.getActivity().getApplication());
+						id = JwStringID.getID(method.getName(), obj.getContext());
 					}
 					View view = setMethod(obj,id,method);
 					viewHash.put(id, view);
@@ -69,7 +69,7 @@ public class UniMemberMapper {
 				GetView ab = field.getAnnotation(GetView.class);
 				int id = ab.value();
 				if(id==-1){
-					id = JwStringID.getID(field.getName(), obj.getActivity().getApplication());
+					id = JwStringID.getID(field.getName(), obj.getContext());
 				}
 				setField(obj, id, field, viewHash);
 			}

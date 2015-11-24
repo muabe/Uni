@@ -1,10 +1,10 @@
 package com.markjmind.uni;
 
+import android.content.Context;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Hashtable;
-
-import android.app.Application;
 
 /**
  * start : 2012.08.21<br>
@@ -19,7 +19,7 @@ public class JwStringID {
 	private Hashtable<String, Integer> idMap = new Hashtable<String, Integer>();
 	private boolean isInit=false;
 	
-	public void init(Application app){
+	public void init(Context app){
 		Class cls = getRClass("id", app);
 		Object obj;
 		try {
@@ -75,7 +75,7 @@ public class JwStringID {
 		return result;
 	}
 	
-	public static int getLayoutID(String idName, Application app) throws UinMapperException {
+	public static int getLayoutID(String idName, Context app) throws UinMapperException {
 		Class cls = getRClass("layout",app);
 		Field field;
 		try {
@@ -93,7 +93,7 @@ public class JwStringID {
 		}
 	}
 	
-	public static int getID(String idName, Application app) throws UinMapperException {
+	public static int getID(String idName, Context app) throws UinMapperException {
 		Class cls = getRClass("id",app);
 		Field field;
 		try {
@@ -111,7 +111,7 @@ public class JwStringID {
 		}
 	}
 	
-	public static Class getRClass(String innerClassName, Application app) throws UinMapperException {
+	public static Class getRClass(String innerClassName, Context app) throws UinMapperException {
 		String fullName = app.getPackageName()+".R$"+innerClassName;
 		try {
 			return Class.forName(fullName);
