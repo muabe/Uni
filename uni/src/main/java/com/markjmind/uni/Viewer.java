@@ -801,6 +801,10 @@ public class Viewer {
         return this.reBuild(REQUEST_CODE_NONE);
     }
 
+    public int getRequestCode(){
+        return builder.requestCode;
+    }
+
 
 /*************************************************** 캐쉬 관련 *********************************************/
 
