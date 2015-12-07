@@ -270,6 +270,7 @@ public class Viewer {
     public Viewer add(ViewGroup parents, int index) {
         setParentView(parents);
         uniAsyncTask.bind(builder.requestCode, builder, this);
+        init(builder.layout_id);
         if (builder.isAsync()) {
             excute(TASK_ADD, getTaskKey(TASK_ADD, this, uniAsyncTask));
         } else {
@@ -296,6 +297,7 @@ public class Viewer {
         setParentView(parents);
         Viewer.cancelTaskAync(this);
         uniAsyncTask.bind(builder.requestCode, builder, this);
+        init(builder.layout_id);
         if (builder.isAsync()) { // Ansync 일때
             excute(TASK_CHANGE, getTaskKey(TASK_CHANGE, this, uniAsyncTask));
         } else {
@@ -305,6 +307,10 @@ public class Viewer {
             uniAsyncTask.post(builder.requestCode, this);
         }
         return this;
+    }
+
+    public Viewer change(int layoutId){
+        return this.change((ViewGroup)findGobalView(layoutId));
     }
 
     private void setParentView(ViewGroup parents){

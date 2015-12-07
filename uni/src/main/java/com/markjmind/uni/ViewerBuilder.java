@@ -74,11 +74,18 @@ public class ViewerBuilder {
 	}
 
 	public ViewerBuilder(Class<? extends Viewer> jwViewerClass, Activity activity){
-		this(UniMemberMapper.injectionLayout(jwViewerClass), jwViewerClass, activity);
+		this(-1, jwViewerClass, activity);
+		if(UniMemberMapper.hasInjectionLayout(jwViewerClass)){
+			this.layout_id = UniMemberMapper.injectionLayout(jwViewerClass);
+		}
+
 	}
 
 	public ViewerBuilder(Class<? extends Viewer> jwViewerClass, Dialog dialog){
-		this(UniMemberMapper.injectionLayout(jwViewerClass), jwViewerClass, dialog);
+		this(-1, jwViewerClass, dialog);
+		if(UniMemberMapper.hasInjectionLayout(jwViewerClass)){
+			this.layout_id = UniMemberMapper.injectionLayout(jwViewerClass);
+		}
 	}
 
 
@@ -102,16 +109,12 @@ public class ViewerBuilder {
 		return this.isPreLayout;
 	}
 
-//	public ViewerBuilder setLoadView(View loadView, UpdateListener updateListener){
-//		hasLoadView = true;
-//		this.loadView = loadView;
-//		this.loadView.setClickable(true);
-//		this.updateListener = updateListener;
-//		return this;
-//	}
+	public ViewerBuilder setLayout(int layoutId){
+		this.layout_id = layoutId;
+		return this;
+	}
 
 	public ViewerBuilder setLoadLayout(int R_layout_id, LoadViewListener loadViewListener){
-//		return this.setLoadView(getLayoutInfalter(R_layout_id), updateListener);
 		loadController.setLoadView(R_layout_id, loadViewListener);
 		return this;
 	}
@@ -137,11 +140,10 @@ public class ViewerBuilder {
 	 * 바인딩한 Viewer를 리턴한다.
 	 * @return Viewer
 	 */
-	private Viewer getViewer(){
+	public Viewer getViewer(){
 		try {
 			Viewer jv = jwViewerClass.newInstance();
 			jv.builder = this;
-			jv.init(layout_id);
 			return jv;
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();

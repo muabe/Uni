@@ -34,7 +34,7 @@ public class Store<Value> extends LinkedHashMap<Object, Object> implements Compa
 	
 	public Store(){
 		super();
-		types = new LinkedHashMap<String, String>();
+		types = new LinkedHashMap<>();
 	}
 	
 	/**

@@ -27,7 +27,11 @@ public class UniMemberMapper {
 			throw new UinMapperException("\n["+viewerClass.getName()+"] 해당 Viewer에 @params을 지정하는 annotation의 value가 잘못되었습니다..",null);
 		}
 	}
-	
+
+	public static boolean hasInjectionLayout(Class<?> viewerClass){
+		return viewerClass.isAnnotationPresent(Layout.class);
+	}
+
 	public static int injectionLayout(Class<?> viewerClass){
 		if(viewerClass.isAnnotationPresent(Layout.class)){
 			Layout lytId = viewerClass.getAnnotation(Layout.class);
