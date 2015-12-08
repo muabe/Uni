@@ -8,6 +8,8 @@ package com.markjmind.uni;
  * @version 2013.11.17
  */
 public class UinMapperException extends RuntimeException {
+    public static final String RESULT_CAST="Result에 대한 Class Type 지정이 잘못되었습니다.";
+
 	
 	public String message;
 	private Throwable exception;

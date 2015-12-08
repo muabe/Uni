@@ -25,7 +25,7 @@ public abstract class UniAsyncTask {
      * @return
      * @throws Exception
      */
-    public abstract boolean onLoad(int requestCode, UpdateEvent event, Viewer viewer) throws Exception;
+    public abstract void onLoad(int requestCode, UpdateEvent event, Viewer viewer) throws Exception;
 
     /**
      *
@@ -48,7 +48,7 @@ public abstract class UniAsyncTask {
      * @param requestCode
      * @param e
      */
-    public void onFail(int requestCode, Exception e, Viewer viewer){}
+    public void onFail(int requestCode, boolean isException, String message, Exception e, Viewer viewer){}
 
     /**
      *
@@ -69,9 +69,9 @@ public abstract class UniAsyncTask {
         this.onPre(requestCode, viewer);
     }
 
-    public boolean load(int requestCode, UpdateEvent event, Viewer viewer) throws Exception {
+    public void load(int requestCode, UpdateEvent event, Viewer viewer) throws Exception {
         viewer.setEnablePostView(true);
-        return this.onLoad(requestCode, event, viewer);
+        this.onLoad(requestCode, event, viewer);
     }
 
     public void update(int requestCode, Object value, Viewer viewer) {
@@ -83,7 +83,9 @@ public abstract class UniAsyncTask {
 
     public void post(int requestCode, Viewer viewer) {
         if(viewer.getParent()==null || viewer.frame==null){
-            return;
+            if(!viewer.isPrepare) {
+                return;
+            }
         }
 
         //액티비티나 다이얼로그가 종료되다면 cancel한다.
@@ -110,24 +112,28 @@ public abstract class UniAsyncTask {
             viewer.builder.loadController.onDestroy(viewer.builder.requestCode, viewer.frame);
         }
 
-        //hashCode가 구조상 유일 아이디가 될수있음을 확인함
-        int hashId = viewer.frame.hashCode();
-        viewer.frame.setId(hashId);
-        if(viewer.findGobalView(hashId)!=null){
-           this.onPost(requestCode, viewer);
+        if(viewer.isPrepare){
+            this.onPost(requestCode, viewer);
+        }else{
+            //hashCode가 구조상 유일 아이디가 될수있음을 확인함
+            int hashId = viewer.frame.hashCode();
+            viewer.frame.setId(hashId);
+            if(viewer.findGobalView(hashId)!=null){
+                this.onPost(requestCode, viewer);
+            }
+            viewer.frame.setId(-1);
         }
-        viewer.frame.setId(-1);
         viewer.builder.requestCode = Viewer.REQUEST_CODE_NONE;
     }
 
-    public void fail(int requestCode, Exception e, Viewer viewer) {
+    void fail(int requestCode, boolean isException, String message, Exception e, Viewer viewer) {
         if(viewer.getParent()!=null && viewer.frame!=null){
             // 로딩뷰를 설정했는지 여부에따라 로딩뷰를 삭제한다.
             if(viewer.builder.loadController.isShow(viewer.frame)){
                 viewer.builder.loadController.onDestroy(viewer.builder.requestCode, viewer.frame);
             }
         }
-        this.onFail(requestCode, e, viewer);
+        this.onFail(requestCode, isException, message, e, viewer);
         viewer.builder.requestCode = Viewer.REQUEST_CODE_NONE;
     }
 

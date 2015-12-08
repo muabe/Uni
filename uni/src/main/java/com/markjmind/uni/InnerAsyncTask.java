@@ -3,6 +3,8 @@ package com.markjmind.uni;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.markjmind.uni.exception.UniLoadFailException;
+
 class InnerAsyncTask extends AsyncTask<Void, Object, Boolean> implements UpdateEvent{
     private String taskKey;
     private boolean isStop;
@@ -56,7 +58,8 @@ class InnerAsyncTask extends AsyncTask<Void, Object, Boolean> implements UpdateE
     @Override
     protected Boolean doInBackground(Void... params) {
         try{
-            return uniAsyncTask.load(builder.requestCode, this, jv); //데이터 가져오기
+            uniAsyncTask.load(builder.requestCode, this, jv); //데이터 가져오기
+            return true;
         }catch(Exception e){
             doInBackException = e;
             return false;
@@ -102,12 +105,16 @@ class InnerAsyncTask extends AsyncTask<Void, Object, Boolean> implements UpdateE
                 uniAsyncTask.post(builder.requestCode, jv);
             }
         }else{ // 실패의 경우
-            uniAsyncTask.fail(builder.requestCode, doInBackException, jv);
+            if(doInBackException!=null && doInBackException instanceof UniLoadFailException){
+                uniAsyncTask.fail(builder.requestCode, false, doInBackException.getMessage(), null, jv);
+            }else{
+                uniAsyncTask.fail(builder.requestCode, true, doInBackException.getMessage(), doInBackException, jv);
+            }
+
             doInBackException = null;
         }
         jv.asyncTaskPool.remove(taskKey);
     }
-
 
     public void stop(){
         if(!isStop) {

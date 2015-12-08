@@ -13,6 +13,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
+import com.markjmind.uni.exception.UniLoadFailException;
 import com.markjmind.uni.hub.Store;
 
 import java.lang.reflect.Method;
@@ -52,6 +53,9 @@ public class Viewer {
     private boolean enablePostView;
     private UniAsyncTask uniAsyncTask;
 
+    private Object result;
+
+    boolean isPrepare = false;
 
     /**
      * onPost시 view를 enable할지 여부
@@ -90,8 +94,8 @@ public class Viewer {
             }
 
             @Override
-            public boolean onLoad(int requestCode, UpdateEvent event, Viewer viewer) throws Exception {
-                return viewer.onLoad(requestCode, event);
+            public void onLoad(int requestCode, UpdateEvent event, Viewer viewer) throws Exception {
+                viewer.onLoad(requestCode, event);
             }
 
             @Override
@@ -105,8 +109,8 @@ public class Viewer {
             }
 
             @Override
-            public void onFail(int requestCode, Exception e, Viewer viewer) {
-                viewer.onFail(builder.requestCode, e);
+            public void onFail(int requestCode, boolean isException, String message, Exception e, Viewer viewer) {
+                viewer.onFail(builder.requestCode, isException, message, e);
             }
 
             @Override
@@ -126,8 +130,7 @@ public class Viewer {
     public void onPre(int requestCode) {
     }
 
-    public boolean onLoad(int requestCode, UpdateEvent event) throws Exception {
-        return true;
+    public void onLoad(int requestCode, UpdateEvent event) throws Exception {
     }
 
     public void onUpdate(int requestCode, Object value) {
@@ -136,7 +139,7 @@ public class Viewer {
     public void onPost(int requestCode) {
     }
 
-    public void onFail(int requestCode, Exception e) {
+    public void onFail(int requestCode, boolean isException, String message, Exception e) {
     }
 
     public void onCancelled(int requestCode) {
@@ -259,6 +262,11 @@ public class Viewer {
 //        return true;
 //    }
 
+    public Viewer prepare() {
+        isPrepare = true;
+
+        return this;
+    }
 
     /**
      * index에 해당하는 부모 ViewGroup아래 JwViewer를 추가한다.
@@ -269,6 +277,7 @@ public class Viewer {
      */
     public Viewer add(ViewGroup parents, int index) {
         setParentView(parents);
+        isPrepare = false;
         uniAsyncTask.bind(builder.requestCode, builder, this);
         init(builder.layout_id);
         if (builder.isAsync()) {
@@ -295,6 +304,7 @@ public class Viewer {
      */
     public Viewer change(ViewGroup parents) {
         setParentView(parents);
+        isPrepare = false;
         Viewer.cancelTaskAync(this);
         uniAsyncTask.bind(builder.requestCode, builder, this);
         init(builder.layout_id);
@@ -309,19 +319,22 @@ public class Viewer {
         return this;
     }
 
-    public Viewer change(int layoutId){
-        return this.change((ViewGroup)findGobalView(layoutId));
+    public Viewer change(int parents_id) {
+        return this.change((ViewGroup) findGobalView(parents_id));
     }
 
-    private void setParentView(ViewGroup parents){
+    private void setParentView(ViewGroup parents) {
         parentView = parents;
         this.setId(parentView.hashCode());
     }
 
-    public void create() {
-        makeViewer();
+    public void setResult(Object result) {
+        this.result = result;
     }
 
+    public <Result> Result getResult() {
+        return (Result) result;
+    }
 
 /************************************************* 파라미터 관련 ************************************/
     /**
@@ -493,6 +506,10 @@ public class Viewer {
         }
 
         return taskKey;
+    }
+
+    protected void fail(String message) throws UniLoadFailException {
+        throw new UniLoadFailException(message);
     }
 
     protected String excute(UniAsyncTask vListener) {
@@ -807,7 +824,7 @@ public class Viewer {
         return this.reBuild(REQUEST_CODE_NONE);
     }
 
-    public int getRequestCode(){
+    public int getRequestCode() {
         return builder.requestCode;
     }
 
