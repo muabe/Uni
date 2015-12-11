@@ -2,6 +2,8 @@ package com.markjmind.uni;
 
 import android.content.Context;
 
+import com.markjmind.uni.exception.UinMapperException;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Hashtable;

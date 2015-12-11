@@ -6,6 +6,8 @@ import com.markjmind.uni.annotiation.Box;
 import com.markjmind.uni.annotiation.GetView;
 import com.markjmind.uni.annotiation.Layout;
 import com.markjmind.uni.annotiation.OnClick;
+import com.markjmind.uni.exception.ErrorMessage;
+import com.markjmind.uni.exception.UinMapperException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -24,9 +26,9 @@ public class UniMemberMapper {
 			Box par = viewerClass.getAnnotation(Box.class);
 			return par.value();
 		}else{
-			throw new UinMapperException("\n["+viewerClass.getName()+"] 해당 Viewer에 @params을 지정하는 annotation의 value가 잘못되었습니다..",null);
+			throw new UinMapperException(ErrorMessage.Runtime.box(viewerClass),null);
 		}
-	}
+}
 
 	public static boolean hasInjectionLayout(Class<?> viewerClass){
 		return viewerClass.isAnnotationPresent(Layout.class);
@@ -37,7 +39,7 @@ public class UniMemberMapper {
 			Layout lytId = viewerClass.getAnnotation(Layout.class);
 			return lytId.value();
 		}else{
-			throw new UinMapperException("\n["+viewerClass.getName()+"] 해당 Viewer에 @layout을 지정하는 annotation의 value가 잘못되었습니다.",null);
+			throw new UinMapperException(ErrorMessage.Runtime.injectLayout(viewerClass),null);
 		}
 		
 	}
@@ -85,7 +87,9 @@ public class UniMemberMapper {
 		if(view==null){ // view가 없을경우
 			throw new UinMapperException("\n["+obj.getClass().getName()+""+", method에 해당하는 ID(Null)가 잘못 지정되었습니다.",null);
 		}
-		obj.setOnClickListener(view, method);
+		OnClickListenerReceiver oclReceiver = new OnClickListenerReceiver(obj);
+		oclReceiver.setOnClickListener(view, method);
+		obj.onClickParams.put(view.hashCode(), oclReceiver);
 		return view;
 	}
 

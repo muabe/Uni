@@ -3,6 +3,8 @@ package com.markjmind.uni;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.markjmind.uni.exception.UinMapperException;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

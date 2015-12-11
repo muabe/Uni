@@ -13,10 +13,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
+import com.markjmind.uni.exception.ErrorMessage;
 import com.markjmind.uni.exception.UniLoadFailException;
 import com.markjmind.uni.hub.Store;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 
 
@@ -44,7 +44,7 @@ public class Viewer {
     private int id;
     private int layoutId;
     Store<?> param;
-    private HashMap<Integer, OnClickListenerReceiver> onClickParams = new HashMap<>();
+    HashMap<Integer, OnClickListenerReceiver> onClickParams = new HashMap<>();
 
     ViewerBuilder builder;
 
@@ -434,7 +434,7 @@ public class Viewer {
     }
 
 
-    public static String[] getBox(Class<?> viewerClass) {
+    public static String[] getBox(Class<Viewer> viewerClass) {
         return UniMemberMapper.injectionBox(viewerClass);
     }
 
@@ -446,20 +446,6 @@ public class Viewer {
             OnClickListenerReceiver rec = onClickParams.get(view.hashCode());
             rec.setParam(clickParam);
         }
-    }
-
-    public Viewer setOnClickListener(View view, String methodName, Class<?>... paramClassTypes) {
-        OnClickListenerReceiver oclReceiver = new OnClickListenerReceiver(this);
-        oclReceiver.setOnClickListener(view, methodName, paramClassTypes);
-        onClickParams.put(view.hashCode(), oclReceiver);
-        return this;
-    }
-
-    public Viewer setOnClickListener(View view, Method method) {
-        OnClickListenerReceiver oclReceiver = new OnClickListenerReceiver(this);
-        oclReceiver.setOnClickListener(view, method);
-        onClickParams.put(view.hashCode(), oclReceiver);
-        return this;
     }
 
     /***************************************************
@@ -574,8 +560,12 @@ public class Viewer {
      *********************************************/
 
     private View getLayoutInfalter(int layout_id) {
-        View v = ((LayoutInflater) builder.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(layout_id, null);
-        return v;
+        try {
+            View v = ((LayoutInflater) builder.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(layout_id, null);
+            return v;
+        }catch(Resources.NotFoundException e){
+            throw new Resources.NotFoundException(ErrorMessage.Runtime.inflater(this.getClass()));
+        }
     }
 
 
