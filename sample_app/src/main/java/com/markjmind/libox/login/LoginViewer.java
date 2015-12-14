@@ -15,9 +15,6 @@ import com.markjmind.uni.Viewer;
 import com.markjmind.uni.ViewerBuilder;
 import com.markjmind.uni.annotiation.GetView;
 import com.markjmind.uni.annotiation.Layout;
-import com.markjmind.uni.exception.UniLoadFailException;
-
-import java.io.IOException;
 
 /**
  * Created by codemasta on 2015-09-15.
@@ -31,22 +28,6 @@ public class LoginViewer extends Viewer {
     private Button loginBtn;
     @GetView
     private View findIdPwBtn;
-
-
-    @Override
-    public void onPre(int requestCode) {
-        super.onPre(requestCode);
-    }
-
-    @Override
-    public void onLoad(int requestCode, UpdateEvent event) throws IOException, UniLoadFailException {
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     @Override
     public void onPost(int requestCode) {
