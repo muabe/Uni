@@ -14,6 +14,8 @@ import com.markjmind.uni.hub.Store;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 /**
  * Created by codemasta on 2015-09-15.
  */
@@ -37,16 +39,11 @@ public class ExerciseViewer extends Viewer {
 
 
     @Override
-    public boolean onLoad(int requestCode, UpdateEvent event) {
+    public void onLoad(int requestCode, UpdateEvent event) throws IOException, JSONException {
         Web web = new Web();
-        try {
-            String rep = web.addParam(webParam).postDM("IF-HLO-DM-0200");
-            result = new JSONObject(rep);
-            webParam.clear();
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        String rep = web.addParam(webParam).postDM("IF-HLO-DM-0200");
+        result = new JSONObject(rep);
+        webParam.clear();
 
     }
 

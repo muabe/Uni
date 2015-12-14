@@ -16,6 +16,7 @@ import com.markjmind.uni.ViewerBuilder;
 import com.markjmind.uni.UniAsyncTask;
 import com.markjmind.uni.annotiation.GetView;
 import com.markjmind.uni.annotiation.Layout;
+import com.markjmind.uni.exception.UniLoadFailException;
 import com.markjmind.uni.hub.Store;
 
 import java.io.IOException;
@@ -70,7 +71,7 @@ public class LoginViewer extends Viewer {
     }
 
     @Override
-    public boolean onLoad(int requestCode, UpdateEvent event) {
+    public void onLoad(int requestCode, UpdateEvent event) throws IOException, UniLoadFailException {
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
@@ -78,15 +79,8 @@ public class LoginViewer extends Viewer {
         }
         if(requestCode==1) {
             Web web = new Web();
-            try {
-                result = web.addParam(webParam).postDM("IF-HLO-DM-0001");
-                webParam.clear();
-                return true;
-            } catch (IOException e) {
-                return false;
-            }
-        }else {
-            return true;
+            result = web.addParam(webParam).postDM("IF-HLO-DM-0001");
+            webParam.clear();
         }
     }
 
@@ -112,13 +106,12 @@ public class LoginViewer extends Viewer {
                 public void onClick(View v) {
                     excute(new UniAsyncTask() {
                         @Override
-                        public boolean onLoad(int requestCode, UpdateEvent event, Viewer viewer) throws Exception {
+                        public void onLoad(int requestCode, UpdateEvent event, Viewer viewer) throws Exception {
                             try {
                                 Thread.sleep(3000);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            return true;
                         }
 
                         @Override
@@ -134,7 +127,11 @@ public class LoginViewer extends Viewer {
     }
 
     @Override
-    public void onFail(int requestCode, Exception e) {
-        Toast.makeText(getContext(),"로그인 실패",Toast.LENGTH_SHORT);
+    public void onFail(int requestCode, boolean isException, String message, Exception e) {
+        if(isException) {
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(getContext(), "로그인 실패", Toast.LENGTH_SHORT).show();
+        }
     }
 }

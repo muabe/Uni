@@ -49,14 +49,13 @@ public class Test1 extends Viewer {
     }
 
     @Override
-    public boolean onLoad(int requestCode, UpdateEvent event) {
+    public void onLoad(int requestCode, UpdateEvent event) {
         for(int i=0;i<=100;i++) {
             try {
                 event.update(i);
                 Thread.sleep(20);
             } catch (InterruptedException e) {}
         }
-        return true;
     }
 
     @Override
@@ -70,7 +69,7 @@ public class Test1 extends Viewer {
     }
 
     @Override
-    public void onFail(int requestCode, Exception e) {
+    public void onFail(int requestCode, boolean isException, String message, Exception e) {
         Toast.makeText(getContext(), "실패", Toast.LENGTH_LONG).show();
     }
 }

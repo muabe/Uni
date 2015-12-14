@@ -52,7 +52,7 @@ public class Test2 extends Viewer {
         }
 
         @Override
-        public boolean onLoad(int requestCode, UpdateEvent event) throws IOException, InterruptedException {
+        public void onLoad(int requestCode, UpdateEvent event) throws IOException, InterruptedException {
             Web web = new Web();
             String url = "http://dm-dev.health-on.co.kr:9100/mobile/IF-HLO-DM-0200";
 
@@ -64,7 +64,6 @@ public class Test2 extends Viewer {
 
             result = web.post(url,param);
             Thread.sleep(1000);
-            return true;
         }
 
 
@@ -81,7 +80,7 @@ public class Test2 extends Viewer {
         }
 
         @Override
-        public void onFail(int requestCode, Exception e) {
+        public void onFail(int requestCode, boolean isException, String message, Exception e) {
             Toast.makeText(getContext(), "실패", Toast.LENGTH_LONG).show();
         }
 }

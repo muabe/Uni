@@ -14,6 +14,8 @@ import com.markjmind.uni.hub.Store;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 /**
  * Created by codemasta on 2015-09-15.
  */
@@ -35,22 +37,18 @@ public class DietaryViewer extends Viewer {
     }
 
     @Override
-    public boolean onLoad(int requestCode, UpdateEvent event) {
+    public void onLoad(int requestCode, UpdateEvent event) throws IOException, JSONException {
         Web web = new Web();
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        try {
-            String rep = web.addParam(webParam).postDM("IF-HLO-DM-0300");
-            result = new JSONObject(rep);
-            webParam.clear();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+
+        String rep = web.addParam(webParam).postDM("IF-HLO-DM-0300");
+        result = new JSONObject(rep);
+        webParam.clear();
+
     }
 
     @Override
