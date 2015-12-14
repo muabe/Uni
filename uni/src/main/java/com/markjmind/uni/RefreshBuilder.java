@@ -28,8 +28,8 @@ public class RefreshBuilder{
         return this;
     }
 
-    public RefreshBuilder setLoadLayout(int R_layout_id, LoadViewListener loadViewListener){
-        builder.setLoadLayout(R_layout_id, loadViewListener);
+    public RefreshBuilder setLoadLayout(int R_layout_id, ProgressViewListener progressViewListener){
+        builder.setProgressLayout(R_layout_id, progressViewListener);
         return this;
     }
 

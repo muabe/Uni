@@ -46,9 +46,10 @@ public class UniMemberMapper {
 	}
 
 	public static void injection(Viewer obj){
+		Class<?> viewerClass = obj.getClass();
 		/** method **/
 		HashMap<Integer, View> viewHash = new HashMap<>();
-		Method[] methods = obj.getClass().getDeclaredMethods();
+		Method[] methods = viewerClass.getDeclaredMethods();
 		for(Method method:methods){
 			if(method.isAnnotationPresent(OnClick.class)){ // onClick의 경우
 				OnClick oc = method.getAnnotation(OnClick.class);
@@ -56,7 +57,7 @@ public class UniMemberMapper {
 				if(list.length==0){
 					int id = oc.value();
 					if(id==-1) {
-						id = JwStringID.getID(method.getName(), obj.getContext());
+						id = getMethodID(viewerClass, method.getName(), obj.getContext());
 					}
 					View view = setMethod(obj,id,method);
 					viewHash.put(id, view);
@@ -70,16 +71,71 @@ public class UniMemberMapper {
 		}
 
 		/** field **/
-		Field[] fields = obj.getClass().getDeclaredFields();
+		Field[] fields = viewerClass.getDeclaredFields();
 		for(Field field:fields){
 			if(field.isAnnotationPresent(GetView.class)){ // GetView의 경우
 				GetView ab = field.getAnnotation(GetView.class);
 				int id = ab.value();
 				if(id==-1){
-					id = JwStringID.getID(field.getName(), obj.getContext());
+					id = getFieldID(viewerClass, field.getName(), obj.getContext());
 				}
 				setField(obj, id, field, viewHash);
 			}
+		}
+	}
+
+	private static int getFieldID(Class<?> viewerClass, String idName, Context app){
+		Class cls = JwStringID.getRClass("id", app);
+		Field field;
+		try {
+			field = cls.getDeclaredField(idName);
+			int value = field.getInt(null);
+			return value;
+		} catch (SecurityException e) {
+			throw new SecurityException(ErrorMessage.Runtime.fieldSecurity(viewerClass, idName),e);
+		} catch (NoSuchFieldException e) {
+			throw new UinMapperException(ErrorMessage.Runtime.fieldNoSuch(viewerClass, idName),e);
+		} catch (IllegalArgumentException e) {
+			throw new UinMapperException(ErrorMessage.Runtime.fieldIllegalArgument(viewerClass, idName),e);
+		} catch (IllegalAccessException e) {
+			throw new UinMapperException(ErrorMessage.Runtime.fieldIllegalAccess(viewerClass, idName),e);
+		}
+	}
+
+	private static View setField(Viewer obj, int id, Field field, HashMap<Integer, View> viewHash){
+		View v;
+		if(viewHash.containsKey(id)){
+			v = viewHash.get(id);
+		}else{
+			v = obj.findViewById(id);
+		}
+		if(v==null){
+			throw new UinMapperException(ErrorMessage.Runtime.injectField(obj.getClass(), field.getName()));
+		}
+		try {
+			field.setAccessible(true);
+			field.set(obj, v);
+		}catch (IllegalAccessException e) {
+			throw new UinMapperException(ErrorMessage.Runtime.injectFieldIllegalAccess(obj.getClass(), field.getName()),e);
+		}
+		return v;
+	}
+
+	private static int getMethodID(Class<?> viewerClass, String idName, Context app) throws UinMapperException {
+		Class cls = JwStringID.getRClass("id", app);
+		Field field;
+		try {
+			field = cls.getDeclaredField(idName);
+			int value = field.getInt(null);
+			return value;
+		} catch (SecurityException e) {
+			throw new UinMapperException(ErrorMessage.Runtime.methodSecurity(viewerClass, idName),e);
+		} catch (NoSuchFieldException e) {
+			throw new UinMapperException(ErrorMessage.Runtime.methodNoSuch(viewerClass, idName),e);
+		} catch (IllegalArgumentException e) {
+			throw new UinMapperException(ErrorMessage.Runtime.methodIllegalArgument(viewerClass, idName),e);
+		} catch (IllegalAccessException e) {
+			throw new UinMapperException(ErrorMessage.Runtime.methodIllegalAccess(viewerClass, idName),e);
 		}
 	}
 
@@ -94,60 +150,6 @@ public class UniMemberMapper {
 		return view;
 	}
 
-	private static View setField(Viewer obj, int id, Field field, HashMap<Integer, View> viewHash){
-		View v;
-		if(viewHash.containsKey(id)){
-			v = viewHash.get(id);
-		}else{
-			v = obj.findViewById(id);
-		}
-		if(v==null){
-			throw new UinMapperException(ErrorMessage.Runtime.injectField(obj.getClass(), field.getName()),null);
-		}
-		try {
-			field.setAccessible(true);
-			field.set(obj, v);
-		}catch (IllegalAccessException e) {
-			throw new UinMapperException(ErrorMessage.Runtime.injectFieldIllegalAccess(obj.getClass(), field.getName()),e);
-		}
-		return v;
-	}
 
-
-	public int getMethodID(String idName, Context app) throws UinMapperException {
-		Class cls = JwStringID.getRClass("id", app);
-		Field field;
-		try {
-			field = cls.getDeclaredField(idName);
-			int value = field.getInt(null);
-			return value;
-		} catch (SecurityException e) {
-			throw new UinMapperException("[R.id."+idName+"] SecurityException",e);
-		} catch (NoSuchFieldException e) {
-			throw new UinMapperException("[R.id."+idName+"] 필드가 존재하지 않습니다.",e);
-		} catch (IllegalArgumentException e) {
-			throw new UinMapperException("[R.id."+idName+"] 잘못된 Field가 지정되었습니다.",e);
-		} catch (IllegalAccessException e) {
-			throw new UinMapperException("[R.id."+idName+"] 접근권한이 없는 필드입니다.",e);
-		}
-	}
-
-	public int getFieldID(String idName, Context app) throws UinMapperException {
-		Class cls = JwStringID.getRClass("id", app);
-		Field field;
-		try {
-			field = cls.getDeclaredField(idName);
-			int value = field.getInt(null);
-			return value;
-		} catch (SecurityException e) {
-			throw new UinMapperException("[R.id."+idName+"] SecurityException",e);
-		} catch (NoSuchFieldException e) {
-			throw new UinMapperException("[R.id."+idName+"] 필드가 존재하지 않습니다.",e);
-		} catch (IllegalArgumentException e) {
-			throw new UinMapperException("[R.id."+idName+"] 잘못된 Field가 지정되었습니다.",e);
-		} catch (IllegalAccessException e) {
-			throw new UinMapperException("[R.id."+idName+"] 접근권한이 없는 필드입니다.",e);
-		}
-	}
 
 }

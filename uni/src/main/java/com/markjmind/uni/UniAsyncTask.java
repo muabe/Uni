@@ -76,8 +76,8 @@ public abstract class UniAsyncTask {
 
     public void update(int requestCode, Object value, Viewer viewer) {
         this.onUpdate(requestCode, value, viewer);
-        if(viewer.builder.loadController.loadViewListener !=null){
-            viewer.builder.loadController.loadViewListener.loadUpdate(requestCode, viewer.builder.loadController.loadView, value);
+        if(viewer.builder.progressController.progressViewListener !=null){
+            viewer.builder.progressController.progressViewListener.onUpdate(requestCode, viewer.builder.progressController.progressView, value);
         }
     }
 
@@ -108,8 +108,8 @@ public abstract class UniAsyncTask {
 
         // 로딩뷰를 설정했는지 여부에따라 로딩뷰를 삭제한다.
         // 로딩뷰는 한번뜨고 메모리에서 사라진다.(재사용시 데이터 초기화 문제)
-        if(viewer.builder.loadController.isShow(viewer.frame)){
-            viewer.builder.loadController.onDestroy(viewer.builder.requestCode, viewer.frame);
+        if(viewer.builder.progressController.isShow(viewer.frame)){
+            viewer.builder.progressController.onDestroy(viewer.builder.requestCode, viewer.frame);
         }
 
         if(viewer.isPrepare){
@@ -129,8 +129,8 @@ public abstract class UniAsyncTask {
     void fail(int requestCode, boolean isException, String message, Exception e, Viewer viewer) {
         if(viewer.getParent()!=null && viewer.frame!=null){
             // 로딩뷰를 설정했는지 여부에따라 로딩뷰를 삭제한다.
-            if(viewer.builder.loadController.isShow(viewer.frame)){
-                viewer.builder.loadController.onDestroy(viewer.builder.requestCode, viewer.frame);
+            if(viewer.builder.progressController.isShow(viewer.frame)){
+                viewer.builder.progressController.onDestroy(viewer.builder.requestCode, viewer.frame);
             }
         }
         this.onFail(requestCode, isException, message, e, viewer);
@@ -140,8 +140,8 @@ public abstract class UniAsyncTask {
     public void cancelled(int requestCode, Viewer viewer) {
         if(viewer.getParent()!=null && viewer.frame!=null){
             // 로딩뷰를 설정했는지 여부에따라 로딩뷰를 삭제한다.
-            if(viewer.builder.loadController.isShow(viewer.frame)){
-                viewer.builder.loadController.onDestroy(viewer.builder.requestCode, viewer.frame);
+            if(viewer.builder.progressController.isShow(viewer.frame)){
+                viewer.builder.progressController.onDestroy(viewer.builder.requestCode, viewer.frame);
             }
         }
         this.onCancelled(requestCode, viewer);

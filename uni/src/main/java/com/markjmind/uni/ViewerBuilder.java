@@ -34,10 +34,10 @@ public class ViewerBuilder {
 	protected boolean isAsync = true;
 	protected boolean isPreLayout = false;
 //	protected boolean hasLoadView = false;
-//	protected View loadView;
+//	protected View progressView;
 	protected Store<?> param;
 	protected int requestCode;
-	protected LoadViewController loadController;
+	protected ProgressViewController progressController;
 
 	/**
 	 * Activity build 생성자
@@ -53,7 +53,7 @@ public class ViewerBuilder {
 		this.mode = TYPE_MODE.ACTIVITY;
 		this.param = new Store<>();
 		this.requestCode = Viewer.REQUEST_CODE_NONE;
-		loadController = new LoadViewController();
+		progressController = new ProgressViewController();
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class ViewerBuilder {
 		this.mode = TYPE_MODE.DIALOG;
 		this.param = new Store<>();
 		this.requestCode = Viewer.REQUEST_CODE_NONE;
-		loadController = new LoadViewController();
+		progressController = new ProgressViewController();
 	}
 
 	public ViewerBuilder(Class<? extends Viewer> jwViewerClass, Activity activity){
@@ -114,13 +114,13 @@ public class ViewerBuilder {
 		return this;
 	}
 
-	public ViewerBuilder setLoadLayout(int R_layout_id, LoadViewListener loadViewListener){
-		loadController.setLoadView(R_layout_id, loadViewListener);
+	public ViewerBuilder setProgressLayout(int R_layout_id, ProgressViewListener progressViewListener){
+		progressController.setProgressView(R_layout_id, progressViewListener);
 		return this;
 	}
 
 	public ViewerBuilder setEnableLoadLayout(boolean enable){
-		loadController.setEnable(enable);
+		progressController.setEnable(enable);
 		return this;
 	}
 

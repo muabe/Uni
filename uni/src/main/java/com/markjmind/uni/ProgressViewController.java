@@ -8,21 +8,21 @@ import android.view.ViewGroup;
 /**
  * Created by codemasta on 2015-10-23.
  */
-class LoadViewController {
+class ProgressViewController {
     protected int layoutId;
-    protected View loadView;
+    protected View progressView;
     protected boolean enable;
-    protected LoadViewListener loadViewListener;
+    protected ProgressViewListener progressViewListener;
     private int loadCount = 0;
 
-    public LoadViewController(){
+    public ProgressViewController(){
         this.layoutId = -1;
         this.enable = true;
     }
 
-    protected void setLoadView(int layoutId, LoadViewListener loadViewListener){
+    protected void setProgressView(int layoutId, ProgressViewListener progressViewListener){
         this.layoutId = layoutId;
-        this.loadViewListener = loadViewListener;
+        this.progressViewListener = progressViewListener;
     }
 
     protected void setEnable(boolean enable){
@@ -37,8 +37,8 @@ class LoadViewController {
     }
 
     protected boolean isShow(ViewGroup frame){
-        if(loadView!=null){
-            if(frame.indexOfChild(loadView)>0){
+        if(progressView !=null){
+            if(frame.indexOfChild(progressView)>0){
                 return true;
             }
         }
@@ -55,23 +55,23 @@ class LoadViewController {
             loadCount++;
             if (!isShow(frame)) {
                 Context context = frame.getContext();
-                loadView = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(layoutId, null);
-                loadView.setClickable(true);
-                frame.addView(loadView); //로딩뷰 띄우기
+                progressView = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(layoutId, null);
+                progressView.setClickable(true);
+                frame.addView(progressView); //로딩뷰 띄우기
             }
-            if (loadViewListener != null) {
-                loadViewListener.loadCreate(requestCode, loadView);
+            if (progressViewListener != null) {
+                progressViewListener.onStart(requestCode, progressView);
             }
         }
     }
 
     protected synchronized void onDestroy(int requestCode, ViewGroup parents){
         if(--loadCount==0) {
-            parents.removeView(loadView);
-            loadView = null;
+            parents.removeView(progressView);
+            progressView = null;
         }
-        if(loadViewListener !=null){
-            loadViewListener.loadDestroy(requestCode);
+        if(progressViewListener !=null){
+            progressViewListener.onDestroy(requestCode);
         }
 
     }

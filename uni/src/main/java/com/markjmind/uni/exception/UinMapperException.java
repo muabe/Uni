@@ -9,19 +9,15 @@ package com.markjmind.uni.exception;
  */
 public class UinMapperException extends RuntimeException {
 
-	public String message;
-	private Throwable exception;
-	
-    public UinMapperException(String message, Throwable exception) {
-        super(message, exception);
-        this.message = message;
-        this.exception = exception;
-    }
-    
-    public UinMapperException(String message) {
+    Exception exception;
+    public UinMapperException(String message){
         super(message);
     }
-    public Throwable getCause() {
-        return this.exception;
+
+    public UinMapperException(String message, Exception exception) {
+        super(message, exception);
+        this.exception = exception;
     }
+
+
 }

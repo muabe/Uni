@@ -6,7 +6,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.markjmind.libox.R;
-import com.markjmind.uni.LoadViewListener;
+import com.markjmind.uni.ProgressViewListener;
 import com.markjmind.uni.UpdateEvent;
 import com.markjmind.uni.Viewer;
 import com.markjmind.uni.ViewerBuilder;
@@ -21,20 +21,20 @@ public class Test1 extends Viewer {
     public void onBind(int requestCode, ViewerBuilder build) {
         build.setAsync(true)
              .setPreLayout(true)
-             .setLoadLayout(R.layout.progress, new LoadViewListener() {
+             .setProgressLayout(R.layout.progress, new ProgressViewListener() {
                  @Override
-                 public void loadCreate(int requestCode, View loadView) {
-                     ((TextView)loadView.findViewById(R.id.progress_text)).setText("");
+                 public void onStart(int requestCode, View loadView) {
+                     ((TextView) loadView.findViewById(R.id.progress_text)).setText("");
                  }
 
                  @Override
-                 public void loadUpdate(int requestCode, View loadView, Object value) {
-                     ((ProgressBar)loadView.findViewById(R.id.progress)).setProgress((int) value);
-                     ((TextView)loadView.findViewById(R.id.progress_text)).setText((int)value+"/100%");
+                 public void onUpdate(int requestCode, View loadView, Object value) {
+                     ((ProgressBar) loadView.findViewById(R.id.progress)).setProgress((int) value);
+                     ((TextView) loadView.findViewById(R.id.progress_text)).setText((int) value + "/100%");
                  }
 
                  @Override
-                 public void loadDestroy(int requestCode) {
+                 public void onDestroy(int requestCode) {
 
                  }
 

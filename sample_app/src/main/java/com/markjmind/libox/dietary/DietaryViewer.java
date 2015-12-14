@@ -33,7 +33,7 @@ public class DietaryViewer extends Viewer {
         webParam.add("authKey", "f9e8eb7ecdc9a0783470f08a169e6f27b90e4628053fa74170721cf898e43e4b")
                 .add("search", "20130610")
                 .add("reqDate", "20150917132514");
-        build.setLoadLayout(R.layout.loading, null);
+        build.setProgressLayout(R.layout.loading, null);
     }
 
     @Override

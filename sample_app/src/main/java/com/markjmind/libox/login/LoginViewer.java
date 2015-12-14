@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import com.markjmind.libox.MainViewer;
 import com.markjmind.libox.R;
-import com.markjmind.uni.LoadViewListener;
+import com.markjmind.uni.ProgressViewListener;
 import com.markjmind.uni.UniAsyncTask;
 import com.markjmind.uni.UpdateEvent;
 import com.markjmind.uni.Viewer;
@@ -37,17 +37,21 @@ public class LoginViewer extends Viewer {
                 excute(new UniAsyncTask() {
                     @Override
                     public void onBind(int requestCode, ViewerBuilder build, Viewer viewer) {
-                        build.setLoadLayout(R.layout.loading, new LoadViewListener() {
+                        build.setProgressLayout(R.layout.loading, new ProgressViewListener() {
                             @Override
-                            public void loadCreate(int requestCode, View loadView) {
+                            public void onStart(int requestCode, View loadView) {
                                 TextView text = (TextView) loadView.findViewById(R.id.loading_text);
                                 text.setText("로그인을 확인합니다.");
 
                             }
+
                             @Override
-                            public void loadUpdate(int requestCode, View loadView, Object value) {}
+                            public void onUpdate(int requestCode, View loadView, Object value) {
+                            }
+
                             @Override
-                            public void loadDestroy(int requestCode) {}
+                            public void onDestroy(int requestCode) {
+                            }
                         });
                     }
 

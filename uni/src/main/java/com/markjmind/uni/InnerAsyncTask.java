@@ -28,14 +28,14 @@ class InnerAsyncTask extends AsyncTask<Void, Object, Boolean> implements UpdateE
     @Override
     protected void onPreExecute() {
         if(jv.TASK_LOAD.equals(state)){ /** runLoad일경우 */
-            if(builder.loadController.isEnable()) {  //로딩뷰를 설정했을경우
+            if(builder.progressController.isEnable()) {  //로딩뷰를 설정했을경우
                 //frame에 있는 LoadView를 add하여 화면에 보이게 한다.
-                builder.loadController.show(builder.requestCode, jv.frame);
+                builder.progressController.show(builder.requestCode, jv.frame);
             }
         } else if(jv.TASK_EXCUTE.equals(state)){  /** excute를 했을경우 */
-            if(builder.loadController.isEnable()) {  //로딩뷰를 설정했을경우
+            if(builder.progressController.isEnable()) {  //로딩뷰를 설정했을경우
                 //frame에 있는 LoadView를 add하여 화면에 보이게 한다.
-                builder.loadController.show(builder.requestCode, jv.frame);
+                builder.progressController.show(builder.requestCode, jv.frame);
             }
             uniAsyncTask.pre(jv.builder.requestCode, jv);
         }else { /** Anync 호출일때 preView를 설정했을 경우(change, add시) */
@@ -44,11 +44,11 @@ class InnerAsyncTask extends AsyncTask<Void, Object, Boolean> implements UpdateE
                 jv.parentView.addView(jv.frame,jv. parentView.getLayoutParams()); // layout에  viewer.frame를 넣는다
                 jv.frame.addView(jv.viewer); // viewer.frame에 실제 layout을 넣는다.
             }
-            if(builder.loadController.isEnable()){ //로딩뷰를 설정했을경우
+            if(builder.progressController.isEnable()){ //로딩뷰를 설정했을경우
                 jv.removeAfterOutAnim(); // 이전에 있던 뷰를 지우고
                 jv.parentView.addView(jv.frame, jv.parentView.getLayoutParams()); // layout에 viewer frame를 넣는다
                 //frame에 있는 LoadView를 add하여 화면에 보이게 한다.
-                builder.loadController.show(builder.requestCode, jv.frame);
+                builder.progressController.show(builder.requestCode, jv.frame);
             }
             uniAsyncTask.pre(builder.requestCode, jv);
         }

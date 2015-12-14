@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 import com.markjmind.libox.R;
 import com.markjmind.libox.common.Web;
-import com.markjmind.uni.LoadViewListener;
+import com.markjmind.uni.ProgressViewListener;
 import com.markjmind.uni.UpdateEvent;
 import com.markjmind.uni.Viewer;
 import com.markjmind.uni.ViewerBuilder;
@@ -33,19 +33,19 @@ public class Test2 extends Viewer {
         public void onBind(int requestCode, ViewerBuilder build) {
             build.setAsync(true)
                     .setPreLayout(true)
-                    .setLoadLayout(R.layout.loading, new LoadViewListener() {
+                    .setProgressLayout(R.layout.loading, new ProgressViewListener() {
                         @Override
-                        public void loadCreate(int requestCode, View loadView) {
-                            ((TextView)loadView.findViewById(R.id.loading_text)).setText("Loading");
+                        public void onStart(int requestCode, View loadView) {
+                            ((TextView) loadView.findViewById(R.id.loading_text)).setText("Loading");
                         }
 
                         @Override
-                        public void loadUpdate(int requestCode, View loadView, Object value) {
+                        public void onUpdate(int requestCode, View loadView, Object value) {
 
                         }
 
                         @Override
-                        public void loadDestroy(int requestCode) {
+                        public void onDestroy(int requestCode) {
 
                         }
                     });
