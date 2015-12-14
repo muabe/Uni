@@ -1,5 +1,6 @@
 package com.markjmind.uni;
 
+import android.content.Context;
 import android.view.View;
 
 import com.markjmind.uni.annotiation.Box;
@@ -43,7 +44,7 @@ public class UniMemberMapper {
 		}
 		
 	}
-	
+
 	public static void injection(Viewer obj){
 		/** method **/
 		HashMap<Integer, View> viewHash = new HashMap<>();
@@ -85,7 +86,7 @@ public class UniMemberMapper {
 	private static View setMethod(Viewer obj, Integer id, Method method){
 		View view = obj.findViewById(id);
 		if(view==null){ // view가 없을경우
-			throw new UinMapperException("\n["+obj.getClass().getName()+""+", method에 해당하는 ID(Null)가 잘못 지정되었습니다.",null);
+			throw new UinMapperException(ErrorMessage.Runtime.injectMethod(obj.getClass(), method.getName()),null);
 		}
 		OnClickListenerReceiver oclReceiver = new OnClickListenerReceiver(obj);
 		oclReceiver.setOnClickListener(view, method);
@@ -100,22 +101,53 @@ public class UniMemberMapper {
 		}else{
 			v = obj.findViewById(id);
 		}
-
 		if(v==null){
-			throw new UinMapperException("\n["+obj.getClass().getName()+"] Field:"+field.getName()+", Filed에 해당하는 ID(Null)가 잘못 지정되었습니다.",null);
+			throw new UinMapperException(ErrorMessage.Runtime.injectField(obj.getClass(), field.getName()),null);
 		}
 		try {
 			field.setAccessible(true);
 			field.set(obj, v);
-		} catch (IllegalArgumentException e) {
-			throw new UinMapperException("\n["+obj.getClass().getName()+"] Field:"+field.getName()+", 잘못된 Field에 해당하는 ID를 찾을수 없습니다.",e);
-		} catch (IllegalAccessException e) {
-			throw new UinMapperException("\n["+obj.getClass().getName()+"] Field:"+field.getName()+", 접근권한이 없는 필드입니다.",e);
+		}catch (IllegalAccessException e) {
+			throw new UinMapperException(ErrorMessage.Runtime.injectFieldIllegalAccess(obj.getClass(), field.getName()),e);
 		}
 		return v;
 	}
-	
-	
-	
+
+
+	public int getMethodID(String idName, Context app) throws UinMapperException {
+		Class cls = JwStringID.getRClass("id", app);
+		Field field;
+		try {
+			field = cls.getDeclaredField(idName);
+			int value = field.getInt(null);
+			return value;
+		} catch (SecurityException e) {
+			throw new UinMapperException("[R.id."+idName+"] SecurityException",e);
+		} catch (NoSuchFieldException e) {
+			throw new UinMapperException("[R.id."+idName+"] 필드가 존재하지 않습니다.",e);
+		} catch (IllegalArgumentException e) {
+			throw new UinMapperException("[R.id."+idName+"] 잘못된 Field가 지정되었습니다.",e);
+		} catch (IllegalAccessException e) {
+			throw new UinMapperException("[R.id."+idName+"] 접근권한이 없는 필드입니다.",e);
+		}
+	}
+
+	public int getFieldID(String idName, Context app) throws UinMapperException {
+		Class cls = JwStringID.getRClass("id", app);
+		Field field;
+		try {
+			field = cls.getDeclaredField(idName);
+			int value = field.getInt(null);
+			return value;
+		} catch (SecurityException e) {
+			throw new UinMapperException("[R.id."+idName+"] SecurityException",e);
+		} catch (NoSuchFieldException e) {
+			throw new UinMapperException("[R.id."+idName+"] 필드가 존재하지 않습니다.",e);
+		} catch (IllegalArgumentException e) {
+			throw new UinMapperException("[R.id."+idName+"] 잘못된 Field가 지정되었습니다.",e);
+		} catch (IllegalAccessException e) {
+			throw new UinMapperException("[R.id."+idName+"] 접근권한이 없는 필드입니다.",e);
+		}
+	}
 
 }

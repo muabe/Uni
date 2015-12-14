@@ -112,7 +112,7 @@ public class JwStringID {
 			throw new UinMapperException("[R.id."+idName+"] 접근권한이 없는 필드입니다.",e);
 		}
 	}
-	
+
 	public static Class getRClass(String innerClassName, Context app) throws UinMapperException {
 		String fullName = app.getPackageName()+".R$"+innerClassName;
 		try {
