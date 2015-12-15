@@ -122,7 +122,7 @@ class InnerAsyncTask extends AsyncTask<Void, Object, Boolean> implements UpdateE
             isStop = true;
             jv.asyncTaskPool.remove(taskKey);
             Log.w("Viewer", "Stop AsyncTask : " + taskKey);
-            uniAsyncTask.cancelled(builder.requestCode, jv);
+            uniAsyncTask.stop(builder.requestCode, jv);
         }
     }
 

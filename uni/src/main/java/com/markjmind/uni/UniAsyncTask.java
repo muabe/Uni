@@ -5,6 +5,8 @@ package com.markjmind.uni;
  */
 public abstract class UniAsyncTask {
 
+    private CancelListener cancelListener;
+
     /**
      *
      * @param requestCode
@@ -91,13 +93,13 @@ public abstract class UniAsyncTask {
         //액티비티나 다이얼로그가 종료되다면 cancel한다.
         if(viewer.builder.mode.equals(ViewerBuilder.TYPE_MODE.ACTIVITY)){
             if(viewer.getActivity().isFinishing()){
-                Viewer.cancelTaskAync(viewer);
+                Viewer.cancelTaskAll(viewer);
                 viewer.builder.requestCode = Viewer.REQUEST_CODE_NONE;
                 return;
             }
         }else if(viewer.builder.mode.equals(ViewerBuilder.TYPE_MODE.DIALOG)){
             if(!viewer.getDialog().isShowing()){
-                Viewer.cancelTaskAync(viewer);
+                Viewer.cancelTaskAll(viewer);
                 viewer.builder.requestCode = Viewer.REQUEST_CODE_NONE;
                 return;
             }
@@ -137,7 +139,7 @@ public abstract class UniAsyncTask {
         viewer.builder.requestCode = Viewer.REQUEST_CODE_NONE;
     }
 
-    public void cancelled(int requestCode, Viewer viewer) {
+    void stop(int requestCode, Viewer viewer) {
         if(viewer.getParent()!=null && viewer.frame!=null){
             // 로딩뷰를 설정했는지 여부에따라 로딩뷰를 삭제한다.
             if(viewer.builder.progressController.isShow(viewer.frame)){
@@ -145,6 +147,13 @@ public abstract class UniAsyncTask {
             }
         }
         this.onCancelled(requestCode, viewer);
+        if(cancelListener!=null){
+            cancelListener.onCancel(viewer.builder.requestCode, viewer);
+        }
         viewer.builder.requestCode = Viewer.REQUEST_CODE_NONE;
+    }
+
+    public void setCancelListener(CancelListener cancelListener){
+        this.cancelListener = cancelListener;
     }
 }

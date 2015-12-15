@@ -6,6 +6,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.markjmind.libox.R;
+import com.markjmind.uni.CancelListener;
 import com.markjmind.uni.ProgressViewListener;
 import com.markjmind.uni.UpdateEvent;
 import com.markjmind.uni.Viewer;
@@ -40,6 +41,12 @@ public class Test1 extends Viewer {
 
              })
              .addParam("p2", "내부");
+        setCancelListener(new CancelListener() {
+            @Override
+            public void onCancel(int requestCode, Viewer viewer) {
+                Toast.makeText(getContext(),"캔슬했다",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -66,6 +73,8 @@ public class Test1 extends Viewer {
     @Override
     public void onPost(int requestCode) {
         textView1.setText("p1:" + getParamString("p1") + "\np2:" + getParamString("p2"));
+        Toast.makeText(getContext(), "다했다", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override

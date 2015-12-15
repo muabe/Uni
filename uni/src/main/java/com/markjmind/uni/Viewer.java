@@ -45,13 +45,12 @@ public class Viewer {
     private int layoutId;
     Store<?> param;
     HashMap<Integer, OnClickListenerReceiver> onClickParams = new HashMap<>();
-
     ViewerBuilder builder;
-
     private RefreshBuilder reBuilder;
 
     private boolean enablePostView;
     private UniAsyncTask uniAsyncTask;
+
 
     private Object result;
 
@@ -151,7 +150,7 @@ public class Viewer {
 
     void runPost() {
 //		Viewer.cancelTask(getTaskKey(TASK_CHANGE));
-        Viewer.cancelTaskAync(this);
+        Viewer.cancelTaskAll(this);
         uniAsyncTask.post(builder.requestCode, this);
     }
 
@@ -283,7 +282,7 @@ public class Viewer {
         if (builder.isAsync()) {
             excute(TASK_ADD, getTaskKey(TASK_ADD, this, uniAsyncTask));
         } else {
-            Viewer.cancelTaskAync(this);
+            Viewer.cancelTaskAll(this);
             frame.addView(viewer);
             if (index == -1) {
                 parentView.addView(frame);
@@ -305,7 +304,7 @@ public class Viewer {
     public Viewer change(ViewGroup parents) {
         setParentView(parents);
         isPrepare = false;
-        Viewer.cancelTaskAync(this);
+        Viewer.cancelTaskAll(this);
         uniAsyncTask.bind(builder.requestCode, builder, this);
         init(builder.layout_id);
         if (builder.isAsync()) { // Ansync 일때
@@ -464,7 +463,7 @@ public class Viewer {
             taskIndex++; // viewer.add 일경우 task를 cancel하지 않는다.
         } else {
             Viewer.cancelTaskAdd();
-            Viewer.cancelTaskAync(this);
+            Viewer.cancelTaskAll(this);
         }
         InnerAsyncTask innerAsyncTask = new InnerAsyncTask(taskKey, state, this, builder, uniAsyncTask);
         asyncTaskPool.add(taskKey, innerAsyncTask);
@@ -510,7 +509,7 @@ public class Viewer {
         return taskKey;
     }
 
-    public static void cancelTaskAync(Viewer vwr) {
+    static void cancelTaskAll(Viewer vwr) {
         String[] keys = getRunTaskKeys();
         for (int i = 0; i < keys.length; i++) {
             if (keys[i].contains(TASK_CHANGE + "_" + vwr.getId())) {
@@ -524,7 +523,8 @@ public class Viewer {
         }
     }
 
-    public static void cancelTask(String taskKey) {
+
+    private static void cancelTask(String taskKey) {
         InnerAsyncTask innerAsyncTask = asyncTaskPool.get(taskKey);
         if (innerAsyncTask != null) {
             innerAsyncTask.stop();
@@ -536,7 +536,7 @@ public class Viewer {
      * add의 경우 tackKey 마지막에 index가 붙는데
      * for문을 돌면서 해당 add의 이름을 가진 task를 전부 해제한다.
      */
-    public static void cancelTaskAdd() {
+    private static void cancelTaskAdd() {
         String[] keys = getRunTaskKeys();
         for (int i = 0; i < keys.length; i++) {
             if (keys[i].indexOf(TASK_ADD) >= 0) {
@@ -554,6 +554,16 @@ public class Viewer {
         return asyncTaskPool.getKeys();
     }
 
+    public void cancel(String taskKey){
+        Viewer.cancelTask(taskKey);
+    }
+    public void cancelAll(){
+        Viewer.cancelTaskAll(this);
+    }
+
+    public void setCancelListener(CancelListener cancelListener){
+        uniAsyncTask.setCancelListener(cancelListener);
+    }
 
     /***************************************************
      * view control

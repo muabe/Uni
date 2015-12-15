@@ -25,7 +25,7 @@ public class ExerciseViewer extends Viewer {
     @GetView
     TextView textViewTodayTotalKcal;
 
-    Store<String> webParam = new Store<String>();
+    Store<String> webParam = new Store<>();
     JSONObject result;
 
     @Override
