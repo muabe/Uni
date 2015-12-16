@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.markjmind.uni.annotiation.Box;
+import com.markjmind.uni.annotiation.GetParam;
 import com.markjmind.uni.annotiation.GetView;
 import com.markjmind.uni.annotiation.Layout;
 import com.markjmind.uni.annotiation.OnClick;
@@ -74,13 +75,17 @@ public class UniMemberMapper {
 		Field[] fields = viewerClass.getDeclaredFields();
 		for(Field field:fields){
 			if(field.isAnnotationPresent(GetView.class)){ // GetView의 경우
-				GetView ab = field.getAnnotation(GetView.class);
-				int id = ab.value();
+				GetView getView = field.getAnnotation(GetView.class);
+				int id = getView.value();
 				if(id==-1){
 					id = getFieldID(viewerClass, field.getName(), obj.getContext());
 				}
 				setField(obj, id, field, viewHash);
+			}else if(field.isAnnotationPresent(GetParam.class)){
+				GetParam param = field.getAnnotation(GetParam.class);
+				String key = param.value();
 			}
+
 		}
 	}
 
