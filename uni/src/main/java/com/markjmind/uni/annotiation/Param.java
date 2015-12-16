@@ -6,8 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention( RetentionPolicy.RUNTIME )
-@Target(ElementType.TYPE)
-public @interface GetParam
+@Target(ElementType.FIELD)
+public @interface Param
 {
 	String value();
 }

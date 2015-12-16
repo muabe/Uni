@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.markjmind.uni.annotiation.Box;
-import com.markjmind.uni.annotiation.GetParam;
+import com.markjmind.uni.annotiation.Param;
 import com.markjmind.uni.annotiation.GetView;
 import com.markjmind.uni.annotiation.Layout;
 import com.markjmind.uni.annotiation.OnClick;
@@ -81,9 +81,12 @@ public class UniMemberMapper {
 					id = getFieldID(viewerClass, field.getName(), obj.getContext());
 				}
 				setField(obj, id, field, viewHash);
-			}else if(field.isAnnotationPresent(GetParam.class)){
-				GetParam param = field.getAnnotation(GetParam.class);
+				continue;
+			}else if(field.isAnnotationPresent(Param.class)){
+				Param param = field.getAnnotation(Param.class);
 				String key = param.value();
+				Object value = obj.getParam(key);
+				setField(obj, value, field);
 			}
 
 		}
@@ -124,6 +127,15 @@ public class UniMemberMapper {
 			throw new UinMapperException(ErrorMessage.Runtime.injectFieldIllegalAccess(obj.getClass(), field.getName()),e);
 		}
 		return v;
+	}
+
+	private static void setField(Viewer viewer, Object vaule, Field field){
+		try {
+			field.setAccessible(true);
+			field.set(viewer, vaule);
+		}catch (IllegalAccessException e) {
+			throw new UinMapperException(ErrorMessage.Runtime.injectFieldIllegalAccess(viewer.getClass(), field.getName()),e);
+		}
 	}
 
 	private static int getMethodID(Class<?> viewerClass, String idName, Context app) throws UinMapperException {

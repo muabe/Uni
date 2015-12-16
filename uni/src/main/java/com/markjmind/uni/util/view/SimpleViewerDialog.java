@@ -71,7 +71,7 @@ public class SimpleViewerDialog extends Dialog {
         setContentView(frame);
         viewer = viewerBuilder.setPreLayout(true).change(frame);
         if(buttonMap.size()>0) {
-            Integer[] keys = (Integer[]) buttonMap.keySet().toArray();
+            Integer[] keys = (Integer[]) buttonMap.keySet().toArray(new Integer[0]);
             for (Integer key : keys) {
                 final OnButtonClickListener ocl = buttonMap.get(key);
                 findViewById(key).setOnClickListener(new View.OnClickListener() {
