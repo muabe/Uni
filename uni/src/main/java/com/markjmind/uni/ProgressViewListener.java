@@ -8,5 +8,5 @@ import android.view.View;
 public interface ProgressViewListener {
     public void onStart(int requestCode, View loadView);
     public void onUpdate(int requestCode, View loadView, Object value);
-    public void onDestroy(int requestCode);
+    public void onDestroy(int requestCode, View loadView);
 }

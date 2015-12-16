@@ -66,13 +66,12 @@ class ProgressViewController {
     }
 
     protected synchronized void onDestroy(int requestCode, ViewGroup parents){
+        if(progressViewListener !=null){
+            progressViewListener.onDestroy(requestCode, progressView);
+        }
         if(--loadCount==0) {
             parents.removeView(progressView);
             progressView = null;
         }
-        if(progressViewListener !=null){
-            progressViewListener.onDestroy(requestCode);
-        }
-
     }
 }
