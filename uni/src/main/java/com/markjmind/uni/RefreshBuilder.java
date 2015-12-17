@@ -34,7 +34,7 @@ public class RefreshBuilder{
     }
 
     public RefreshBuilder setEnableLoadLayout(boolean enable){
-        builder.setEnableLoadLayout(enable);
+        builder.setEnableProgress(enable);
         return this;
     }
 

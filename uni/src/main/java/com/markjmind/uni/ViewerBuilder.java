@@ -119,7 +119,7 @@ public class ViewerBuilder {
 		return this;
 	}
 
-	public ViewerBuilder setEnableLoadLayout(boolean enable){
+	public ViewerBuilder setEnableProgress(boolean enable){
 		progressController.setEnable(enable);
 		return this;
 	}

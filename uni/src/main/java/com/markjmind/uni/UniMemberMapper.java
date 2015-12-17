@@ -85,6 +85,9 @@ public class UniMemberMapper {
 			}else if(field.isAnnotationPresent(Param.class)){
 				Param param = field.getAnnotation(Param.class);
 				String key = param.value();
+				if(key.trim().length()==0){
+					key = field.getName();
+				}
 				Object value = obj.getParam(key);
 				setField(obj, value, field);
 			}
