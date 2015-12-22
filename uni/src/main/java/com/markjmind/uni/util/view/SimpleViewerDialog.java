@@ -5,10 +5,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.markjmind.uni.Jwc;
 import com.markjmind.uni.Viewer;
 import com.markjmind.uni.ViewerBuilder;
 
@@ -149,27 +147,6 @@ public class SimpleViewerDialog extends Dialog {
         return viewer;
     }
 
-    public void setWidth(int width_dp){
-        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams)viewer.getLayout().getLayoutParams();
-        int maxWidth = Jwc.getWindowWidth(getContext())-lp.leftMargin-lp.rightMargin;
-        int width = Jwc.getDp(getContext(), width_dp);
-        if(width > maxWidth){
-            width = maxWidth;
-        }
-        lp.width = width;
-        viewer.getView().setLayoutParams(lp);
-    }
-
-    public void setHeight(int height_dp){
-        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams)viewer.getLayout().getLayoutParams();
-        int maxHeight = Jwc.getWindowWidth(getContext())-lp.leftMargin-lp.rightMargin;
-        int height = Jwc.getDp(getContext(), height_dp);
-        if(height > maxHeight){
-            height = maxHeight;
-        }
-        lp.height = height;
-        viewer.getView().setLayoutParams(lp);
-    }
 
 
     HashMap<Integer, OnButtonClickListener> buttonMap;

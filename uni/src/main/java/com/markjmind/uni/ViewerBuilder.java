@@ -140,7 +140,7 @@ public class ViewerBuilder {
 	 * 바인딩한 Viewer를 리턴한다.
 	 * @return Viewer
 	 */
-	public Viewer getViewer(){
+	private Viewer makeViewer(){
 		try {
 			Viewer jv = jwViewerClass.newInstance();
 			jv.builder = this;
@@ -154,9 +154,13 @@ public class ViewerBuilder {
 	}
 
 	public Viewer change(ViewGroup parents){
-		return getViewer().change(parents);
+		return makeViewer().change(parents);
 	}
-	
+
+
+	public Viewer create(){
+		return makeViewer().create();
+	}
 	/**
 	 * 부모 ViewGroup 아래의 View들을 모두 지우고<br>
 	 * 현재 Viewer로 변경한다.
@@ -178,7 +182,7 @@ public class ViewerBuilder {
 	 * @return
 	 */
 	protected Viewer add(ViewGroup parents, int index){
-		Viewer jv = getViewer().change(parents);
+		Viewer jv = makeViewer().change(parents);
 		jv.add(parents, index);
 		return jv;
 	}

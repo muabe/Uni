@@ -165,7 +165,9 @@ public class Viewer {
     protected void init(int layout_id) {
         setLayoutId(layout_id);
         frame = new FrameLayout(builder.context);
-        makeViewer();
+        viewer = (ViewGroup) getLayoutInfalter(layoutId);
+        onClickParams.clear();
+        UniMemberMapper.injection(this);
     }
 
     /**
@@ -188,18 +190,7 @@ public class Viewer {
 
 /*************************************************** bind 관련 *********************************************/
 
-    /**
-     * Viewer layout를 생성하고 초기화한다.<br>
-     * annotation에 관련된 사항을 injection한다.
-     */
-    void makeViewer() {
-        //뷰어를 새로만듬
-        viewer = (ViewGroup) getLayoutInfalter(layoutId);
-        onClickParams.clear();
-        UniMemberMapper.injection(this);
-    }
-
-    void removeAfterOutAnim() {
+        void removeAfterOutAnim() {
         if (outAnimation != null) {
             final View[] childArr = new View[parentView.getChildCount()];
             for (int i = 0; i < childArr.length; i++) {
@@ -294,6 +285,33 @@ public class Viewer {
         return this;
     }
 
+    public Viewer create(){
+        isPrepare = true;
+
+        Viewer.cancelTaskAll(this);
+        uniAsyncTask.bind(builder.requestCode, builder, this);
+
+        setLayoutId(builder.layout_id);
+        frame = new FrameLayout(builder.context);
+        viewer = (ViewGroup) getLayoutInfalter(layoutId);
+        onClickParams.clear();
+        frame.addView(viewer);
+        UniMemberMapper.injection(this);
+        return this;
+    }
+
+    public Viewer excute(){
+        if (builder.isAsync()) { // Ansync 일때
+            if(isPrepare){
+                setParentView((ViewGroup)frame.getParent());
+            }
+            runLoad();
+        } else {
+            runPost();
+        }
+        return this;
+    }
+
     /**
      * 부모 ViewGroup 아래의 View들을 모두 지우고<br>
      * 현재 Viewer로 변경한다.
@@ -317,6 +335,8 @@ public class Viewer {
         }
         return this;
     }
+
+
 
     public Viewer change(int parents_id) {
         return this.change((ViewGroup) findGobalView(parents_id));
@@ -667,7 +687,7 @@ public class Viewer {
      * @return Viewer에해당하는 View
      */
     public View getView() {
-        return viewer;
+        return frame;
     }
 
     /**
