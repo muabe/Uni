@@ -117,4 +117,8 @@ public class JwBaseDropDown extends Dialog implements OnClickListener{
 	public void onBackPressed() {
 		dismiss();
 	}
+
+	public void setTheme(int style){
+		getContext().setTheme(style);
+	}
 }

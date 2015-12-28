@@ -67,7 +67,6 @@ public class JwDropDown extends JwBaseDropDown{
 	
 	/**
 	 * 각 Item의 layout에 대해 초기화할 내용을 설정한다. 
-	 * @param ItemInit
 	 */
 	public void setItemsInit(ItemInit itemInit){
 		this.itemInit = itemInit;
@@ -172,7 +171,7 @@ public class JwDropDown extends JwBaseDropDown{
 	/**
 	 * BoarderLayout을 설정한다.
 	 * @param R_layout_id boarder layout ID
-	 * @param add_view_group_id boarder 하위에 Item를 추가할 ViewGourp ID 
+	 * @param add_view_group_id boarder 하위에 Item를 추가할 ViewGourp ID
 	 */
 	public void setBoarderLayout(ViewGroup boarder, int add_view_group_id){
 		this.boarder = boarder;
