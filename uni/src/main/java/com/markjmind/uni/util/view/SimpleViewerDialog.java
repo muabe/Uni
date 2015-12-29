@@ -35,7 +35,7 @@ public class SimpleViewerDialog extends Dialog {
 
 
     public SimpleViewerDialog(Context context, Class<? extends Viewer> viewerClass, int requestCode) {
-        super(context, android.R.style.Theme_Holo_Dialog_NoActionBar);
+        super(context, android.R.style.Theme_Translucent_NoTitleBar);
         setFullSize(true);
         if(viewerClass!=null) {
             viewerBuilder = Viewer.build(viewerClass, this).setRequestCode(requestCode);
@@ -129,15 +129,15 @@ public class SimpleViewerDialog extends Dialog {
     public void setFullSize(boolean isFullSize, boolean isFullScrean){
         if (isFullSize) {
             if(isFullScrean){
-                setTheme(android.R.style.Theme_Holo_NoActionBar_Fullscreen);
+                setTheme(android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
             }else {
-                setTheme(android.R.style.Theme_Holo_NoActionBar);
+                setTheme(android.R.style.Theme_Translucent_NoTitleBar);
             }
         } else {
             if(isFullScrean){
-                setTheme(android.R.style.Theme_Holo_Dialog_NoActionBar);
+                setTheme(android.R.style.Theme_Translucent_NoTitleBar);
             }else {
-                setTheme(android.R.style.Theme_Holo_Dialog_NoActionBar);
+                setTheme(android.R.style.Theme_Translucent_NoTitleBar);
             }
 
         }
