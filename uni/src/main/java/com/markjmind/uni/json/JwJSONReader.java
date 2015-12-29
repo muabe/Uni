@@ -1,11 +1,11 @@
 package com.markjmind.uni.json;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * start : 2013.11.17<br>
@@ -108,9 +108,9 @@ public abstract class JwJSONReader<ParentResult> {
 	public abstract  ParentResult startArrayWork(String name, ParentResult parentResult);
 	public abstract void endArrayWork(String name, ParentResult parentResult);
 	
-	public static JSONType getJSONType(JSONObject json, String name) throws JSONException{
+	public static JSONType getJSONType(JSONObject json, String name){
 		JSONType type=null;
-		Object object = json.get(name);
+		Object object = json.opt(name);
 		if(object instanceof JSONObject){
 			type = type.JSONObject;
 		}else if(object instanceof JSONArray){
