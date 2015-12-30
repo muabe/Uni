@@ -67,23 +67,23 @@ public abstract class UniAsyncTask {
         build.getParamStore().clear();
     }
 
-    public void pre(int requestCode, Viewer viewer) {
+    void pre(int requestCode, Viewer viewer) {
         this.onPre(requestCode, viewer);
     }
 
-    public void load(int requestCode, UpdateEvent event, Viewer viewer) throws Exception {
+    void load(int requestCode, UpdateEvent event, Viewer viewer) throws Exception {
         viewer.setEnablePostView(true);
         this.onLoad(requestCode, event, viewer);
     }
 
-    public void update(int requestCode, Object value, Viewer viewer) {
+    void update(int requestCode, Object value, Viewer viewer) {
         this.onUpdate(requestCode, value, viewer);
         if(viewer.builder.progressController.progressViewListener !=null){
             viewer.builder.progressController.progressViewListener.onUpdate(requestCode, viewer.builder.progressController.progressView, value);
         }
     }
 
-    public void post(int requestCode, Viewer viewer) {
+    void post(int requestCode, Viewer viewer) {
         if(viewer.getParent()==null || viewer.frame==null){
             if(!viewer.isPrepare) {
                 return;
