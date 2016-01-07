@@ -27,12 +27,12 @@ class InnerAsyncTask extends AsyncTask<Void, Object, Boolean> implements UpdateE
 
     @Override
     protected void onPreExecute() {
-        if(jv.TASK_LOAD.equals(state)){ /** runLoad일경우 */
+        if(Viewer.TASK_LOAD.equals(state)){ /** runLoad일경우 */
             if(builder.progressController.isEnable()) {  //로딩뷰를 설정했을경우
                 //frame에 있는 LoadView를 add하여 화면에 보이게 한다.
                 builder.progressController.show(builder.requestCode, jv.frame);
             }
-        } else if(jv.TASK_EXCUTE.equals(state)){  /** excute를 했을경우 */
+        } else if(Viewer.TASK_EXCUTE.equals(state)){  /** excute를 했을경우 */
             if(builder.progressController.isEnable()) {  //로딩뷰를 설정했을경우
                 //frame에 있는 LoadView를 add하여 화면에 보이게 한다.
                 builder.progressController.show(builder.requestCode, jv.frame);

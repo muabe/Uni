@@ -211,47 +211,6 @@ public class Viewer {
         viewer = null;
     }
 
-//    //FIXME viewer의 바인드가 전에는 onPost에서만 이루어지는 줄알았음 지금은 prelayout에서도 사용
-//    //add일때 처리를 생각해봐야함
-//
-//    /**
-//     * async상황에서 실제 Frame에 Viewer layout을 추가한다.<br>
-//     * change인지 add인지 확인하여
-//     *
-//     * @param jv
-//     * @param task
-//     * @return
-//     */
-//    synchronized static boolean asyncBind(Viewer jv, String task) {
-//        if (jv.getParent() == null) {
-//            return false;
-//        }
-//        ViewGroup parentView = jv.getParent();
-//        int viewerIndex = -1;
-//        if (TASK_CHANGE.equals(task)) { // change일 경우
-//            if (!jv.builder.isPreLayout()) {
-//                jv.removeViewer();
-//            }
-//        } else { // add일 경우
-//            for (int i = 0; i < parentView.getChildCount(); i++) {
-//                if (jv.frame == parentView.getChildAt(i)) {
-//                    viewerIndex = i;
-//                    break;
-//                }
-//            }
-//            jv.removeViewer();
-//        }
-//
-//        //애니메이션 때문에 이러는것 같음
-//        if (viewerIndex >= 0) {
-////			jv.frame.addView(jv.viewer, viewerIndex, jv.parentView.getLayoutParams());
-//            jv.frame.addView(jv.viewer, jv.frame.getLayoutParams());
-//        } else {
-//            jv.frame.addView(jv.viewer, jv.frame.getLayoutParams());
-//        }
-//        return true;
-//    }
-
     public Viewer prepare() {
         isPrepare = true;
 
