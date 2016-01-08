@@ -140,7 +140,7 @@ public class ViewerBuilder {
 	 * 바인딩한 Viewer를 리턴한다.
 	 * @return Viewer
 	 */
-	private Viewer makeViewer(){
+	public Viewer makeViewer(){
 		try {
 			Viewer jv = jwViewerClass.newInstance();
 			jv.builder = this;
