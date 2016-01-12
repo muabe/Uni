@@ -600,11 +600,11 @@ public class JwFile {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	
-	public void saveWebFile(String urlName,String fileName) throws MalformedURLException, ProtocolException, FileNotFoundException,IOException {
-			WebConnection wc = new WebConnection();	
-			InputStream in = wc.getInputStreamGet(urlName);
-	        saveFile(in,fileName);
-	}
+//	public void saveWebFile(String urlName,String fileName) throws MalformedURLException, ProtocolException, FileNotFoundException,IOException {
+//			WebConnection wc = new WebConnection();
+//			InputStream in = wc.getInputStreamGet(urlName);
+//	        saveFile(in,fileName);
+//	}
 	
 	public void saveFile(InputStream in, String fileName) throws FileNotFoundException,IOException  {
 		int readCount = 0;
