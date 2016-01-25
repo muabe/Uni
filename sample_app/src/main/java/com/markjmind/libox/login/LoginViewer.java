@@ -50,7 +50,7 @@ public class LoginViewer extends Viewer {
                             }
 
                             @Override
-                            public void onDestroy(int requestCode) {
+                            public void onDestroy(int requestCode, View loadView) {
                             }
                         });
                     }
