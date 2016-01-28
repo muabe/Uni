@@ -35,7 +35,7 @@ public class Test1 extends Viewer {
                  }
 
                  @Override
-                 public void onDestroy(int requestCode) {
+                 public void onDestroy(int requestCode, View loadView) {
 
                  }
 
