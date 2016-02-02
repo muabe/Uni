@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 
-import com.markjmind.uni.Jwc;
+import com.markjmind.uni.viewer.Jwc;
 import com.markjmind.uni.ui.JwGroup;
 import com.markjmind.uni.ui.JwOnGroupSelect;
 

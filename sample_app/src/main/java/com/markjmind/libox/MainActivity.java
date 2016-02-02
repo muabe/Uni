@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import com.markjmind.libox.login.LoginViewer;
-import com.markjmind.uni.Viewer;
+import com.markjmind.uni.viewer.Viewer;
 
 
 public class MainActivity extends Activity {

@@ -6,7 +6,7 @@ import com.markjmind.libox.dietary.DietaryViewer;
 import com.markjmind.libox.exercise.ExerciseViewer;
 import com.markjmind.libox.test.Test1;
 import com.markjmind.libox.test.Test2;
-import com.markjmind.uni.Viewer;
+import com.markjmind.uni.viewer.Viewer;
 import com.markjmind.uni.annotiation.GetView;
 import com.markjmind.uni.annotiation.Layout;
 import com.markjmind.uni.annotiation.OnClick;

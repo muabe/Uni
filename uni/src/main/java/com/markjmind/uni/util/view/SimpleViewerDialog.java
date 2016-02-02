@@ -7,8 +7,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.markjmind.uni.Viewer;
-import com.markjmind.uni.ViewerBuilder;
+import com.markjmind.uni.viewer.Viewer;
+import com.markjmind.uni.viewer.ViewerBuilder;
 
 import java.util.HashMap;
 

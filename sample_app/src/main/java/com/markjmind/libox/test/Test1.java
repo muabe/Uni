@@ -6,11 +6,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.markjmind.libox.R;
-import com.markjmind.uni.CancelListener;
-import com.markjmind.uni.ProgressViewListener;
-import com.markjmind.uni.UpdateEvent;
-import com.markjmind.uni.Viewer;
-import com.markjmind.uni.ViewerBuilder;
+import com.markjmind.uni.viewer.CancelListener;
+import com.markjmind.uni.viewer.ProgressViewListener;
+import com.markjmind.uni.viewer.UpdateEvent;
+import com.markjmind.uni.viewer.Viewer;
+import com.markjmind.uni.viewer.ViewerBuilder;
 import com.markjmind.uni.annotiation.Layout;
 
 @Layout(R.layout.test1)
