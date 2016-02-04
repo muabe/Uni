@@ -1,9 +1,10 @@
-package com.markjmind.uni;
+package com.markjmind.uni.builder;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.markjmind.uni.UniView;
 import com.markjmind.uni.mapper.Mapper;
 
 /**
@@ -32,7 +33,7 @@ public class BaseBuilder<T> {
         Mapper mapper = new Mapper(uniView, injectionObject);
         int layoutId = mapper.injectionLayout();
         uniView.setLayout((ViewGroup) inflater.inflate(layoutId, container, false));
-        uniView.setUniInterface(buildInterface.getUniInterface());
+//        uniView.setUniInterface(buildInterface.getUniInterface());
         mapper.injectionView();
         return uniView;
     }

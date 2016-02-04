@@ -62,7 +62,7 @@ public class DietaryViewer extends Viewer {
 }
 
 //for(int i=0;i<=100;i++) {
-//        event.update((i+11));
+//        event.notifyChange((i+11));
 //        Thread.sleep(50);
 //        }
 

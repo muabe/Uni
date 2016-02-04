@@ -3,6 +3,8 @@ package com.markjmind.fragmenttest;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.markjmind.uni.UniView;
@@ -36,5 +38,11 @@ public class TestUniView extends UniView {
     public void onPost(int requestCode) {
         setBackgroundColor(Color.parseColor("#ff0000"));
         button.setText("하이");
+        button.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((ViewGroup)getParent()).setVisibility(View.GONE);
+            }
+        });
     }
 }

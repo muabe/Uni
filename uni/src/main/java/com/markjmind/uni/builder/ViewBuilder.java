@@ -1,4 +1,4 @@
-package com.markjmind.uni;
+package com.markjmind.uni.builder;
 
 /**
  * @author 오재웅(JaeWoong-Oh)

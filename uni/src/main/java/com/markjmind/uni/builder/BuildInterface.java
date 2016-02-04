@@ -1,4 +1,7 @@
-package com.markjmind.uni;
+package com.markjmind.uni.builder;
+
+import com.markjmind.uni.UniInterface;
+import com.markjmind.uni.UniView;
 
 /**
  * @author 오재웅(JaeWoong-Oh)

@@ -1,8 +1,6 @@
 package com.markjmind.uni;
 
-import android.content.Context;
-
-import java.lang.reflect.InvocationTargetException;
+import com.markjmind.uni.builder.FragmentBuilder;
 
 /**
  * @author 오재웅(JaeWoong-Oh)
@@ -11,31 +9,31 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class Uni {
 
-    public static <T extends UniView>ViewBuilder view(Context context, Class<T> clz){
-        return view(context, clz, null);
+//    public static <T extends UniView>ViewBuilder view(Context context, Class<T> clz){
+//        return view(context, clz, null);
+//
+//    }
 
-    }
-
-    protected static <T extends UniView>ViewBuilder view(Context context, Class<T> clz, BuildInterface injectionObject){
-        try {
-            T uniV = (T)clz.getConstructor(Context.class).newInstance(context);
-            if(injectionObject==null){
-                injectionObject = uniV;
-            }
-            ViewBuilder builder = new ViewBuilder(uniV, injectionObject);
-            return builder;
-
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+//    protected static <T extends UniView>ViewBuilder view(Context context, Class<T> clz, BuildInterface injectionObject){
+//        try {
+//            T uniV = (T)clz.getConstructor(Context.class).newInstance(context);
+//            if(injectionObject==null){
+//                injectionObject = uniV;
+//            }
+//            ViewBuilder builder = new ViewBuilder(uniV, injectionObject);
+//            return builder;
+//
+//        } catch (InstantiationException e) {
+//            e.printStackTrace();
+//        } catch (InvocationTargetException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchMethodException e) {
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
 
     public static <T extends UniFragment>FragmentBuilder<T> fragment(Class<T> clz){

@@ -3,47 +3,68 @@ package com.markjmind.uni;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.markjmind.uni.mapper.Mapper;
 import com.markjmind.uni.mapper.MapperInterface;
+import com.markjmind.uni.thread.DetachedObservable;
+import com.markjmind.uni.thread.InnerUniTask;
 import com.markjmind.uni.viewer.UpdateEvent;
 import com.markjmind.uni.viewer.ViewerBuilder;
 
 /**
+ * <br>捲土重來<br>
  * @author 오재웅(JaeWoong-Oh)
  * @email markjmind@gmail.com
- * @since 2016-01-28
+  * @since 2016-01-28
  */
-public class UniView extends FrameLayout implements UniInterface, BuildInterface, MapperInterface {
+public class UniView extends FrameLayout implements UniInterface,  MapperInterface, View.OnAttachStateChangeListener {
     private ViewGroup layout;
     private UniInterface uniInterface;
     private Mapper mapper;
+    private boolean isAttach;
+
+    private DetachedObservable detachedObservable;
 
     public UniView(Context context) {
         super(context);
+        init();
         onCreateView(null);
     }
 
     public UniView(Context context, Object mappingObject, ViewGroup container) {
         super(context);
+        init();
         mapping(new Mapper(this, mappingObject), container);
     }
 
     public UniView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
         //todo attrs에 layout이 있으면 onCreateView에 넣어주자
         onCreateView(null);
     }
 
     public UniView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
         onCreateView(null);
     }
 
+    private void init(){
+        detachedObservable = new DetachedObservable();
+        isAttach = false;
+        addOnAttachStateChangeListener(this);
+    }
+
     private void onCreateView(ViewGroup layout){
-        mapping(new Mapper(this, this), this);
+        if(layout==null) {
+            mapping(new Mapper(this, this), this);
+        }else{
+            setLayout(layout);
+        }
     }
 
     @Override
@@ -74,21 +95,14 @@ public class UniView extends FrameLayout implements UniInterface, BuildInterface
         this.uniInterface = uniInterface;
     }
 
-    @Override
-    public UniView getUniView() {
-        return this;
-    }
-
-    @Override
-    public UniInterface getUniInterface() {
-        return null;
-    }
-
     public void excute(int requestCode){
         mapper.injectionView();
+
         if(uniInterface==null) {
+            detachedObservable.add(new InnerUniTask(requestCode, detachedObservable, this));
             this.onPost(requestCode);
         }else{
+            detachedObservable.add(new InnerUniTask(requestCode, detachedObservable, uniInterface));
             uniInterface.onPost(requestCode);
         }
     }
@@ -96,6 +110,19 @@ public class UniView extends FrameLayout implements UniInterface, BuildInterface
     public void excute(){
         this.excute(-1);
     }
+
+
+
+    @Override
+    public void onViewAttachedToWindow(View v) {
+        isAttach = true;
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(View v) {
+        isAttach = false;
+    }
+
 
 
     @Override
@@ -132,7 +159,4 @@ public class UniView extends FrameLayout implements UniInterface, BuildInterface
     public void onCancelled(int requestCode) {
 
     }
-
-
-
 }

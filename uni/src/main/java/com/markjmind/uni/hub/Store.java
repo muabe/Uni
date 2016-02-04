@@ -146,7 +146,7 @@ public class Store<Value> extends LinkedHashMap<Object, Object> implements Compa
 	/**
 	 * Store에 키값들을 String배열로 얻어온다
 	 */
-//	public String[] getKeys(){
+//	public String[] getIds(){
 //		if(this.size()==0)
 //			return null;
 //		String[] keys=new String[this.size()];

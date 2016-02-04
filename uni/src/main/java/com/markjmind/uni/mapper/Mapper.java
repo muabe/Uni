@@ -30,69 +30,26 @@ public class Mapper {
 	private Finder finder;
 	private Object injectionObject;
 
-	private abstract class Finder{
-		private Object obj;
-
-		public Finder(Object obj){
-			this.obj = obj;
-		}
-
-		public <T>T getFinder(Class<T> clz){
-			return (T)obj;
-		}
-
-		public abstract View findViewById(int id);
-	}
 
 	public Mapper(){}
 
 
 	public Mapper(View finder, Object injectionObject){
-		setFinder(finder, injectionObject);
+		this.context = finder.getContext();
+		this.injectionObject = injectionObject;
+		this.finder = new Finder(finder);
 	}
 
 	public Mapper(Activity finder, Object injectionObject){
-		setFinder(finder, injectionObject);
+		this.context = finder;
+		this.injectionObject = injectionObject;
+		this.finder = new Finder(finder);
 	}
 
 	public Mapper(Dialog finder, Object injectionObject){
-		setFinder(finder, injectionObject);
-	}
-
-	public void setFinder(View finder, Object injectionObject){
 		this.context = finder.getContext();
 		this.injectionObject = injectionObject;
-		final Class<View> clz = (Class<View>)finder.getClass();
-		this.finder = new Finder(finder){
-			@Override
-			public View findViewById(int id) {
-				return getFinder(clz).findViewById(id);
-			}
-		};
-	}
-
-	public void setFinder(Activity finder, Object injectionObject){
-		this.context = finder;
-		this.injectionObject = injectionObject;
-		final Class<Activity> clz = (Class<Activity>)finder.getClass();
-		this.finder = new Finder(finder){
-			@Override
-			public View findViewById(int id) {
-				return getFinder(clz).findViewById(id);
-			}
-		};
-	}
-
-	public void setFinder(Dialog finder, Object injectionObject){
-		this.context = finder.getContext();
-		this.injectionObject = injectionObject;
-		final Class<Dialog> clz = (Class<Dialog>) finder.getClass();
-		this.finder = new Finder(finder){
-			@Override
-			public View findViewById(int id) {
-				return getFinder(clz).findViewById(id);
-			}
-		};
+		this.finder = new Finder(finder);
 	}
 
 	public View findViewById(int id){
@@ -175,21 +132,27 @@ public class Mapper {
 	}
 
 	private int getFieldID(Class<?> viewerClass, String idName, Context app){
-		Class cls = JwStringID.getRClass("id", app);
-		Field field;
-		try {
-			field = cls.getDeclaredField(idName);
-			int value = field.getInt(null);
-			return value;
-		} catch (SecurityException e) {
-			throw new SecurityException(ErrorMessage.Runtime.fieldSecurity(viewerClass, idName),e);
-		} catch (NoSuchFieldException e) {
-			throw new UinMapperException(ErrorMessage.Runtime.fieldNoSuch(viewerClass, idName),e);
-		} catch (IllegalArgumentException e) {
-			throw new UinMapperException(ErrorMessage.Runtime.fieldIllegalArgument(viewerClass, idName),e);
-		} catch (IllegalAccessException e) {
-			throw new UinMapperException(ErrorMessage.Runtime.fieldIllegalAccess(viewerClass, idName),e);
+		int resID = app.getResources().getIdentifier(idName, "id", app.getPackageName());
+		if(resID!=-1){
+			return resID;
+		}else{
+			throw new UinMapperException(ErrorMessage.Runtime.fieldNoSuch(viewerClass, idName), null);
 		}
+//		Class cls = JwStringID.getRClass("id", app);
+//		Field field;
+//		try {
+//			field = cls.getDeclaredField(idName);
+//			int value = field.getInt(null);
+//			return value;
+//		} catch (SecurityException e) {
+//			throw new SecurityException(ErrorMessage.Runtime.fieldSecurity(viewerClass, idName),e);
+//		} catch (NoSuchFieldException e) {
+//			throw new UinMapperException(ErrorMessage.Runtime.fieldNoSuch(viewerClass, idName),e);
+//		} catch (IllegalArgumentException e) {
+//			throw new UinMapperException(ErrorMessage.Runtime.fieldIllegalArgument(viewerClass, idName),e);
+//		} catch (IllegalAccessException e) {
+//			throw new UinMapperException(ErrorMessage.Runtime.fieldIllegalAccess(viewerClass, idName),e);
+//		}
 	}
 
 	private View setField(Object obj, int id, Field field, HashMap<Integer, View> viewHash){

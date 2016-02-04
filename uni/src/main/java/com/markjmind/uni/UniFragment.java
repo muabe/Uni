@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.markjmind.uni.builder.BuildInterface;
 import com.markjmind.uni.viewer.UpdateEvent;
 import com.markjmind.uni.viewer.ViewerBuilder;
 
@@ -17,12 +18,13 @@ import com.markjmind.uni.viewer.ViewerBuilder;
  * 일반 Viewer을 정의하는 클래스는<br>
  * BaseLayout 를 상속하여 view_init메소드에 화면을 정의한다.
  *
+ * <br>捲土重來<br>
  * @author 오재웅(JaeWoong-Oh)
  * @email markjmind@gmail.com
  *
  */
 
-public class UniFragment extends Fragment implements UniInterface, BuildInterface{
+public class UniFragment extends Fragment implements UniInterface, BuildInterface {
     private UniView uniView;
 
     /**

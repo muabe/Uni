@@ -19,14 +19,16 @@ import com.markjmind.uni.annotiation.Layout;
  * @since 2016-01-28
  */
 public class Menu2Fragment extends Fragment{
+    TestUni uniView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-
-        TestUni uniView = new TestUni(getActivity());
-        uniView.excute();
+        if(uniView==null) {
+            uniView = new TestUni(getActivity());
+            uniView.excute();
+        }
 
         return uniView;
     }
@@ -43,6 +45,15 @@ public class Menu2Fragment extends Fragment{
         @Override
         public void onPost(int requestCode) {
             button.setText("유니뷰 버튼");
+          }
+
+        public int getId(String idName, Context context) throws Exception{
+//            Class clz = Class.forName(context.getPackageName()+".R$id");
+//            Field field = clz.getDeclaredField(idName);
+//            return field.getInt(null);
+
+            int resID = context.getResources().getIdentifier(idName, "id", context.getPackageName());
+            return resID;
         }
     }
 }

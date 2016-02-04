@@ -1,4 +1,6 @@
-package com.markjmind.uni;
+package com.markjmind.uni.builder;
+
+import com.markjmind.uni.UniFragment;
 
 /**
  * @author 오재웅(JaeWoong-Oh)
@@ -12,7 +14,7 @@ public class FragmentBuilder<T extends UniFragment> extends BaseBuilder<T> {
         super(buildInterface, injectionObject);
     }
 
-    protected void setUniFragment(T uniFragment){
+    public void setUniFragment(T uniFragment){
         this.uniFragment = uniFragment;
     }
 

@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 fm.beginTransaction().replace(R.id.lyt, menu3Fragment).addToBackStack(null).commit();
             }
         });
+
     }
 
     @Override
