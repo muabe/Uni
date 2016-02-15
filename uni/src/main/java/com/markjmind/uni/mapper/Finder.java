@@ -14,11 +14,26 @@ import android.content.Context;
 import android.view.View;
 
 /**
+ * <br>捲土重來<br>
  * @author 오재웅(JaeWoong-Oh)
  * @email markjmind@gmail.com
  * @since 2016-02-02
  */
 public class Finder {
+    private abstract class FinderInterFace{
+        private Object obj;
+
+        public FinderInterFace(Object obj){
+            this.obj = obj;
+        }
+
+        public <T>T getFinder(Class<T> clz){
+            return (T)obj;
+        }
+
+        public abstract View findViewById(int id);
+    }
+
     private FinderInterFace finderInterFace;
     private Context context;
 
@@ -57,21 +72,6 @@ public class Finder {
 
     public View findViewById(int id){
         return finderInterFace.findViewById(id);
-    }
-
-
-    private abstract class FinderInterFace{
-        private Object obj;
-
-        public FinderInterFace(Object obj){
-            this.obj = obj;
-        }
-
-        public <T>T getFinder(Class<T> clz){
-            return (T)obj;
-        }
-
-        public abstract View findViewById(int id);
     }
 
 }

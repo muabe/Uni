@@ -1,4 +1,4 @@
-package com.markjmind.uni.annotiation;
+package com.markjmind.uni.mapper.annotiation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,10 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention( RetentionPolicy.RUNTIME )
-@Target(ElementType.TYPE)
-public @interface Layout
+@Target( ElementType.FIELD )
+public @interface GetView
 {
-	int value();
+	int value() default -1;
 }
-	
-	
+

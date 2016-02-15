@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.markjmind.uni.UniView;
-import com.markjmind.uni.annotiation.GetView;
-import com.markjmind.uni.annotiation.Layout;
+import com.markjmind.uni.mapper.annotiation.GetView;
+import com.markjmind.uni.mapper.annotiation.Layout;
 
 /**
  * @author 오재웅(JaeWoong-Oh)
@@ -24,12 +24,8 @@ public class Menu2Fragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        if(uniView==null) {
-            uniView = new TestUni(getActivity());
-            uniView.excute();
-        }
-
+        uniView = new TestUni(getActivity());
+        uniView.excute();
         return uniView;
     }
 

@@ -3,11 +3,11 @@ package com.markjmind.uni.viewer;
 import android.content.Context;
 import android.view.View;
 
-import com.markjmind.uni.annotiation.Box;
-import com.markjmind.uni.annotiation.Param;
-import com.markjmind.uni.annotiation.GetView;
-import com.markjmind.uni.annotiation.Layout;
-import com.markjmind.uni.annotiation.OnClick;
+import com.markjmind.uni.mapper.annotiation.Box;
+import com.markjmind.uni.mapper.annotiation.Param;
+import com.markjmind.uni.mapper.annotiation.GetView;
+import com.markjmind.uni.mapper.annotiation.Layout;
+import com.markjmind.uni.mapper.annotiation.OnClick;
 import com.markjmind.uni.exception.ErrorMessage;
 import com.markjmind.uni.exception.UinMapperException;
 

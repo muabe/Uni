@@ -15,15 +15,15 @@ import com.markjmind.uni.hub.Store;
  * @email markjmind@gmail.com
  * @since 2016-02-03
  */
-public class StoreObservable {
+public class StoreObservable<T extends StoreObserver> {
 
-    private Store<StoreObserver> pool = new Store<>();
+    private Store<T> pool = new Store<>();
 
     public StoreObservable() {
     }
 
 
-    public void add(StoreObserver observer) {
+    public void add(T observer) {
         if (observer == null) {
             throw new NullPointerException("observer == null");
         }
@@ -33,21 +33,28 @@ public class StoreObservable {
         }
     }
 
-
-
-    public synchronized void remove(String key) {
-        pool.remove(key);
+    public T get(String key){
+        return pool.get(key);
     }
 
-    public synchronized void remove(StoreObserver observer) {
+    public Store<T> getStore(){
+        return pool;
+    }
+
+
+    public synchronized void remove(String id) {
+        pool.remove(id);
+    }
+
+    public synchronized void remove(T observer) {
         this.remove(observer.getId());
     }
 
     public synchronized void removeAll(){
         synchronized (this) {
             String[] keys = pool.getKeys();
-            for (String key: keys) {
-                remove(key);
+            for (String id: keys) {
+                remove(id);
             }
         }
     }
@@ -64,8 +71,8 @@ public class StoreObservable {
     public synchronized void notifyChanges(Object data) {
         synchronized (this) {
             String[] keys = pool.getKeys();
-            for (String key: keys) {
-                StoreObserver observer = pool.get(key);
+            for (String id: keys) {
+                StoreObserver observer = pool.get(id);
                 if(observer!=null) {
                     observer.notifyChange(this, data);
                 }

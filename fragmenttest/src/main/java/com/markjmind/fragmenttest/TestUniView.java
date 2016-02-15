@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.markjmind.uni.UniView;
-import com.markjmind.uni.annotiation.GetView;
-import com.markjmind.uni.annotiation.Layout;
+import com.markjmind.uni.mapper.annotiation.GetView;
+import com.markjmind.uni.mapper.annotiation.Layout;
 
 /**
  * @author 오재웅(JaeWoong-Oh)

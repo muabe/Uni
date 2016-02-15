@@ -1,6 +1,7 @@
 package com.markjmind.uni.thread;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.markjmind.uni.UniInterface;
 import com.markjmind.uni.common.StoreObserver;
@@ -19,6 +20,8 @@ public class InnerUniTask extends AsyncTask<Void, Object, Boolean> implements St
     private UniInterface uniInterface;
     private int requestCode;
 
+    private Exception doInBackException=null;
+
     public InnerUniTask(int requestCode, DetachedObservable observable, UniInterface uniInterface){
         this.isCancel = false;
         this.requestCode = requestCode;
@@ -30,14 +33,14 @@ public class InnerUniTask extends AsyncTask<Void, Object, Boolean> implements St
 
     @Override
     protected void onPreExecute() {
-
+        uniInterface.onPre(requestCode);
     }
 
-    private Exception doInBackException=null;
+
     @Override
     protected Boolean doInBackground(Void... params) {
         try{
-
+            uniInterface.onLoad(requestCode, null);
             return true;
         }catch(Exception e){
             doInBackException = e;
@@ -57,17 +60,21 @@ public class InnerUniTask extends AsyncTask<Void, Object, Boolean> implements St
 
     @Override
     protected void onPostExecute(Boolean result) {
+        Log.e("DetachedObservable", getId()+" Post");
         if(!isCancel){
-
-        }else{
-            cancel();
+            if(result) {
+                uniInterface.onPost(requestCode);
+            }else{
+                uniInterface.onFail(requestCode, false, "", doInBackException);
+            }
+            observable.remove(this);
         }
     }
 
     public synchronized void cancel() {
         if (!isCancel){
-            observable.remove(this);
             this.isCancel = true;
+            super.cancel(true);
             uniInterface.onCancelled(requestCode);
         }
     }

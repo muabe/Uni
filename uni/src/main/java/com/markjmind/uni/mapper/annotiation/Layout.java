@@ -1,4 +1,4 @@
-package com.markjmind.uni.annotiation;
+package com.markjmind.uni.mapper.annotiation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,8 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention( RetentionPolicy.RUNTIME )
-@Target(ElementType.FIELD)
-public @interface Param
+@Target(ElementType.TYPE)
+public @interface Layout
 {
-	String value() default "";
+	int value();
 }
+	
+	

@@ -11,7 +11,7 @@ import com.markjmind.uni.viewer.ProgressViewListener;
 import com.markjmind.uni.viewer.UpdateEvent;
 import com.markjmind.uni.viewer.Viewer;
 import com.markjmind.uni.viewer.ViewerBuilder;
-import com.markjmind.uni.annotiation.Layout;
+import com.markjmind.uni.mapper.annotiation.Layout;
 
 @Layout(R.layout.test1)
 public class Test1 extends Viewer {

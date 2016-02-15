@@ -12,12 +12,6 @@ import com.markjmind.uni.viewer.ViewerBuilder;
 
 
 /**
- * start : 2013.11.17<br>
- * <br>
- * Base Viewer 클래스<br>
- * 일반 Viewer을 정의하는 클래스는<br>
- * BaseLayout 를 상속하여 view_init메소드에 화면을 정의한다.
- *
  * <br>捲土重來<br>
  * @author 오재웅(JaeWoong-Oh)
  * @email markjmind@gmail.com
@@ -26,12 +20,15 @@ import com.markjmind.uni.viewer.ViewerBuilder;
 
 public class UniFragment extends Fragment implements UniInterface, BuildInterface {
     private UniView uniView;
+    public BindConfig config;
+    private boolean isPopStack;
 
     /**
      * 기본생성자
      */
     public UniFragment() {
         super();
+        isPopStack = false;
         uniView = null;
     }
 
@@ -42,12 +39,18 @@ public class UniFragment extends Fragment implements UniInterface, BuildInterfac
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(uniView==null) {
+        if(uniView == null || !isPopStack) {
             uniView = new UniView(getActivity(), this, container);
             uniView.setUniInterface(this);
+            uniView.config = this.config;
+            setBackStack(false);
             uniView.excute();
         }
         return uniView;
+    }
+
+    public void setBackStack(boolean isPopStack) {
+        this.isPopStack = isPopStack;
     }
 
     @Override

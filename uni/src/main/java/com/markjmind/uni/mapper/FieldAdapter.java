@@ -8,11 +8,17 @@
 
 package com.markjmind.uni.mapper;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+
 /**
  * @author 오재웅(JaeWoong-Oh)
  * @email markjmind@gmail.com
- * @since 2016-02-11
+ * @since 2016-02-12
  */
-public interface MapperInterface {
-    public Object getParam(String key);
+public abstract class FieldAdapter<T extends Annotation> extends MapperAdapter<T, Field> {
+
+    public FieldAdapter() {
+        super(Field.class);
+    }
 }

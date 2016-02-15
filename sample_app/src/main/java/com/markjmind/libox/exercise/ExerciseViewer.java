@@ -7,8 +7,8 @@ import com.markjmind.libox.common.Web;
 import com.markjmind.uni.viewer.UpdateEvent;
 import com.markjmind.uni.viewer.Viewer;
 import com.markjmind.uni.viewer.ViewerBuilder;
-import com.markjmind.uni.annotiation.GetView;
-import com.markjmind.uni.annotiation.Layout;
+import com.markjmind.uni.mapper.annotiation.GetView;
+import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.hub.Store;
 
 import org.json.JSONException;

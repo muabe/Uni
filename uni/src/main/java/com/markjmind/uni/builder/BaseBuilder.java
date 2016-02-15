@@ -31,10 +31,10 @@ public class BaseBuilder<T> {
         UniView uniView = buildInterface.getUniView();
         LayoutInflater inflater = ((LayoutInflater) uniView.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
         Mapper mapper = new Mapper(uniView, injectionObject);
-        int layoutId = mapper.injectionLayout();
-        uniView.setLayout((ViewGroup) inflater.inflate(layoutId, container, false));
+        int layoutId = mapper.injectLayout();
+//        uniView.setView((ViewGroup) inflater.inflate(layoutId, container, false));
 //        uniView.setUniInterface(buildInterface.getUniInterface());
-        mapper.injectionView();
+        mapper.injectAll();
         return uniView;
     }
 }

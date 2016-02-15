@@ -13,8 +13,8 @@ import com.markjmind.uni.viewer.UniAsyncTask;
 import com.markjmind.uni.viewer.UpdateEvent;
 import com.markjmind.uni.viewer.Viewer;
 import com.markjmind.uni.viewer.ViewerBuilder;
-import com.markjmind.uni.annotiation.GetView;
-import com.markjmind.uni.annotiation.Layout;
+import com.markjmind.uni.mapper.annotiation.GetView;
+import com.markjmind.uni.mapper.annotiation.Layout;
 
 /**
  * Created by codemasta on 2015-09-15.

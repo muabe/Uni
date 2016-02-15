@@ -7,9 +7,9 @@ import com.markjmind.libox.exercise.ExerciseViewer;
 import com.markjmind.libox.test.Test1;
 import com.markjmind.libox.test.Test2;
 import com.markjmind.uni.viewer.Viewer;
-import com.markjmind.uni.annotiation.GetView;
-import com.markjmind.uni.annotiation.Layout;
-import com.markjmind.uni.annotiation.OnClick;
+import com.markjmind.uni.mapper.annotiation.GetView;
+import com.markjmind.uni.mapper.annotiation.Layout;
+import com.markjmind.uni.mapper.annotiation.OnClick;
 
 /**
  * Created by codemasta on 2015-09-16.

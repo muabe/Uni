@@ -8,6 +8,8 @@
 
 package com.markjmind.uni.thread;
 
+import android.util.Log;
+
 import com.markjmind.uni.common.StoreObservable;
 
 /**
@@ -16,9 +18,36 @@ import com.markjmind.uni.common.StoreObservable;
  * @email markjmind@gmail.com
  * @since 2016-01-28
  */
-public class DetachedObservable extends StoreObservable{
+public class DetachedObservable extends StoreObservable<InnerUniTask>{
 
-    public void cancelAll(){
+    @Override
+    public void add(InnerUniTask observer) {
+        String className = observer.getId();
+        super.add(observer);
+        Log.e("DetachedObservable", className+" add:"+size());
+    }
 
+    @Override
+    public synchronized void remove(String id) {
+        String className = get(id).getId();
+        super.remove(id);
+        Log.e("DetachedObservable", className + " remove:" + size());
+    }
+
+
+    public void cancel(String id){
+        String className = get(id).getId();
+        get(id).cancel();
+        Log.e("DetachedObservable", className + " cancel:" + size());
+        remove(id);
+    }
+
+    public synchronized void cancelAll(){
+        synchronized (this) {
+            String[] keys = getStore().getKeys();
+            for (String key: keys) {
+                cancel(key);
+            }
+        }
     }
 }

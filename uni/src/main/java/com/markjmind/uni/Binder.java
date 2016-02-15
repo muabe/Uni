@@ -6,13 +6,16 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.markjmind.uni.mapper;
+package com.markjmind.uni;
 
 /**
  * @author 오재웅(JaeWoong-Oh)
  * @email markjmind@gmail.com
- * @since 2016-02-11
+ * @since 2016-02-05
  */
-public interface MapperInterface {
-    public Object getParam(String key);
+public class Binder {
+
+    public Binder(){
+
+    }
 }
