@@ -6,7 +6,6 @@ import android.widget.TextView;
 import com.markjmind.uni.UniFragment;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
-import com.markjmind.uni.mapper.annotiation.Param;
 import com.markjmind.uni.viewer.UpdateEvent;
 
 import okhttp3.OkHttpClient;
@@ -21,9 +20,6 @@ import okhttp3.Response;
 
 @Layout(R.layout.menu1_frgt)
 public class Menu1Fragment extends UniFragment {
-    @Param
-    String ok;
-
     @GetView
     TextView textView, textView2;
 
@@ -35,15 +31,11 @@ public class Menu1Fragment extends UniFragment {
 
     @Override
     public void onLoad(int requestCode, UpdateEvent event) throws Exception {
-
-
         {
             OkHttpClient client = new OkHttpClient();
-            Log.i("dd", "request");
             Request request = new Request.Builder()
                     .url("http://github.com")
                     .build();
-            Log.i("dd", "빌드끝");
             Response response = client.newCall(request).execute();
             Log.i("DetachedObservable", response.body().string());
         }

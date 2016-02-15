@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.markjmind.uni.UniView;
 
@@ -76,7 +75,6 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
-        Toast.makeText(this,"야호", Toast.LENGTH_SHORT).show();
         if(fm.getBackStackEntryCount() > 1){
             fm.popBackStack();
         }else{
