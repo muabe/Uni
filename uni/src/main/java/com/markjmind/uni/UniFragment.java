@@ -20,10 +20,10 @@ import com.markjmind.uni.viewer.ViewerBuilder;
  */
 
 public class UniFragment extends Fragment implements UniInterface {
-    private UniView uniView;
-    public BindConfig config;
-    private boolean isPopStack;
     public Store<?> param;
+
+    private UniView uniView;
+    private boolean isPopStack;
 
     /**
      * 기본생성자
@@ -46,7 +46,6 @@ public class UniFragment extends Fragment implements UniInterface {
             uniView = new UniView(getActivity(), this, container);
             uniView.setUniInterface(this);
             uniView.addMapperAdapter(new ParamAdapter(param));
-            uniView.config = this.config;
             setBackStack(false);
             uniView.excute();
         }

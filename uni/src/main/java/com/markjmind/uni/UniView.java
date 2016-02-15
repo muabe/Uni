@@ -27,14 +27,14 @@ import com.markjmind.uni.viewer.ViewerBuilder;
   * @since 2016-01-28
  */
 public class UniView extends FrameLayout implements UniInterface, View.OnAttachStateChangeListener {
+    public Store<UniView> param;
+
     private View layout;
     private UniInterface uniInterface;
     private UniMapper mapper;
     private boolean isMapping;
     private DetachedObservable detachedObservable;
 
-    public BindConfig config;
-    public Store<UniView> param;
 
     protected UniView(Context context, Object mappingObject, ViewGroup container) {
         super(context);
@@ -68,7 +68,6 @@ public class UniView extends FrameLayout implements UniInterface, View.OnAttachS
     private void init(){
         isMapping = false;
         detachedObservable = new DetachedObservable();
-        config = new BindConfig();
         param = new Store<>();
         addMapperAdapter(new ParamAdapter(param));
         addOnAttachStateChangeListener(this);
@@ -147,6 +146,10 @@ public class UniView extends FrameLayout implements UniInterface, View.OnAttachS
     public void onViewDetachedFromWindow(View v) {
         detachedObservable.cancelAll();
     }
+
+
+
+    /*************************************************** 인터페이스 관련 *********************************************/
 
     @Override
     public void onBind(int requestCode, ViewerBuilder build) {
