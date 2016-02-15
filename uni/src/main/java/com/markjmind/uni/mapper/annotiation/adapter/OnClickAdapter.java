@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
  * @email markjmind@gmail.com
  * @since 2016-02-11
  */
-class OnClickAdapter extends MethodAdapter<OnClick> {
+public class OnClickAdapter extends MethodAdapter<OnClick> {
 
     @Override
     public Class<OnClick> getAnnotationClass() {

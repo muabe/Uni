@@ -9,7 +9,8 @@ import android.widget.FrameLayout;
 
 import com.markjmind.uni.exception.UniLoadFailException;
 import com.markjmind.uni.hub.Store;
-import com.markjmind.uni.mapper.Mapper;
+import com.markjmind.uni.mapper.UniMapper;
+import com.markjmind.uni.mapper.annotiation.adapter.LayoutAdapter;
 import com.markjmind.uni.thread.DetachedObservable;
 import com.markjmind.uni.thread.InnerUniTask;
 import com.markjmind.uni.viewer.UpdateEvent;
@@ -24,7 +25,7 @@ import com.markjmind.uni.viewer.ViewerBuilder;
 public class UniView extends FrameLayout implements UniInterface, View.OnAttachStateChangeListener {
     private View layout;
     private UniInterface uniInterface;
-    private Mapper mapper;
+    private UniMapper mapper;
     private boolean isMapping;
     private DetachedObservable detachedObservable;
 
@@ -42,21 +43,21 @@ public class UniView extends FrameLayout implements UniInterface, View.OnAttachS
     protected UniView(Context context, Object mappingObject, ViewGroup container) {
         super(context);
         init();
-        this.mapper = new Mapper(this, mappingObject);
+        this.mapper = new UniMapper(this, mappingObject);
         mappingLayout(container);
     }
 
     public UniView(Context context) {
         super(context);
         init();
-        this.mapper = new Mapper(this, this);
+        this.mapper = new UniMapper(this, this);
         onCreateView(null);
     }
 
     public UniView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
-        this.mapper = new Mapper(this, this);
+        this.mapper = new UniMapper(this, this);
         //todo attrs에 layout이 있으면 onCreateView에 넣어주자
         onCreateView(null);
     }
@@ -64,7 +65,7 @@ public class UniView extends FrameLayout implements UniInterface, View.OnAttachS
     public UniView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
-        this.mapper = new Mapper(this, this);
+        this.mapper = new UniMapper(this, this);
         onCreateView(null);
     }
 
@@ -87,9 +88,12 @@ public class UniView extends FrameLayout implements UniInterface, View.OnAttachS
 
     protected void mappingLayout(ViewGroup container){
         if(layout==null) {
-            int layoutId = mapper.injectLayout();
-            LayoutInflater inflater = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
-            layout = inflater.inflate(layoutId, container, false);
+            mapper.inject(LayoutAdapter.class);
+            int layoutId = mapper.getAdapter(LayoutAdapter.class).getLayoutId();
+            if(layoutId>0) {
+                LayoutInflater inflater = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
+                layout = inflater.inflate(layoutId, container, false);
+            }
         }
         setView(layout);
     }
@@ -101,7 +105,7 @@ public class UniView extends FrameLayout implements UniInterface, View.OnAttachS
     public String excute(int requestCode, UniInterface uniInterface){
         uniInterface.onBind(requestCode, null);
         if(!isMapping) {
-            mapper.injectAll();
+            mapper.injectWithout(LayoutAdapter.class);
             isMapping = true;
         }
         InnerUniTask task = new InnerUniTask(requestCode, detachedObservable, uniInterface);

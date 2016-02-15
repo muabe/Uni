@@ -19,7 +19,7 @@ import com.markjmind.uni.mapper.annotiation.Layout;
  * @since 2016-02-12
  */
 public class LayoutAdapter extends ClassAdapter<Layout>{
-    int layoutId;
+    int layoutId = 0;
 
     @Override
     public Class<Layout> getAnnotationClass() {

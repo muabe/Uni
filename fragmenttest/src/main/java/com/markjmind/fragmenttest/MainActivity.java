@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity{
     FragmentManager fm;
     UniView uni;
 
-    String a;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
