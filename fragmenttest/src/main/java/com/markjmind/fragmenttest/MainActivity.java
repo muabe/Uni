@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity{
         fm = getFragmentManager();
         uni = (UniView)findViewById(R.id.uni);
         uni.excute();
+        menu3Fragment.param.add("ok", "okok");
+        menu3Fragment.param.add("c", "ccc");
 
 //        menu1Fragment.getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
 //            @Override
@@ -65,6 +67,8 @@ public class MainActivity extends AppCompatActivity{
         findViewById(R.id.menu3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                menu3Fragment.param.add("ok", "okok");
+                menu3Fragment.param.add("c", "ccc");
                 fm.beginTransaction().replace(R.id.lyt, menu3Fragment).addToBackStack(null).commit();
             }
         });

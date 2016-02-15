@@ -70,16 +70,4 @@ public class UniMapper extends Mapper{
 //		}
 //	}
 
-//    public int injectLayout(){
-//        if(hasLayout()){
-//            Layout lytId = targetClass.getAnnotation(Layout.class);
-//            return lytId.value();
-//        }else{
-//            throw new UinMapperException(ErrorMessage.Runtime.injectLayout(targetClass),null);
-//        }
-//    }
-
-//    public boolean hasLayout(){
-//        return targetClass.isAnnotationPresent(Layout.class);
-//    }
 }

@@ -21,4 +21,6 @@ public abstract class MethodAdapter<T extends Annotation> extends MapperAdapter<
     public MethodAdapter() {
         super(Method.class);
     }
+
+    public abstract void inject(T annotation, Method method, Object targetObject);
 }

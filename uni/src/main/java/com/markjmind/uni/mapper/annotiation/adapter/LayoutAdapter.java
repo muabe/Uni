@@ -27,7 +27,7 @@ public class LayoutAdapter extends ClassAdapter<Layout>{
     }
 
     @Override
-    public void inject(Layout annotation, Class element, Object targetObject) {
+    public void inject(Layout annotation, Class clz, Object targetObject) {
         layoutId = annotation.value();
     }
 

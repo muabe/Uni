@@ -21,4 +21,6 @@ public abstract class FieldAdapter<T extends Annotation> extends MapperAdapter<T
     public FieldAdapter() {
         super(Field.class);
     }
+
+    public abstract void inject(T annotation, Field field, Object targetObject);
 }

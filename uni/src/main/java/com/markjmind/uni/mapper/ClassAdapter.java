@@ -19,4 +19,6 @@ public abstract class ClassAdapter<T extends Annotation> extends MapperAdapter<T
     public ClassAdapter() {
         super(Class.class);
     }
+
+    public abstract void inject(T annotation, Class clz, Object targetObject);
 }

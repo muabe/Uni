@@ -6,7 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.markjmind.uni.builder.BuildInterface;
+import com.markjmind.uni.hub.Store;
+import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
 import com.markjmind.uni.viewer.UpdateEvent;
 import com.markjmind.uni.viewer.ViewerBuilder;
 
@@ -18,10 +19,11 @@ import com.markjmind.uni.viewer.ViewerBuilder;
  *
  */
 
-public class UniFragment extends Fragment implements UniInterface, BuildInterface {
+public class UniFragment extends Fragment implements UniInterface {
     private UniView uniView;
     public BindConfig config;
     private boolean isPopStack;
+    public Store<?> param;
 
     /**
      * 기본생성자
@@ -30,6 +32,7 @@ public class UniFragment extends Fragment implements UniInterface, BuildInterfac
         super();
         isPopStack = false;
         uniView = null;
+        param = new Store<>();
     }
 
     @Override
@@ -42,6 +45,7 @@ public class UniFragment extends Fragment implements UniInterface, BuildInterfac
         if(uniView == null || !isPopStack) {
             uniView = new UniView(getActivity(), this, container);
             uniView.setUniInterface(this);
+            uniView.addMapperAdapter(new ParamAdapter(param));
             uniView.config = this.config;
             setBackStack(false);
             uniView.excute();
@@ -53,16 +57,9 @@ public class UniFragment extends Fragment implements UniInterface, BuildInterfac
         this.isPopStack = isPopStack;
     }
 
-    @Override
-    public UniView getUniView() {
-        return uniView;
-    }
 
-    @Override
-    public UniInterface getUniInterface() {
-        return this;
-    }
 
+    /*************************************************** 인터페이스 관련 *********************************************/
 
     @Override
     public void onBind(int requestCode, ViewerBuilder build) {
@@ -99,4 +96,5 @@ public class UniFragment extends Fragment implements UniInterface, BuildInterfac
     public void onCancelled(int requestCode) {
         uniView.onCancelled(requestCode);
     }
+
 }

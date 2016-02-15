@@ -35,6 +35,19 @@ public class Menu1Fragment extends UniFragment {
 
     @Override
     public void onLoad(int requestCode, UpdateEvent event) throws Exception {
+
+
+        {
+            OkHttpClient client = new OkHttpClient();
+            Log.i("dd", "request");
+            Request request = new Request.Builder()
+                    .url("http://github.com")
+                    .build();
+            Log.i("dd", "빌드끝");
+            Response response = client.newCall(request).execute();
+            Log.i("DetachedObservable", response.body().string());
+        }
+
         {
             OkHttpClient client = new OkHttpClient();
 
@@ -44,17 +57,6 @@ public class Menu1Fragment extends UniFragment {
 
             Response response = client.newCall(request).execute();
             Log.d("DetachedObservable", response.body().string());
-        }
-
-        {
-            OkHttpClient client = new OkHttpClient();
-
-            Request request = new Request.Builder()
-                    .url("http://github.com")
-                    .build();
-
-            Response response = client.newCall(request).execute();
-            Log.i("DetachedObservable", response.body().string());
         }
 
         {
