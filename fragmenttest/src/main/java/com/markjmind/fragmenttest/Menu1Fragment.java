@@ -6,6 +6,7 @@ import android.widget.TextView;
 import com.markjmind.uni.UniFragment;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
+import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.viewer.UpdateEvent;
 
 import okhttp3.OkHttpClient;
@@ -24,13 +25,13 @@ public class Menu1Fragment extends UniFragment {
     TextView textView, textView2;
 
     @Override
-    public void onPre(int requestCode) {
+    public void onPre() {
         textView.setText("시작");
         textView2.setText("하나더");
     }
 
     @Override
-    public void onLoad(int requestCode, UpdateEvent event) throws Exception {
+    public void onLoad(UpdateEvent event, CancelAdapter cancelAdapter) throws Exception {
         {
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
@@ -39,7 +40,7 @@ public class Menu1Fragment extends UniFragment {
             Response response = client.newCall(request).execute();
             Log.i("DetachedObservable", response.body().string());
         }
-
+        event.update(30);
         {
             OkHttpClient client = new OkHttpClient();
 
@@ -50,7 +51,7 @@ public class Menu1Fragment extends UniFragment {
             Response response = client.newCall(request).execute();
             Log.d("DetachedObservable", response.body().string());
         }
-
+        event.update(50);
         {
             OkHttpClient client = new OkHttpClient();
 
@@ -59,9 +60,10 @@ public class Menu1Fragment extends UniFragment {
                     .build();
 
             Response response = client.newCall(request).execute();
-            Log.d("DetachedObservable", response.body().string());
+            Log.i("DetachedObservable", response.body().string());
         }
-
+        cancelAdapter.cancel();
+        event.update(70);
         {
             OkHttpClient client = new OkHttpClient();
 
@@ -72,13 +74,13 @@ public class Menu1Fragment extends UniFragment {
             Response response = client.newCall(request).execute();
             Log.i("DetachedObservable", response.body().string());
         }
-
+        event.update(100);
         Log.e("DetachedObservable", "Load 끝");
 
     }
 
     @Override
-    public void onPost(int requestCode) {
+    public void onPost() {
         textView.setText("끝");
     }
 }

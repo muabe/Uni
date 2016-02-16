@@ -8,8 +8,9 @@ import android.view.ViewGroup;
 
 import com.markjmind.uni.hub.Store;
 import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
+import com.markjmind.uni.thread.CancelAdapter;
+import com.markjmind.uni.thread.CancelObservable;
 import com.markjmind.uni.viewer.UpdateEvent;
-import com.markjmind.uni.viewer.ViewerBuilder;
 
 
 /**
@@ -19,8 +20,9 @@ import com.markjmind.uni.viewer.ViewerBuilder;
  *
  */
 
-public class UniFragment extends Fragment implements UniInterface {
+public class UniFragment extends Fragment implements UniInterface, CancelObservable {
     public Store<?> param;
+    public UniProgress progress;
 
     private UniView uniView;
     private boolean isPopStack;
@@ -33,6 +35,7 @@ public class UniFragment extends Fragment implements UniInterface {
         isPopStack = false;
         uniView = null;
         param = new Store<>();
+        progress = new UniProgress();
     }
 
     @Override
@@ -45,6 +48,8 @@ public class UniFragment extends Fragment implements UniInterface {
         if(uniView == null || !isPopStack) {
             uniView = new UniView(getActivity(), this, container);
             uniView.setUniInterface(this);
+            progress.init(uniView);
+            uniView.setUniProgress(progress);
             uniView.addMapperAdapter(new ParamAdapter(param));
             setBackStack(false);
             uniView.excute();
@@ -56,44 +61,53 @@ public class UniFragment extends Fragment implements UniInterface {
         this.isPopStack = isPopStack;
     }
 
+    @Override
+    public void cancel(String id) {
+        uniView.cancel(id);
+    }
 
+    @Override
+    public void cancelAll() {
+        uniView.cancelAll();
+    }
 
     /*************************************************** 인터페이스 관련 *********************************************/
 
     @Override
-    public void onBind(int requestCode, ViewerBuilder build) {
-        uniView.onBind(requestCode, build);
+    public void onBind() {
+        uniView.onBind();
     }
 
     @Override
-    public void onPre(int requestCode) {
-        uniView.onPre(requestCode);
+    public void onPre() {
+        uniView.onPre();
     }
 
     @Override
-    public void onLoad(int requestCode, UpdateEvent event) throws Exception {
-        uniView.onLoad(requestCode, event);
+    public void onLoad(UpdateEvent event, CancelAdapter cancelAdapter) throws Exception {
+        uniView.onLoad(event, cancelAdapter);
     }
 
     @Override
-    public void onUpdate(int requestCode, Object value) {
-        uniView.onUpdate(requestCode, value);
+    public void onUpdate(Object value, CancelAdapter cancelAdapter) {
+        uniView.onUpdate(value, cancelAdapter);
 
     }
 
     @Override
-    public void onPost(int requestCode) {
-        uniView.onPost(requestCode);
+    public void onPost() {
+        uniView.onPost();
     }
 
     @Override
-    public void onFail(int requestCode, boolean isException, String message, Exception e) {
-        uniView.onFail(requestCode, isException, message, e);
+    public void onFail(boolean isException, String message, Exception e) {
+        uniView.onFail(isException, message, e);
     }
 
     @Override
-    public void onCancelled(int requestCode) {
-        uniView.onCancelled(requestCode);
+    public void onCancelled() {
+        uniView.onCancelled();
     }
+
 
 }

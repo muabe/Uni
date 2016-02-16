@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.markjmind.uni.UniInterface;
+import com.markjmind.uni.UniProgress;
 import com.markjmind.uni.common.StoreObserver;
 import com.markjmind.uni.viewer.UpdateEvent;
 
@@ -17,30 +18,35 @@ public class InnerUniTask extends AsyncTask<Void, Object, Boolean> implements St
     private String taskId;
     private boolean isCancel;
     private DetachedObservable observable;
+    private CancelAdapter cancelAdapter;
     private UniInterface uniInterface;
-    private int requestCode;
+    private UniProgress progress;
 
-    private Exception doInBackException=null;
+    private Exception doInBackException;
 
-    public InnerUniTask(int requestCode, DetachedObservable observable, UniInterface uniInterface){
+    public InnerUniTask(DetachedObservable observable, UniInterface uniInterface, UniProgress progress){
         this.isCancel = false;
-        this.requestCode = requestCode;
         this.observable = observable;
         this.uniInterface = uniInterface;
         this.taskId = ""+this.hashCode();
+        this.progress = progress;
+        this.doInBackException=null;
+        this.cancelAdapter = new CancelAdapter(this.taskId, observable);
     }
 
 
     @Override
     protected void onPreExecute() {
-        uniInterface.onPre(requestCode);
+        progress.show();
+        uniInterface.onPre();
     }
 
 
     @Override
     protected Boolean doInBackground(Void... params) {
+        doInBackException = null;
         try{
-            uniInterface.onLoad(requestCode, null);
+            uniInterface.onLoad(this, cancelAdapter);
             return true;
         }catch(Exception e){
             doInBackException = e;
@@ -51,21 +57,26 @@ public class InnerUniTask extends AsyncTask<Void, Object, Boolean> implements St
     @Override
     protected void onProgressUpdate(Object... values) {
         if(!isCancel){
-
-        }else{
-            cancel();
+            Object value = null;
+            if(values != null) {
+                value = values[0];
+            }
+            //프로그래스바 업데이트
+            progress.getOnProgressListener().onUpdate(progress.getLayout(), value, cancelAdapter);
+            //업데이트실행
+            uniInterface.onUpdate(value, cancelAdapter);
         }
-
     }
 
     @Override
     protected void onPostExecute(Boolean result) {
         Log.e("DetachedObservable", getId()+" Post");
         if(!isCancel){
+            progress.dismiss();
             if(result) {
-                uniInterface.onPost(requestCode);
+                uniInterface.onPost();
             }else{
-                uniInterface.onFail(requestCode, false, "", doInBackException);
+                uniInterface.onFail(false, "", doInBackException);
             }
             observable.remove(this);
         }
@@ -75,8 +86,13 @@ public class InnerUniTask extends AsyncTask<Void, Object, Boolean> implements St
         if (!isCancel){
             this.isCancel = true;
             super.cancel(true);
-            uniInterface.onCancelled(requestCode);
         }
+    }
+
+    @Override
+    protected void onCancelled() {
+        progress.dismiss();
+        uniInterface.onCancelled();
     }
 
     public boolean isCancel(){

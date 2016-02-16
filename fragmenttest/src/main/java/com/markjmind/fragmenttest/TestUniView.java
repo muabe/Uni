@@ -35,7 +35,7 @@ public class TestUniView extends UniView {
     }
 
     @Override
-    public void onPost(int requestCode) {
+    public void onPost() {
         setBackgroundColor(Color.parseColor("#ff0000"));
         button.setText("하이");
         button.setOnClickListener(new OnClickListener() {

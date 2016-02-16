@@ -15,10 +15,11 @@ import com.markjmind.uni.mapper.MapperAdapter;
 import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.mapper.annotiation.adapter.LayoutAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
+import com.markjmind.uni.thread.CancelAdapter;
+import com.markjmind.uni.thread.CancelObservable;
 import com.markjmind.uni.thread.DetachedObservable;
 import com.markjmind.uni.thread.InnerUniTask;
 import com.markjmind.uni.viewer.UpdateEvent;
-import com.markjmind.uni.viewer.ViewerBuilder;
 
 /**
  * <br>捲土重來<br>
@@ -26,8 +27,9 @@ import com.markjmind.uni.viewer.ViewerBuilder;
  * @email markjmind@gmail.com
   * @since 2016-01-28
  */
-public class UniView extends FrameLayout implements UniInterface, View.OnAttachStateChangeListener {
+public class UniView extends FrameLayout implements UniInterface, CancelObservable, View.OnAttachStateChangeListener {
     public Store<UniView> param;
+    public UniProgress progress;
 
     private View layout;
     private UniInterface uniInterface;
@@ -66,9 +68,11 @@ public class UniView extends FrameLayout implements UniInterface, View.OnAttachS
     }
 
     private void init(){
+        param = new Store<>();
+        progress = new UniProgress(this);
+
         isMapping = false;
         detachedObservable = new DetachedObservable();
-        param = new Store<>();
         addMapperAdapter(new ParamAdapter(param));
         addOnAttachStateChangeListener(this);
     }
@@ -98,17 +102,21 @@ public class UniView extends FrameLayout implements UniInterface, View.OnAttachS
         this.uniInterface = uniInterface;
     }
 
+    protected void setUniProgress(UniProgress progress){
+        this.progress = progress;
+    }
+
     protected void addMapperAdapter(MapperAdapter adapter){
         mapper.addAdapter(adapter);
     }
 
-    public String excute(int requestCode, UniInterface uniInterface){
-        uniInterface.onBind(requestCode, null);
+    public String excute(UniInterface uniInterface){
+        uniInterface.onBind();
         if(!isMapping) {
             mapper.injectWithout(LayoutAdapter.class);
             isMapping = true;
         }
-        InnerUniTask task = new InnerUniTask(requestCode, detachedObservable, uniInterface);
+        InnerUniTask task = new InnerUniTask(detachedObservable, uniInterface, progress);
         detachedObservable.add(task);
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -118,21 +126,16 @@ public class UniView extends FrameLayout implements UniInterface, View.OnAttachS
         return task.getId();
     }
 
-    public String excute(int requestCode){
+    public String excute(){
         UniInterface tempUniImp = uniInterface;
         if(tempUniImp==null) {
             tempUniImp = this;
         }
-        return this.excute(requestCode, tempUniImp);
+        return this.excute(tempUniImp);
     }
 
-    public String excute(UniInterface uniInterface){
-        return this.excute(-1, uniInterface);
-    }
 
-    public String excute(){
-        return this.excute(-1);
-    }
+
 
     protected void fail(String message) throws UniLoadFailException {
         throw new UniLoadFailException(message);
@@ -148,41 +151,49 @@ public class UniView extends FrameLayout implements UniInterface, View.OnAttachS
     }
 
 
+    @Override
+    public void cancel(String id){
+        detachedObservable.cancel(id);
+    }
+    @Override
+    public void cancelAll(){
+        detachedObservable.cancelAll();
+    }
 
     /*************************************************** 인터페이스 관련 *********************************************/
 
     @Override
-    public void onBind(int requestCode, ViewerBuilder build) {
+    public void onBind() {
 
     }
 
     @Override
-    public void onPre(int requestCode) {
+    public void onPre() {
 
     }
 
     @Override
-    public void onLoad(int requestCode, UpdateEvent event) throws Exception {
+    public void onLoad(UpdateEvent updateEvent, CancelAdapter cancelAdapter) throws Exception {
 
     }
 
     @Override
-    public void onUpdate(int requestCode, Object value) {
+    public void onUpdate(Object value, CancelAdapter cancelAdapter) {
 
     }
 
     @Override
-    public void onPost(int requestCode) {
+    public void onPost() {
 
     }
 
     @Override
-    public void onFail(int requestCode, boolean isException, String message, Exception e) {
+    public void onFail(boolean isException, String message, Exception e) {
 
     }
 
     @Override
-    public void onCancelled(int requestCode) {
+    public void onCancelled() {
 
     }
 

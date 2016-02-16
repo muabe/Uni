@@ -7,6 +7,8 @@ import com.markjmind.uni.UniFragment;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.mapper.annotiation.Param;
+import com.markjmind.uni.thread.CancelAdapter;
+import com.markjmind.uni.viewer.UpdateEvent;
 
 /**
  * @author 오재웅(JaeWoong-Oh)
@@ -23,7 +25,12 @@ public class Menu3Fragment extends UniFragment {
     TextView textView;
 
     @Override
-    public void onPre(int requestCode) {
+    public void onLoad(UpdateEvent event, CancelAdapter cancelAdapter) throws Exception {
+        Thread.sleep(1000);
+    }
+
+    @Override
+    public void onPre() {
         textView.setText("준비");
         Log.e("dd", ok);
         Log.e("dd", c);
@@ -32,7 +39,7 @@ public class Menu3Fragment extends UniFragment {
     }
 
     @Override
-    public void onPost(int requestCode) {
+    public void onPost() {
         textView.setText("완료");
 
 

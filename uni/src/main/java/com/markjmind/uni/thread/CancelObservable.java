@@ -6,22 +6,16 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.markjmind.uni.mapper;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
+package com.markjmind.uni.thread;
 
 /**
  * <br>捲土重來<br>
+ *
  * @author 오재웅(JaeWoong-Oh)
  * @email markjmind@gmail.com
- * @since 2016-02-12
+ * @since 2016-02-16
  */
-public abstract class FieldAdapter<T extends Annotation> extends MapperAdapter<T, Field> {
-
-    public FieldAdapter() {
-        super(Field.class);
-    }
-
-    public abstract void inject(T annotation, Field field, Object targetObject);
+public interface CancelObservable {
+    void cancel(String taskId);
+    void cancelAll();
 }

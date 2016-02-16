@@ -1,7 +1,7 @@
 package com.markjmind.uni;
 
+import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.viewer.UpdateEvent;
-import com.markjmind.uni.viewer.ViewerBuilder;
 
 /**
  * <br>捲土重來<br>
@@ -10,18 +10,18 @@ import com.markjmind.uni.viewer.ViewerBuilder;
  * @since 2016-01-28
  */
 public interface UniInterface {
-    public void onBind(int requestCode, ViewerBuilder build);
+    public void onBind();
 
-    public void onPre(int requestCode);
+    public void onPre();
 
-    public void onLoad(int requestCode, UpdateEvent event) throws Exception;
+    public void onLoad(UpdateEvent event, CancelAdapter cancelAdapter) throws Exception;
 
-    public void onUpdate(int requestCode, Object value);
+    public void onUpdate(Object value, CancelAdapter cancelAdapter);
 
-    public void onPost(int requestCode);
+    public void onPost();
 
-    public void onFail(int requestCode, boolean isException, String message, Exception e);
+    public void onFail(boolean isException, String message, Exception e);
 
-    public void onCancelled(int requestCode);
+    public void onCancelled();
 
 }

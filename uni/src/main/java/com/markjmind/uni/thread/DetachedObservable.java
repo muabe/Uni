@@ -18,7 +18,7 @@ import com.markjmind.uni.common.StoreObservable;
  * @email markjmind@gmail.com
  * @since 2016-01-28
  */
-public class DetachedObservable extends StoreObservable<InnerUniTask>{
+public class DetachedObservable extends StoreObservable<InnerUniTask> implements CancelObservable{
 
     @Override
     public void add(InnerUniTask observer) {
@@ -34,14 +34,15 @@ public class DetachedObservable extends StoreObservable<InnerUniTask>{
         Log.e("DetachedObservable", className + " remove:" + size());
     }
 
-
-    public void cancel(String id){
+    @Override
+    public synchronized void cancel(String id){
         String className = get(id).getId();
         get(id).cancel();
         Log.e("DetachedObservable", className + " cancel:" + size());
         remove(id);
     }
 
+    @Override
     public synchronized void cancelAll(){
         synchronized (this) {
             String[] keys = getStore().getKeys();
