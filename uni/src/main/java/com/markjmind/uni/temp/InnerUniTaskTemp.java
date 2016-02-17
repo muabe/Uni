@@ -1,9 +1,21 @@
-package com.markjmind.uni.thread;
+/*
+ * Copyright (c) 2016. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
+package com.markjmind.uni.temp;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.markjmind.uni.UniInterface;
+import com.markjmind.uni.UniProgress;
 import com.markjmind.uni.common.StoreObserver;
+import com.markjmind.uni.thread.CancelAdapter;
+import com.markjmind.uni.thread.DetachedObservable;
 import com.markjmind.uni.viewer.UpdateEvent;
 
 /**
@@ -12,19 +24,22 @@ import com.markjmind.uni.viewer.UpdateEvent;
  * @email markjmind@gmail.com
  * @since 2016-01-28
  */
-public class InnerUniTask extends AsyncTask<Void, Object, Boolean> implements StoreObserver<DetachedObservable>, UpdateEvent{
+public class InnerUniTaskTemp extends AsyncTask<Void, Object, Boolean> implements StoreObserver<DetachedObservable>, UpdateEvent{
     private String taskId;
     private boolean isCancel;
     private DetachedObservable observable;
     private CancelAdapter cancelAdapter;
-    private TaskObservable taskObservable = new TaskObservable();
+    private UniInterface uniInterface;
+    private UniProgress progress;
 
     private Exception doInBackException;
 
-    public InnerUniTask(DetachedObservable observable){
+    public InnerUniTaskTemp(DetachedObservable observable, UniInterface uniInterface, UniProgress progress){
         this.isCancel = false;
         this.observable = observable;
+        this.uniInterface = uniInterface;
         this.taskId = ""+this.hashCode();
+        this.progress = progress;
         this.doInBackException=null;
         this.cancelAdapter = new CancelAdapter(this.taskId, observable);
     }
@@ -32,7 +47,8 @@ public class InnerUniTask extends AsyncTask<Void, Object, Boolean> implements St
 
     @Override
     protected void onPreExecute() {
-        taskObservable.onPreExecute(this);
+        progress.show();
+        uniInterface.onPre();
     }
 
 
@@ -40,7 +56,7 @@ public class InnerUniTask extends AsyncTask<Void, Object, Boolean> implements St
     protected Boolean doInBackground(Void... params) {
         doInBackException = null;
         try{
-            taskObservable.doInBackground(this, cancelAdapter);
+            uniInterface.onLoad(this, cancelAdapter);
             return true;
         }catch(Exception e){
             doInBackException = e;
@@ -55,7 +71,10 @@ public class InnerUniTask extends AsyncTask<Void, Object, Boolean> implements St
             if(values != null) {
                 value = values[0];
             }
-            taskObservable.onProgressUpdate(this, value, cancelAdapter);
+            //프로그래스바 업데이트
+            progress.getOnProgressListener().onUpdate(progress.getLayout(), value, cancelAdapter);
+            //업데이트실행
+            uniInterface.onUpdate(value, cancelAdapter);
         }
     }
 
@@ -64,18 +83,21 @@ public class InnerUniTask extends AsyncTask<Void, Object, Boolean> implements St
         Log.e("DetachedObservable", getId()+" Post");
         if(!isCancel){
             if(result) { //성공
-                taskObservable.onPostExecute(this);
+                progress.dismiss();
+                uniInterface.onPost();
             }else{ // 실패
-                taskObservable.onFailExecute(this, false, "", doInBackException);
+                progress.dismiss();
+                uniInterface.onFail(false, "", doInBackException);
             }
-            observable.remove(this);
+//            observable.remove(this);
         }
     }
 
 
     @Override
     protected void onCancelled() {
-        taskObservable.onCancelled(this, observable.isDetached());
+        progress.dismiss();
+        uniInterface.onCancelled(false);
     }
 
     public synchronized void cancel() {
@@ -104,9 +126,5 @@ public class InnerUniTask extends AsyncTask<Void, Object, Boolean> implements St
         return taskId;
     }
 
-    public InnerUniTask addTaskObserver(TaskObserver observer){
-        taskObservable.add(observer);
-        return this;
-    }
 
 }

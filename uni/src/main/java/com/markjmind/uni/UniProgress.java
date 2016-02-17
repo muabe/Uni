@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.markjmind.uni.thread.CancelAdapter;
+import com.markjmind.uni.thread.InnerUniTask;
+import com.markjmind.uni.thread.TaskObserver;
 
 /**
  * <br>捲土重來<br>
@@ -17,24 +19,26 @@ import com.markjmind.uni.thread.CancelAdapter;
  * @email markjmind@gmail.com
  * @since 2016-02-16
  */
-public class UniProgress {
-    private ViewGroup parents;
-    private boolean isEnable;
-    private LinearLayout progressLayout;
-    private Mode mode;
-    private int layoutId;
-    private ProgressInterface progress;
-    private View layout;
-    private OnProgressListener listener;
-
+public class UniProgress implements TaskObserver {
     private enum Mode{
         none, view, dialog
     }
+
+    private ViewGroup parents;
+    private boolean isEnable;
+    private View layout;
+    private int layoutId;
+    private Mode mode;
+    private LinearLayout progressLayout;
+    private ProgressInterface progress;
+    private OnProgressListener listener;
+    private int theme;
 
     protected UniProgress(){
         this.mode = Mode.none;
         this.isEnable = true;
         this.layoutId = -1;
+        this.theme = -1;
     }
 
     protected UniProgress(ViewGroup parents) {
@@ -50,12 +54,47 @@ public class UniProgress {
         this.progressLayout.setClickable(true);
     }
 
+    @Override
+    public void onPreExecute(InnerUniTask uniTask) {
+        show();
+    }
+
+    @Override
+    public void doInBackground(InnerUniTask uniTask, CancelAdapter cancelAdapter) throws Exception {
+
+    }
+
+    @Override
+    public void onProgressUpdate(InnerUniTask uniTask, Object value, CancelAdapter cancelAdapter) {
+        listener.onUpdate(getLayout(), value, cancelAdapter);
+    }
+
+    @Override
+    public void onPostExecute(InnerUniTask uniTask) {
+        dismiss();
+    }
+
+    @Override
+    public void onFailExecute(InnerUniTask uniTask, boolean isException, String message, Exception e) {
+        dismiss();
+    }
+
+    @Override
+    public void onCancelled(InnerUniTask uniTask, boolean detach) {
+        dismiss();
+    }
+
 
     public synchronized void show(){
         if(mode != Mode.none && isEnable) {
             if (mode == Mode.dialog) {
                 if (progress == null) {
-                    progress = new ProgressAlter(parents.getContext(), progressLayout);
+                    if(theme == -1){
+                        progress = new ProgressAlter(parents.getContext(), progressLayout);
+                    }else{
+                        progress = new ProgressAlter(parents.getContext(), progressLayout, theme);
+                    }
+
                 }
 
             }else if(mode == Mode.view){
@@ -93,9 +132,6 @@ public class UniProgress {
     public synchronized void dismiss(){
         if(mode!= Mode.none && isEnable && progress!=null && progress.isShow()){
             progress.dismiss();
-            if(listener!=null){
-                listener.onDestroy(layout);
-            }
         }
 
     }
@@ -118,7 +154,7 @@ public class UniProgress {
         return layout;
     }
 
-    public UniProgress bindDialg(int layoutId){
+    public UniProgress bindDialog(int layoutId){
         setLayout(layoutId);
         if(mode == Mode.view && progress!=null && progress.isShow()){
             progress.dismiss();
@@ -136,11 +172,18 @@ public class UniProgress {
         return this;
     }
 
+    protected boolean isAble(){
+        if(isEnable && this.mode != Mode.none){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 
     public interface OnProgressListener{
         void onStart(View layout);
         void onUpdate(View layout, Object value, CancelAdapter cancelAdapter);
-        void onDestroy(View layout);
     }
 
     interface ProgressInterface{
@@ -183,7 +226,9 @@ public class UniProgress {
 
         @Override
         public synchronized void dismiss() {
-            layout.removeAllViews();
+            if(layout!=null) {
+                layout.removeAllViews();
+            }
             super.dismiss();
         }
 
@@ -217,8 +262,10 @@ public class UniProgress {
         @Override
         public synchronized void dismiss() {
             if(isShowing) {
-                layout.removeAllViews();
-                parents.removeView(layout);
+                if(layout!=null) {
+                    layout.removeAllViews();
+                    parents.removeView(layout);
+                }
                 isShowing = false;
             }
         }

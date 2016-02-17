@@ -47,12 +47,6 @@ public class Menu2Fragment extends Fragment{
                 bar.setProgress((int) value);
             }
 
-            @Override
-            public void onDestroy(View view) {
-                ProgressBar bar = (ProgressBar) view.findViewById(R.id.progressBar);
-                bar.setProgress(100);
-                Toast.makeText(getActivity(), "끝", Toast.LENGTH_SHORT).show();
-            }
         }).bind(R.layout.progress);
         uniView.excute();
         return uniView;
@@ -100,7 +94,7 @@ public class Menu2Fragment extends Fragment{
         }
 
         @Override
-        public void onCancelled() {
+        public void onCancelled(boolean detach) {
             Log.e("sd","캔슬");
         }
     }

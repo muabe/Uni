@@ -3,7 +3,6 @@ package com.markjmind.fragmenttest;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -46,11 +45,7 @@ public class MainActivity extends AppCompatActivity{
                 bar.setProgress((int) value);
             }
 
-            @Override
-            public void onDestroy(View view) {
-                Log.e("ds", "끝났다~~~");
-            }
-        }).bindDialg(R.layout.progress);
+        }).bindDialog(R.layout.progress);
         menu3Fragment.progress.bind(R.layout.progress);
         fm = getFragmentManager();
         uni = (UniView)findViewById(R.id.uni);

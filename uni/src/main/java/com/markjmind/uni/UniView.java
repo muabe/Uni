@@ -19,6 +19,7 @@ import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.CancelObservable;
 import com.markjmind.uni.thread.DetachedObservable;
 import com.markjmind.uni.thread.InnerUniTask;
+import com.markjmind.uni.thread.TaskObserver;
 import com.markjmind.uni.viewer.UpdateEvent;
 
 /**
@@ -36,7 +37,6 @@ public class UniView extends FrameLayout implements UniInterface, CancelObservab
     private UniMapper mapper;
     private boolean isMapping;
     private DetachedObservable detachedObservable;
-
 
     protected UniView(Context context, Object mappingObject, ViewGroup container) {
         super(context);
@@ -116,7 +116,13 @@ public class UniView extends FrameLayout implements UniInterface, CancelObservab
             mapper.injectWithout(LayoutAdapter.class);
             isMapping = true;
         }
-        InnerUniTask task = new InnerUniTask(detachedObservable, uniInterface, progress);
+
+        InnerUniTask task = new InnerUniTask(detachedObservable);
+        task.addTaskObserver(new InterfaceObserver(uniInterface));
+        if(progress.isAble()) {
+            task.addTaskObserver(progress);
+        }
+
         detachedObservable.add(task);
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -193,8 +199,45 @@ public class UniView extends FrameLayout implements UniInterface, CancelObservab
     }
 
     @Override
-    public void onCancelled() {
+    public void onCancelled(boolean detach) {
 
     }
 
+    private class InterfaceObserver implements TaskObserver{
+        private UniInterface uniInterface;
+
+        public InterfaceObserver(UniInterface uniInterface){
+            this.uniInterface = uniInterface;
+        }
+
+        @Override
+        public void onPreExecute(InnerUniTask uniTask) {
+            uniInterface.onPre();
+        }
+
+        @Override
+        public void doInBackground(InnerUniTask uniTask, CancelAdapter cancelAdapter) throws Exception{
+            uniInterface.onLoad(uniTask, cancelAdapter);
+        }
+
+        @Override
+        public void onProgressUpdate(InnerUniTask uniTask, Object value, CancelAdapter cancelAdapter) {
+            uniInterface.onUpdate(value, cancelAdapter);
+        }
+
+        @Override
+        public void onPostExecute(InnerUniTask uniTask) {
+            uniInterface.onPost();
+        }
+
+        @Override
+        public void onFailExecute(InnerUniTask uniTask, boolean isException, String message, Exception e) {
+            uniInterface.onFail(isException, message, e);
+        }
+
+        @Override
+        public void onCancelled(InnerUniTask uniTask, boolean detach) {
+            uniInterface.onCancelled(detach);
+        }
+    }
 }

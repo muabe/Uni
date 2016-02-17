@@ -19,6 +19,12 @@ import com.markjmind.uni.common.StoreObservable;
  * @since 2016-01-28
  */
 public class DetachedObservable extends StoreObservable<InnerUniTask> implements CancelObservable{
+    private boolean detached;
+
+    public DetachedObservable(){
+        detached = false;
+    }
+
 
     @Override
     public void add(InnerUniTask observer) {
@@ -50,5 +56,13 @@ public class DetachedObservable extends StoreObservable<InnerUniTask> implements
                 cancel(key);
             }
         }
+    }
+
+    public boolean isDetached() {
+        return detached;
+    }
+
+    public void setDetached(boolean detach) {
+        this.detached = detach;
     }
 }
