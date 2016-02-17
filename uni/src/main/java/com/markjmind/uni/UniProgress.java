@@ -2,16 +2,20 @@ package com.markjmind.uni;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import com.markjmind.uni.thread.CancelAdapter;
-import com.markjmind.uni.thread.InnerUniTask;
 import com.markjmind.uni.thread.TaskObserver;
+import com.markjmind.uni.thread.UniMainAsyncTask;
 
 /**
  * <br>捲土重來<br>
@@ -55,37 +59,37 @@ public class UniProgress implements TaskObserver {
     }
 
     @Override
-    public void onPreExecute(InnerUniTask uniTask) {
-        show();
+    public void onPreExecute(UniMainAsyncTask uniTask, CancelAdapter cancelAdapter) {
+        show(cancelAdapter);
     }
 
     @Override
-    public void doInBackground(InnerUniTask uniTask, CancelAdapter cancelAdapter) throws Exception {
+    public void doInBackground(UniMainAsyncTask uniTask, CancelAdapter cancelAdapter) throws Exception {
 
     }
 
     @Override
-    public void onProgressUpdate(InnerUniTask uniTask, Object value, CancelAdapter cancelAdapter) {
+    public void onProgressUpdate(UniMainAsyncTask uniTask, Object value, CancelAdapter cancelAdapter) {
         listener.onUpdate(getLayout(), value, cancelAdapter);
     }
 
     @Override
-    public void onPostExecute(InnerUniTask uniTask) {
+    public void onPostExecute(UniMainAsyncTask uniTask) {
         dismiss();
     }
 
     @Override
-    public void onFailExecute(InnerUniTask uniTask, boolean isException, String message, Exception e) {
+    public void onFailExecute(UniMainAsyncTask uniTask, boolean isException, String message, Exception e) {
         dismiss();
     }
 
     @Override
-    public void onCancelled(InnerUniTask uniTask, boolean detach) {
-        dismiss();
+    public void onCancelled(UniMainAsyncTask uniTask, boolean attach) {
+        dismiss(attach);
     }
 
 
-    public synchronized void show(){
+    public synchronized void show(CancelAdapter cancelAdapter){
         if(mode != Mode.none && isEnable) {
             if (mode == Mode.dialog) {
                 if (progress == null) {
@@ -105,17 +109,12 @@ public class UniProgress implements TaskObserver {
 
             if(layoutId!=-1) {
                 LayoutInflater inflater = ((LayoutInflater) parents.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
-                layout = inflater.inflate(layoutId, parents, false);
+                layout = inflater.inflate(layoutId, progressLayout, false);
             }
 
             if(listener!=null){
-                listener.onStart(layout);
+                listener.onStart(layout, cancelAdapter);
             }
-//            if(layout==null) {
-//                progress.show(new ProgressBar(parents.getContext()));
-//            }else{
-//                progress.show(layout);
-//            }
             progress.show(layout);
         }
     }
@@ -129,8 +128,15 @@ public class UniProgress implements TaskObserver {
         return listener;
     }
 
-    public synchronized void dismiss(){
+    public void dismiss(){
+       this.dismiss(true);
+    }
+
+    public synchronized void dismiss(boolean attach){
         if(mode!= Mode.none && isEnable && progress!=null && progress.isShow()){
+            if(listener!=null){
+                listener.onDestroy(layout, attach);
+            }
             progress.dismiss();
         }
 
@@ -182,8 +188,9 @@ public class UniProgress implements TaskObserver {
 
 
     public interface OnProgressListener{
-        void onStart(View layout);
+        void onStart(View layout, CancelAdapter cancelAdapter);
         void onUpdate(View layout, Object value, CancelAdapter cancelAdapter);
+        void onDestroy(View layout, boolean attach);
     }
 
     interface ProgressInterface{
@@ -193,22 +200,30 @@ public class UniProgress implements TaskObserver {
     }
 
     private class ProgressAlter extends AlertDialog implements ProgressInterface{
-        ViewGroup layout;
+        ViewGroup progressLayout;
 
         public ProgressAlter(Context context, ViewGroup layout) {
             super(context);
-            this.layout = layout;
+            this.progressLayout = layout;
         }
 
         public ProgressAlter(Context context, ViewGroup layout, int theme) {
             super(context, theme);
-            this.layout = layout;
+            this.progressLayout = layout;
         }
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            setContentView(layout);
+            setContentView(progressLayout);
+            getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            Window window = getWindow();
+            lp.copyFrom(window.getAttributes());
+//This makes the dialog take up the full width
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+            window.setAttributes(lp);
             this.setCancelable(false);
         }
 
@@ -219,15 +234,15 @@ public class UniProgress implements TaskObserver {
 
         public synchronized void show(View view) {
             if(view!=null) {
-                layout.addView(view);
+                progressLayout.addView(view);
             }
             super.show();
         }
 
         @Override
         public synchronized void dismiss() {
-            if(layout!=null) {
-                layout.removeAllViews();
+            if(progressLayout !=null) {
+                progressLayout.removeAllViews();
             }
             super.dismiss();
         }
@@ -236,11 +251,11 @@ public class UniProgress implements TaskObserver {
 
 
     private class ProgressView implements ProgressInterface{
-        ViewGroup layout;
+        ViewGroup progressLayout;
         boolean isShowing;
 
         public ProgressView(ViewGroup layout){
-            this.layout = layout;
+            this.progressLayout = layout;
         }
 
         @Override
@@ -253,18 +268,18 @@ public class UniProgress implements TaskObserver {
             if(!isShowing) {
                 isShowing = true;
                 if(view!=null) {
-                    layout.addView(view);
+                    progressLayout.addView(view);
                 }
-                parents.addView(layout, parents.getChildCount() - 1);
+                parents.addView(progressLayout, parents.getChildCount() - 1);
             }
         }
 
         @Override
         public synchronized void dismiss() {
             if(isShowing) {
-                if(layout!=null) {
-                    layout.removeAllViews();
-                    parents.removeView(layout);
+                if(progressLayout !=null) {
+                    progressLayout.removeAllViews();
+                    parents.removeView(progressLayout);
                 }
                 isShowing = false;
             }

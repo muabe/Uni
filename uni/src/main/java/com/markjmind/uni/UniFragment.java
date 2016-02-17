@@ -105,8 +105,8 @@ public class UniFragment extends Fragment implements UniInterface, CancelObserva
     }
 
     @Override
-    public void onCancelled(boolean dettach) {
-        uniView.onCancelled(dettach);
+    public void onCancelled(boolean attach) {
+        uniView.onCancelled(attach);
     }
 
 

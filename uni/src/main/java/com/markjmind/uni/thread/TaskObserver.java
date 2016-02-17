@@ -15,16 +15,16 @@ package com.markjmind.uni.thread;
  * @email markjmind@gmail.com
  * @since 2016-02-17
  */
-public interface TaskObserver {
-    void onPreExecute(InnerUniTask uniTask);
+public interface TaskObserver{
+    void onPreExecute(UniMainAsyncTask uniTask, CancelAdapter cancelAdapter);
 
-    void doInBackground(InnerUniTask uniTask, CancelAdapter cancelAdapter) throws Exception;
+    void doInBackground(UniMainAsyncTask uniTask, CancelAdapter cancelAdapter) throws Exception;
 
-    void onProgressUpdate(InnerUniTask uniTask, Object value, CancelAdapter cancelAdapter);
+    void onProgressUpdate(UniMainAsyncTask uniTask, Object value, CancelAdapter cancelAdapter);
 
-    void onPostExecute(InnerUniTask uniTask);
+    void onPostExecute(UniMainAsyncTask uniTask);
 
-    void onFailExecute(InnerUniTask uniTask, boolean isException, String message, Exception e);
+    void onFailExecute(UniMainAsyncTask uniTask, boolean isException, String message, Exception e);
 
-    void onCancelled(InnerUniTask uniTask, boolean detach);
+    void onCancelled(UniMainAsyncTask uniTask, boolean attached);
 }

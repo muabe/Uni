@@ -12,7 +12,7 @@ import com.markjmind.uni.viewer.UpdateEvent;
  * @email markjmind@gmail.com
  * @since 2016-01-28
  */
-public class InnerUniTask extends AsyncTask<Void, Object, Boolean> implements StoreObserver<DetachedObservable>, UpdateEvent{
+public class UniMainAsyncTask extends AsyncTask<Void, Object, Boolean> implements StoreObserver<DetachedObservable>, UpdateEvent{
     private String taskId;
     private boolean isCancel;
     private DetachedObservable observable;
@@ -21,7 +21,7 @@ public class InnerUniTask extends AsyncTask<Void, Object, Boolean> implements St
 
     private Exception doInBackException;
 
-    public InnerUniTask(DetachedObservable observable){
+    public UniMainAsyncTask(DetachedObservable observable){
         this.isCancel = false;
         this.observable = observable;
         this.taskId = ""+this.hashCode();
@@ -32,7 +32,7 @@ public class InnerUniTask extends AsyncTask<Void, Object, Boolean> implements St
 
     @Override
     protected void onPreExecute() {
-        taskObservable.onPreExecute(this);
+        taskObservable.onPreExecute(this, cancelAdapter);
     }
 
 
@@ -75,7 +75,7 @@ public class InnerUniTask extends AsyncTask<Void, Object, Boolean> implements St
 
     @Override
     protected void onCancelled() {
-        taskObservable.onCancelled(this, observable.isDetached());
+        taskObservable.onCancelled(this, observable.isAttached());
     }
 
     public synchronized void cancel() {
@@ -104,7 +104,7 @@ public class InnerUniTask extends AsyncTask<Void, Object, Boolean> implements St
         return taskId;
     }
 
-    public InnerUniTask addTaskObserver(TaskObserver observer){
+    public UniMainAsyncTask addTaskObserver(TaskObserver observer){
         taskObservable.add(observer);
         return this;
     }

@@ -21,44 +21,44 @@ public class TaskObservable implements TaskObserver{
     private ArrayList<TaskObserver> observers = new ArrayList<>();
 
     @Override
-    public void onPreExecute(InnerUniTask uniTask) {
+    public void onPreExecute(UniMainAsyncTask uniTask, CancelAdapter cancelAdapter) {
         for(TaskObserver observer : observers){
-            observer.onPreExecute(uniTask);
+            observer.onPreExecute(uniTask, cancelAdapter);
         }
     }
 
     @Override
-    public void doInBackground(InnerUniTask uniTask, CancelAdapter cancelAdapter) throws Exception{
+    public void doInBackground(UniMainAsyncTask uniTask, CancelAdapter cancelAdapter) throws Exception{
         for(TaskObserver observer : observers){
             observer.doInBackground(uniTask, cancelAdapter);
         }
     }
 
     @Override
-    public void onProgressUpdate(InnerUniTask uniTask, Object value, CancelAdapter cancelAdapter) {
+    public void onProgressUpdate(UniMainAsyncTask uniTask, Object value, CancelAdapter cancelAdapter) {
         for(TaskObserver observer : observers){
             observer.onProgressUpdate(uniTask, value, cancelAdapter);
         }
     }
 
     @Override
-    public void onPostExecute(InnerUniTask uniTask) {
+    public void onPostExecute(UniMainAsyncTask uniTask) {
         for(TaskObserver observer : observers){
             observer.onPostExecute(uniTask);
         }
     }
 
     @Override
-    public void onFailExecute(InnerUniTask uniTask, boolean isException, String message, Exception e) {
+    public void onFailExecute(UniMainAsyncTask uniTask, boolean isException, String message, Exception e) {
         for(TaskObserver observer : observers){
             observer.onFailExecute(uniTask, isException, message, e);
         }
     }
 
     @Override
-    public void onCancelled(InnerUniTask uniTask, boolean detach) {
+    public void onCancelled(UniMainAsyncTask uniTask, boolean attached) {
         for(TaskObserver observer : observers){
-            observer.onCancelled(uniTask, detach);
+            observer.onCancelled(uniTask, attached);
         }
     }
 

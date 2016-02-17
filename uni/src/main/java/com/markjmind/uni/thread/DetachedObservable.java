@@ -18,16 +18,16 @@ import com.markjmind.uni.common.StoreObservable;
  * @email markjmind@gmail.com
  * @since 2016-01-28
  */
-public class DetachedObservable extends StoreObservable<InnerUniTask> implements CancelObservable{
-    private boolean detached;
+public class DetachedObservable extends StoreObservable<UniMainAsyncTask> implements CancelObservable{
+    private boolean isAttached;
 
     public DetachedObservable(){
-        detached = false;
+        isAttached = false;
     }
 
 
     @Override
-    public void add(InnerUniTask observer) {
+    public synchronized void add(UniMainAsyncTask observer) {
         String className = observer.getId();
         super.add(observer);
         Log.e("DetachedObservable", className+" add:"+size());
@@ -35,17 +35,23 @@ public class DetachedObservable extends StoreObservable<InnerUniTask> implements
 
     @Override
     public synchronized void remove(String id) {
-        String className = get(id).getId();
-        super.remove(id);
-        Log.e("DetachedObservable", className + " remove:" + size());
+        UniMainAsyncTask observer = get(id);
+        if(observer != null) {
+            String className = observer.getId();
+            super.remove(id);
+            Log.e("DetachedObservable", className + " remove:" + size());
+        }
     }
 
     @Override
     public synchronized void cancel(String id){
-        String className = get(id).getId();
-        get(id).cancel();
-        Log.e("DetachedObservable", className + " cancel:" + size());
-        remove(id);
+        UniMainAsyncTask observer = get(id);
+        if(observer != null) {
+            String className = observer.getId();
+            get(id).cancel();
+            Log.e("DetachedObservable", className + " cancel:" + size());
+            remove(id);
+        }
     }
 
     @Override
@@ -58,11 +64,11 @@ public class DetachedObservable extends StoreObservable<InnerUniTask> implements
         }
     }
 
-    public boolean isDetached() {
-        return detached;
+    public boolean isAttached() {
+        return isAttached;
     }
 
-    public void setDetached(boolean detach) {
-        this.detached = detach;
+    public void setAttached(boolean isAttached) {
+        this.isAttached = isAttached;
     }
 }

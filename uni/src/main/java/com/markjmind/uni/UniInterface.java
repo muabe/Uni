@@ -22,6 +22,6 @@ public interface UniInterface {
 
     public void onFail(boolean isException, String message, Exception e);
 
-    public void onCancelled(boolean dettach);
+    public void onCancelled(boolean attached);
 
 }

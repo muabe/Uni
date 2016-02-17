@@ -47,7 +47,7 @@ public class InnerUniTaskTemp extends AsyncTask<Void, Object, Boolean> implement
 
     @Override
     protected void onPreExecute() {
-        progress.show();
+        progress.show(null);
         uniInterface.onPre();
     }
 
