@@ -15,6 +15,7 @@ import com.markjmind.uni.mapper.MapperAdapter;
 import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.mapper.annotiation.adapter.LayoutAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
+import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.CancelObservable;
 import com.markjmind.uni.thread.DetachedObservable;
@@ -28,12 +29,12 @@ import com.markjmind.uni.viewer.UpdateEvent;
  * @email markjmind@gmail.com
   * @since 2016-01-28
  */
-public class UniView extends FrameLayout implements UniInterface, CancelObservable{
+public class UniView extends FrameLayout implements UniTask, CancelObservable{
     public Store<UniView> param;
     public UniProgress progress;
 
     private View layout;
-    private UniInterface uniInterface;
+    private UniTask uniTask;
     private UniMapper mapper;
     private boolean isMapping;
     private DetachedObservable detachedObservable;
@@ -110,8 +111,8 @@ public class UniView extends FrameLayout implements UniInterface, CancelObservab
         }
     }
 
-    protected void setUniInterface(UniInterface uniInterface){
-        this.uniInterface = uniInterface;
+    protected void setUniTask(UniTask uniTask){
+        this.uniTask = uniTask;
     }
 
     protected void setUniProgress(UniProgress progress){
@@ -127,15 +128,15 @@ public class UniView extends FrameLayout implements UniInterface, CancelObservab
     }
 
 
-    public String excute(UniInterface uniInterface){
-        uniInterface.onBind();
+    public String excute(UniTask uniTask){
+        uniTask.onBind();
         if(!isMapping) {
             mapper.injectWithout(LayoutAdapter.class);
             isMapping = true;
         }
 
         UniMainAsyncTask task = new UniMainAsyncTask(detachedObservable);
-        task.addTaskObserver(new InterfaceObserver(uniInterface));
+        task.addTaskObserver(new InterfaceObserver(uniTask));
         if(progress.isAble()) {
             task.addTaskObserver(progress);
         }
@@ -150,7 +151,7 @@ public class UniView extends FrameLayout implements UniInterface, CancelObservab
     }
 
     public String excute(){
-        UniInterface tempUniImp = uniInterface;
+        UniTask tempUniImp = uniTask;
         if(tempUniImp==null) {
             tempUniImp = this;
         }
@@ -206,40 +207,40 @@ public class UniView extends FrameLayout implements UniInterface, CancelObservab
     }
 
     private class InterfaceObserver implements TaskObserver{
-        private UniInterface uniInterface;
+        private UniTask uniTask;
 
-        public InterfaceObserver(UniInterface uniInterface){
-            this.uniInterface = uniInterface;
+        public InterfaceObserver(UniTask uniTask){
+            this.uniTask = uniTask;
         }
 
         @Override
         public void onPreExecute(UniMainAsyncTask uniTask, CancelAdapter cancelAdapter) {
-            uniInterface.onPre();
+            this.uniTask.onPre();
         }
 
         @Override
         public void doInBackground(UniMainAsyncTask uniTask, CancelAdapter cancelAdapter) throws Exception{
-            uniInterface.onLoad(uniTask, cancelAdapter);
+            this.uniTask.onLoad(uniTask, cancelAdapter);
         }
 
         @Override
         public void onProgressUpdate(UniMainAsyncTask uniTask, Object value, CancelAdapter cancelAdapter) {
-            uniInterface.onUpdate(value, cancelAdapter);
+            this.uniTask.onUpdate(value, cancelAdapter);
         }
 
         @Override
         public void onPostExecute(UniMainAsyncTask uniTask) {
-            uniInterface.onPost();
+            this.uniTask.onPost();
         }
 
         @Override
         public void onFailExecute(UniMainAsyncTask uniTask, boolean isException, String message, Exception e) {
-            uniInterface.onFail(isException, message, e);
+            this.uniTask.onFail(isException, message, e);
         }
 
         @Override
         public void onCancelled(UniMainAsyncTask uniTask, boolean attached) {
-            uniInterface.onCancelled(attached);
+            this.uniTask.onCancelled(attached);
         }
     }
 }

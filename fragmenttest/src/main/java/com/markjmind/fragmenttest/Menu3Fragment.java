@@ -1,12 +1,13 @@
 package com.markjmind.fragmenttest;
 
 import android.util.Log;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
 
 import com.markjmind.uni.UniFragment;
+import com.markjmind.uni.UniTaskAdapter;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
-import com.markjmind.uni.mapper.annotiation.Param;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.viewer.UpdateEvent;
 
@@ -16,32 +17,89 @@ import com.markjmind.uni.viewer.UpdateEvent;
  * @since 2016-01-28
  */
 
-@Layout(R.layout.menu3_frgt)
+@Layout(R.layout.item)
 public class Menu3Fragment extends UniFragment {
-    @Param
-    String ok,c;
-
     @GetView
-    TextView textView;
+    Button btn;
+
 
     @Override
-    public void onLoad(UpdateEvent event, CancelAdapter cancelAdapter) throws Exception {
-        Thread.sleep(1000);
+    public void onBind() {
+//        progress.bind(R.layout.progress, new UniProgress.OnProgressListener() {
+//            @Override
+//            public void onStart(View layout, CancelAdapter cancelAdapter) {
+//                ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressBar);
+//                bar.setMax(100);
+//                Button cancel = (Button) layout.findViewById(R.id.cancel);
+//                final CancelAdapter adapter = cancelAdapter;
+//                cancel.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        v.setEnabled(false);
+//                        adapter.cancel();
+//                    }
+//                });
+//            }
+//            @Override
+//            public void onUpdate(View layout, Object value, CancelAdapter cancelAdapter) {
+//                ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressBar);
+//                bar.setProgress((int) value);
+//            }
+//
+//            @Override
+//            public void onDestroy(View layout, boolean attach) {
+//
+//            }
+//        });
     }
 
     @Override
     public void onPre() {
-        textView.setText("준비");
-        Log.e("dd", ok);
-        Log.e("dd", c);
-
 
     }
 
     @Override
+    public void onLoad(UpdateEvent event, CancelAdapter cancelAdapter) throws Exception {
+        for(int i=0;i<=100;i++){
+            event.update(i);
+            Log.i("d", "" + i);
+            Thread.sleep(10);
+        }
+
+    }
+
+
+
+    @Override
     public void onPost() {
-        textView.setText("완료");
 
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                excute(new UniTaskAdapter() {
+
+                    @Override
+                    public void onBind() {
+//                        progress.bind(R.layout.progress);
+                    }
+
+                    @Override
+                    public void onLoad(UpdateEvent event, CancelAdapter cancelAdapter) throws Exception {
+                        for(int i=0;i<=100;i++){
+                            event.update(i);
+                            Log.i("d", "" + i);
+                            Thread.sleep(10);
+                        }
+                    }
+
+                    @Override
+                    public void onPost() {
+                        btn.setText("완료");
+                    }
+
+                });
+            }
+        });
     }
 }

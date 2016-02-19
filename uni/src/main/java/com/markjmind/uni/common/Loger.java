@@ -1,4 +1,4 @@
-package com.markjmind.uni.util;
+package com.markjmind.uni.common;
 
 /**
  * Created by markj on 2015-12-08.

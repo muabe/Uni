@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.markjmind.uni.hub.Store;
 import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
+import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.CancelObservable;
 import com.markjmind.uni.viewer.UpdateEvent;
@@ -20,7 +21,7 @@ import com.markjmind.uni.viewer.UpdateEvent;
  *
  */
 
-public class UniFragment extends Fragment implements UniInterface, CancelObservable {
+public class UniFragment extends Fragment implements UniTask, CancelObservable {
     public Store<?> param;
     public UniProgress progress;
 
@@ -47,7 +48,7 @@ public class UniFragment extends Fragment implements UniInterface, CancelObserva
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(uniView == null || !isPopStack) {
             uniView = new UniView(getActivity(), this, container);
-            uniView.setUniInterface(this);
+            uniView.setUniTask(this);
             progress.init(uniView);
             uniView.setUniProgress(progress);
             uniView.addMapperAdapter(new ParamAdapter(param));
@@ -69,6 +70,10 @@ public class UniFragment extends Fragment implements UniInterface, CancelObserva
     @Override
     public void cancelAll() {
         uniView.cancelAll();
+    }
+
+    public void excute(UniTask uniInterfacece){
+        uniView.excute(uniInterfacece);
     }
 
     /*************************************************** 인터페이스 관련 *********************************************/

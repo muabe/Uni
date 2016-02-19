@@ -11,8 +11,8 @@ package com.markjmind.uni.temp;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.markjmind.uni.UniInterface;
-import com.markjmind.uni.UniProgress;
+import com.markjmind.uni.UniTask;
+import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.common.StoreObserver;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.DetachedObservable;
@@ -29,15 +29,15 @@ public class InnerUniTaskTemp extends AsyncTask<Void, Object, Boolean> implement
     private boolean isCancel;
     private DetachedObservable observable;
     private CancelAdapter cancelAdapter;
-    private UniInterface uniInterface;
+    private UniTask uniTask;
     private UniProgress progress;
 
     private Exception doInBackException;
 
-    public InnerUniTaskTemp(DetachedObservable observable, UniInterface uniInterface, UniProgress progress){
+    public InnerUniTaskTemp(DetachedObservable observable, UniTask uniTask, UniProgress progress){
         this.isCancel = false;
         this.observable = observable;
-        this.uniInterface = uniInterface;
+        this.uniTask = uniTask;
         this.taskId = ""+this.hashCode();
         this.progress = progress;
         this.doInBackException=null;
@@ -48,7 +48,7 @@ public class InnerUniTaskTemp extends AsyncTask<Void, Object, Boolean> implement
     @Override
     protected void onPreExecute() {
         progress.show(null);
-        uniInterface.onPre();
+        uniTask.onPre();
     }
 
 
@@ -56,7 +56,7 @@ public class InnerUniTaskTemp extends AsyncTask<Void, Object, Boolean> implement
     protected Boolean doInBackground(Void... params) {
         doInBackException = null;
         try{
-            uniInterface.onLoad(this, cancelAdapter);
+            uniTask.onLoad(this, cancelAdapter);
             return true;
         }catch(Exception e){
             doInBackException = e;
@@ -72,9 +72,9 @@ public class InnerUniTaskTemp extends AsyncTask<Void, Object, Boolean> implement
                 value = values[0];
             }
             //프로그래스바 업데이트
-            progress.getOnProgressListener().onUpdate(progress.getLayout(), value, cancelAdapter);
+//            progress.getOnProgressListener().onUpdate(progress.getLayout(), value, cancelAdapter);
             //업데이트실행
-            uniInterface.onUpdate(value, cancelAdapter);
+            uniTask.onUpdate(value, cancelAdapter);
         }
     }
 
@@ -84,10 +84,10 @@ public class InnerUniTaskTemp extends AsyncTask<Void, Object, Boolean> implement
         if(!isCancel){
             if(result) { //성공
                 progress.dismiss();
-                uniInterface.onPost();
+                uniTask.onPost();
             }else{ // 실패
                 progress.dismiss();
-                uniInterface.onFail(false, "", doInBackException);
+                uniTask.onFail(false, "", doInBackException);
             }
 //            observable.remove(this);
         }
@@ -97,7 +97,7 @@ public class InnerUniTaskTemp extends AsyncTask<Void, Object, Boolean> implement
     @Override
     protected void onCancelled() {
         progress.dismiss();
-        uniInterface.onCancelled(false);
+        uniTask.onCancelled(false);
     }
 
     public synchronized void cancel() {
