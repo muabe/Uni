@@ -71,4 +71,8 @@ public class DetachedObservable extends StoreObservable<UniMainAsyncTask> implem
     public void setAttached(boolean isAttached) {
         this.isAttached = isAttached;
     }
+
+    public CancelAdapter getCancelAdapter(String taskId){
+        return new CancelAdapter(taskId, this);
+    }
 }

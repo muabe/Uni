@@ -24,6 +24,10 @@ class ViewProgress implements UniProgress.ProgressInterface {
     private ViewGroup parents;
 
     public ViewProgress(ViewGroup layout, ViewGroup parents){
+        reset(layout, parents);
+    }
+
+    void reset(ViewGroup layout, ViewGroup parents){
         this.progressLayout = layout;
         this.parents = parents;
     }
@@ -40,7 +44,7 @@ class ViewProgress implements UniProgress.ProgressInterface {
             if(view!=null) {
                 progressLayout.addView(view);
             }
-            parents.addView(progressLayout, parents.getChildCount());
+            parents.addView(progressLayout);
         }
     }
 

@@ -17,7 +17,7 @@ public class UniMainAsyncTask extends AsyncTask<Void, Object, Boolean> implement
     private boolean isCancel;
     private DetachedObservable observable;
     private CancelAdapter cancelAdapter;
-    private TaskObservable taskObservable = new TaskObservable();
+    private ProcessObservable taskObservable = new ProcessObservable();
 
     private Exception doInBackException;
 
@@ -26,13 +26,13 @@ public class UniMainAsyncTask extends AsyncTask<Void, Object, Boolean> implement
         this.observable = observable;
         this.taskId = ""+this.hashCode();
         this.doInBackException=null;
-        this.cancelAdapter = new CancelAdapter(this.taskId, observable);
+        this.cancelAdapter = observable.getCancelAdapter(this.taskId);
     }
 
 
     @Override
     protected void onPreExecute() {
-        taskObservable.onPreExecute(this, cancelAdapter);
+        taskObservable.onPreExecute(cancelAdapter);
     }
 
 
@@ -55,7 +55,7 @@ public class UniMainAsyncTask extends AsyncTask<Void, Object, Boolean> implement
             if(values != null) {
                 value = values[0];
             }
-            taskObservable.onProgressUpdate(this, value, cancelAdapter);
+            taskObservable.onProgressUpdate(value, cancelAdapter);
         }
     }
 
@@ -64,9 +64,9 @@ public class UniMainAsyncTask extends AsyncTask<Void, Object, Boolean> implement
         Log.e("DetachedObservable", getId()+" Post");
         if(!isCancel){
             if(result) { //성공
-                taskObservable.onPostExecute(this);
+                taskObservable.onPostExecute();
             }else{ // 실패
-                taskObservable.onFailExecute(this, false, "", doInBackException);
+                taskObservable.onFailExecute(false, "", doInBackException);
             }
             observable.remove(this);
         }
@@ -75,7 +75,7 @@ public class UniMainAsyncTask extends AsyncTask<Void, Object, Boolean> implement
 
     @Override
     protected void onCancelled() {
-        taskObservable.onCancelled(this, observable.isAttached());
+        taskObservable.onCancelled(observable.isAttached());
     }
 
     public synchronized void cancel() {
@@ -104,7 +104,7 @@ public class UniMainAsyncTask extends AsyncTask<Void, Object, Boolean> implement
         return taskId;
     }
 
-    public UniMainAsyncTask addTaskObserver(TaskObserver observer){
+    public UniMainAsyncTask addTaskObserver(ProcessObserver observer){
         taskObservable.add(observer);
         return this;
     }

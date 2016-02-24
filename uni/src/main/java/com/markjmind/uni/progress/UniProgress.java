@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.markjmind.uni.thread.CancelAdapter;
-import com.markjmind.uni.thread.TaskObserver;
-import com.markjmind.uni.thread.UniMainAsyncTask;
+import com.markjmind.uni.thread.ProcessObserver;
+import com.markjmind.uni.viewer.UpdateEvent;
 
 /**
  * <br>捲土重來<br>
@@ -17,7 +17,7 @@ import com.markjmind.uni.thread.UniMainAsyncTask;
  * @email markjmind@gmail.com
  * @since 2016-02-16
  */
-public class UniProgress implements TaskObserver {
+public class UniProgress implements ProcessObserver {
     public enum Mode{
         none, view, dialog
     }
@@ -53,34 +53,34 @@ public class UniProgress implements TaskObserver {
     }
 
     @Override
-    public void onPreExecute(UniMainAsyncTask uniTask, CancelAdapter cancelAdapter) {
+    public void onPreExecute(CancelAdapter cancelAdapter) {
         show(cancelAdapter);
     }
 
     @Override
-    public void doInBackground(UniMainAsyncTask uniTask, CancelAdapter cancelAdapter) throws Exception {
+    public void doInBackground(UpdateEvent event, CancelAdapter cancelAdapter) throws Exception {
 
     }
 
     @Override
-    public void onProgressUpdate(UniMainAsyncTask uniTask, Object value, CancelAdapter cancelAdapter) {
+    public void onProgressUpdate(Object value, CancelAdapter cancelAdapter) {
         if(listener!=null) {
             listener.onUpdate(layout, value, cancelAdapter);
         }
     }
 
     @Override
-    public void onPostExecute(UniMainAsyncTask uniTask) {
+    public void onPostExecute() {
         dismiss();
     }
 
     @Override
-    public void onFailExecute(UniMainAsyncTask uniTask, boolean isException, String message, Exception e) {
+    public void onFailExecute(boolean isException, String message, Exception e) {
         dismiss();
     }
 
     @Override
-    public void onCancelled(UniMainAsyncTask uniTask, boolean attach) {
+    public void onCancelled(boolean attach) {
         dismiss(attach);
     }
 
@@ -100,6 +100,8 @@ public class UniProgress implements TaskObserver {
             }else if(mode == Mode.view){
                 if (progress == null) {
                     progress = new ViewProgress(progressLayout, parents);
+                }else{
+                    ((ViewProgress)progress).reset(progressLayout, parents);
                 }
             }
 

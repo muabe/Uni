@@ -66,8 +66,6 @@ public class MainActivity extends AppCompatActivity{
         fm = getFragmentManager();
         uni = (UniView)findViewById(R.id.uni);
         uni.excute();
-        menu3Fragment.param.add("ok", "okok");
-        menu3Fragment.param.add("c", "ccc");
 
 //        menu1Fragment.getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
 //            @Override

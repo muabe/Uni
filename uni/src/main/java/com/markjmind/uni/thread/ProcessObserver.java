@@ -8,6 +8,8 @@
 
 package com.markjmind.uni.thread;
 
+import com.markjmind.uni.viewer.UpdateEvent;
+
 /**
  * <br>捲土重來<br>
  *
@@ -15,16 +17,16 @@ package com.markjmind.uni.thread;
  * @email markjmind@gmail.com
  * @since 2016-02-17
  */
-public interface TaskObserver{
-    void onPreExecute(UniMainAsyncTask uniTask, CancelAdapter cancelAdapter);
+public interface ProcessObserver {
+    void onPreExecute(CancelAdapter cancelAdapter);
 
-    void doInBackground(UniMainAsyncTask uniTask, CancelAdapter cancelAdapter) throws Exception;
+    void doInBackground(UpdateEvent event,CancelAdapter cancelAdapter) throws Exception;
 
-    void onProgressUpdate(UniMainAsyncTask uniTask, Object value, CancelAdapter cancelAdapter);
+    void onProgressUpdate(Object value, CancelAdapter cancelAdapter);
 
-    void onPostExecute(UniMainAsyncTask uniTask);
+    void onPostExecute();
 
-    void onFailExecute(UniMainAsyncTask uniTask, boolean isException, String message, Exception e);
+    void onFailExecute(boolean isException, String message, Exception e);
 
-    void onCancelled(UniMainAsyncTask uniTask, boolean attached);
+    void onCancelled(boolean attached);
 }

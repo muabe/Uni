@@ -19,7 +19,6 @@ import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.CancelObservable;
 import com.markjmind.uni.thread.DetachedObservable;
-import com.markjmind.uni.thread.TaskObserver;
 import com.markjmind.uni.thread.UniMainAsyncTask;
 import com.markjmind.uni.viewer.UpdateEvent;
 
@@ -136,7 +135,7 @@ public class UniView extends FrameLayout implements UniTask, CancelObservable{
         }
 
         UniMainAsyncTask task = new UniMainAsyncTask(detachedObservable);
-        task.addTaskObserver(new InterfaceObserver(uniTask));
+        task.addTaskObserver(new UniProcessObserver(uniTask));
         if(progress.isAble()) {
             task.addTaskObserver(progress);
         }
@@ -204,43 +203,5 @@ public class UniView extends FrameLayout implements UniTask, CancelObservable{
     @Override
     public void onCancelled(boolean attached) {
 
-    }
-
-    private class InterfaceObserver implements TaskObserver{
-        private UniTask uniTask;
-
-        public InterfaceObserver(UniTask uniTask){
-            this.uniTask = uniTask;
-        }
-
-        @Override
-        public void onPreExecute(UniMainAsyncTask uniTask, CancelAdapter cancelAdapter) {
-            this.uniTask.onPre();
-        }
-
-        @Override
-        public void doInBackground(UniMainAsyncTask uniTask, CancelAdapter cancelAdapter) throws Exception{
-            this.uniTask.onLoad(uniTask, cancelAdapter);
-        }
-
-        @Override
-        public void onProgressUpdate(UniMainAsyncTask uniTask, Object value, CancelAdapter cancelAdapter) {
-            this.uniTask.onUpdate(value, cancelAdapter);
-        }
-
-        @Override
-        public void onPostExecute(UniMainAsyncTask uniTask) {
-            this.uniTask.onPost();
-        }
-
-        @Override
-        public void onFailExecute(UniMainAsyncTask uniTask, boolean isException, String message, Exception e) {
-            this.uniTask.onFail(isException, message, e);
-        }
-
-        @Override
-        public void onCancelled(UniMainAsyncTask uniTask, boolean attached) {
-            this.uniTask.onCancelled(attached);
-        }
     }
 }
