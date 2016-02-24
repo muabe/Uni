@@ -15,18 +15,34 @@ package com.markjmind.uni.progress;
  * @email markjmind@gmail.com
  * @since 2016-02-19
  */
-public class ProgressInfo extends BaseProgressInfo {
+public abstract  class ProgressInfo {
+    private int layoutId;
+    private OnProgressListener listener;
 
-    public ProgressInfo(int layoutId) {
-        super(layoutId);
+
+    public ProgressInfo(int layoutId){
+        this(layoutId, null);
+    }
+    public ProgressInfo(int layoutId, OnProgressListener listener){
+        this.layoutId = layoutId;
+        this.listener = listener;
     }
 
-    public ProgressInfo(int layoutId, OnProgressListener listener) {
-        super(layoutId, listener);
+    public abstract UniProgress.Mode getMode();
+
+    public int getLayoutId() {
+        return layoutId;
     }
 
-    @Override
-    UniProgress.Mode getMode() {
-        return UniProgress.Mode.view;
+    public void setLayoutId(int layoutId) {
+        this.layoutId = layoutId;
+    }
+
+    public OnProgressListener getListener() {
+        return listener;
+    }
+
+    public void setListener(OnProgressListener listener) {
+        this.listener = listener;
     }
 }

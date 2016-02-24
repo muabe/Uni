@@ -49,7 +49,7 @@ public class UniFragment extends Fragment implements UniTask, CancelObservable {
         if(uniView == null || !isPopStack) {
             uniView = new UniView(getActivity(), this, container);
             uniView.setUniTask(this);
-            progress.init(uniView);
+            progress.setParents(uniView);
             uniView.setUniProgress(progress);
             uniView.addMapperAdapter(new ParamAdapter(param));
             setBackStack(false);

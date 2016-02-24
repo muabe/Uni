@@ -1,16 +1,10 @@
 package com.markjmind.uni.progress;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import com.markjmind.uni.thread.CancelAdapter;
@@ -24,37 +18,35 @@ import com.markjmind.uni.thread.UniMainAsyncTask;
  * @since 2016-02-16
  */
 public class UniProgress implements TaskObserver {
-    protected enum Mode{
+    public enum Mode{
         none, view, dialog
     }
 
     private ViewGroup parents;
     private boolean isEnable;
     private View layout;
-//    private int layoutId;
-//    private Mode mode;
+    private Mode mode;
     private LinearLayout progressLayout;
     private ProgressInterface progress;
-//    private OnProgressListener listener;
+    private OnProgressListener listener;
     private int theme;
 
-    private BaseProgressInfo baseProgressInfo;
+    private ProgressInfo progressInfo;
 
     public UniProgress(){
         this.mode = Mode.none;
         this.isEnable = true;
-//        this.layoutId = -1;
         this.theme = -1;
     }
 
     public UniProgress(ViewGroup parents) {
         this();
-        init(parents);
+        setParents(parents);
     }
 
-    public void init(ViewGroup uniView){
-        this.parents = uniView;
-        this.progressLayout = new LinearLayout(uniView.getContext());
+    public void setParents(ViewGroup parents){
+        this.parents = parents;
+        this.progressLayout = new LinearLayout(parents.getContext());
         this.progressLayout.setGravity(Gravity.CENTER);
         this.progressLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         this.progressLayout.setClickable(true);
@@ -72,8 +64,8 @@ public class UniProgress implements TaskObserver {
 
     @Override
     public void onProgressUpdate(UniMainAsyncTask uniTask, Object value, CancelAdapter cancelAdapter) {
-        if(baseProgressInfo.getListener()!=null) {
-            baseProgressInfo.getListener().onUpdate(layout, value, cancelAdapter);
+        if(listener!=null) {
+            listener.onUpdate(layout, value, cancelAdapter);
         }
     }
 
@@ -94,7 +86,7 @@ public class UniProgress implements TaskObserver {
 
 
     public synchronized void show(CancelAdapter cancelAdapter){
-        if(baseProgressInfo!=null && isEnable) {
+        if(mode != Mode.none && isEnable) {
             if (mode == Mode.dialog) {
                 if (progress == null) {
                     if(theme == -1){
@@ -107,17 +99,17 @@ public class UniProgress implements TaskObserver {
 
             }else if(mode == Mode.view){
                 if (progress == null) {
-                    progress = new ViewProgress(progressLayout);
+                    progress = new ViewProgress(progressLayout, parents);
                 }
             }
 
-            if(baseProgressInfo != null) {
+            if(progressInfo != null) {
                 LayoutInflater inflater = ((LayoutInflater) parents.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
-                layout = inflater.inflate(baseProgressInfo.getLayoutId(), progressLayout, false);
+                layout = inflater.inflate(progressInfo.getLayoutId(), progressLayout, false);
             }
 
-            if(baseProgressInfo.getListener() != null){
-                baseProgressInfo.getListener().onStart(layout, cancelAdapter);
+            if(listener != null){
+                listener.onStart(layout, cancelAdapter);
             }
             progress.show(layout);
         }
@@ -128,9 +120,9 @@ public class UniProgress implements TaskObserver {
     }
 
     public synchronized void dismiss(boolean attach){
-        if(baseProgressInfo!=null && progress!=null && progress.isShow()){
-            if(baseProgressInfo.getListener() !=null){
-                baseProgressInfo.getListener().onDestroy(layout, attach);
+        if(mode!= Mode.none && progress!=null && progress.isShow()){
+            if(listener !=null){
+                listener.onDestroy(layout, attach);
             }
             progress.dismiss();
         }
@@ -149,6 +141,8 @@ public class UniProgress implements TaskObserver {
 
 
     public UniProgress bind(DialogProgressInfo progressInfo){
+        this.progressInfo = progressInfo;
+        this.listener = progressInfo.getListener();
         if(mode == Mode.view && progress!=null && progress.isShow()){
             progress.dismiss();
         }
@@ -156,11 +150,13 @@ public class UniProgress implements TaskObserver {
         return this;
     }
 
-    public UniProgress bind(ProgressInfo progressInfo){
+    public UniProgress bind(ViewProgressInfo viewProgressInfo){
+        progressInfo = viewProgressInfo;
+        this.listener = progressInfo.getListener();
         if(mode == Mode.dialog && progress!=null && progress.isShow()){
             progress.dismiss();
         }
-        this.mode = progressInfo.getMode();
+        this.mode = viewProgressInfo.getMode();
         return this;
     }
 
@@ -173,95 +169,10 @@ public class UniProgress implements TaskObserver {
     }
 
 
-    interface ProgressInterface{
+    public interface ProgressInterface{
         boolean isShow();
         void show(View view);
         void dismiss();
     }
 
-    private class AlterProgress extends AlertDialog implements ProgressInterface{
-        ViewGroup progressLayout;
-
-        public AlterProgress(Context context, ViewGroup layout) {
-            super(context);
-            this.progressLayout = layout;
-        }
-
-        public AlterProgress(Context context, ViewGroup layout, int theme) {
-            super(context, theme);
-            this.progressLayout = layout;
-        }
-
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(progressLayout);
-            getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-            Window window = getWindow();
-            lp.copyFrom(window.getAttributes());
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-            lp.height = WindowManager.LayoutParams.MATCH_PARENT;
-            window.setAttributes(lp);
-            this.setCancelable(false);
-        }
-
-        @Override
-        public boolean isShow() {
-            return super.isShowing();
-        }
-
-        public synchronized void show(View view) {
-            if(view!=null) {
-                progressLayout.addView(view);
-            }
-            super.show();
-        }
-
-        @Override
-        public synchronized void dismiss() {
-            if(progressLayout !=null) {
-                progressLayout.removeAllViews();
-            }
-            super.dismiss();
-        }
-
-    }
-
-
-    private class ViewProgress implements ProgressInterface{
-        ViewGroup progressLayout;
-        boolean isShowing;
-
-        public ViewProgress(ViewGroup layout){
-            this.progressLayout = layout;
-        }
-
-        @Override
-        public boolean isShow() {
-            return isShowing;
-        }
-
-        @Override
-        public synchronized void show(View view) {
-            if(!isShowing) {
-                isShowing = true;
-                if(view!=null) {
-                    progressLayout.addView(view);
-                }
-                parents.addView(progressLayout, parents.getChildCount());
-            }
-        }
-
-        @Override
-        public synchronized void dismiss() {
-            if(isShowing) {
-                if(progressLayout !=null) {
-                    progressLayout.removeAllViews();
-                    parents.removeView(progressLayout);
-                }
-                isShowing = false;
-            }
-        }
-    }
 }

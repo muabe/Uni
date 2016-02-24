@@ -15,18 +15,18 @@ package com.markjmind.uni.progress;
  * @email markjmind@gmail.com
  * @since 2016-02-19
  */
-public class DialogProgressInfo extends ProgressInfo {
+public class ViewProgressInfo extends ProgressInfo {
 
-    public DialogProgressInfo(int layoutId) {
+    public ViewProgressInfo(int layoutId) {
         super(layoutId);
     }
 
-    public DialogProgressInfo(int layoutId, OnProgressListener listener) {
+    public ViewProgressInfo(int layoutId, OnProgressListener listener) {
         super(layoutId, listener);
     }
 
     @Override
     public UniProgress.Mode getMode() {
-        return UniProgress.Mode.dialog;
+        return UniProgress.Mode.view;
     }
 }

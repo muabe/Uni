@@ -18,9 +18,10 @@ import com.markjmind.uni.thread.CancelAdapter;
  * @since 2016-02-18
  */
 public abstract class UniTaskAdapter implements UniTask {
+    UniTask uniTask;
 
-    public UniTaskAdapter(){
-
+    public UniTaskAdapter(UniTask uniTask){
+        this.uniTask = uniTask;
     }
 
     public void onBind(){
@@ -36,10 +37,14 @@ public abstract class UniTaskAdapter implements UniTask {
     }
 
     public void onFail(boolean isException, String message, Exception e){
-
+        uniTask.onFail(isException, message, e);
     }
 
     public void onCancelled(boolean attached){
+        uniTask.onCancelled(attached);
+    }
 
+    public UniTask getParents(){
+        return uniTask;
     }
 }
