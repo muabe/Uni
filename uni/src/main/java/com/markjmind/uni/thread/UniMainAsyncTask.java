@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.markjmind.uni.common.StoreObserver;
-import com.markjmind.uni.viewer.UpdateEvent;
 
 /**
  * <br>捲土重來<br>
@@ -12,16 +11,16 @@ import com.markjmind.uni.viewer.UpdateEvent;
  * @email markjmind@gmail.com
  * @since 2016-01-28
  */
-public class UniMainAsyncTask extends AsyncTask<Void, Object, Boolean> implements StoreObserver<DetachedObservable>, UpdateEvent{
+public class UniMainAsyncTask extends AsyncTask<Void, Object, Boolean> implements StoreObserver<CancelObservable>, UpdateEvent{
     private String taskId;
     private boolean isCancel;
-    private DetachedObservable observable;
+    private CancelObservable observable;
     private CancelAdapter cancelAdapter;
     private ProcessObservable taskObservable = new ProcessObservable();
 
     private Exception doInBackException;
 
-    public UniMainAsyncTask(DetachedObservable observable){
+    public UniMainAsyncTask(CancelObservable observable){
         this.isCancel = false;
         this.observable = observable;
         this.taskId = ""+this.hashCode();
@@ -95,7 +94,7 @@ public class UniMainAsyncTask extends AsyncTask<Void, Object, Boolean> implement
      }
 
     @Override
-    public void notifyChange(DetachedObservable observable, Object data) {
+    public void notifyChange(CancelObservable observable, Object data) {
         cancel();
     }
 

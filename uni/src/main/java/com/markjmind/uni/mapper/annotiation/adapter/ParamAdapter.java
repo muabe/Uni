@@ -8,7 +8,7 @@
 
 package com.markjmind.uni.mapper.annotiation.adapter;
 
-import com.markjmind.uni.hub.Store;
+import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.FieldAdapter;
 import com.markjmind.uni.mapper.annotiation.Param;
 

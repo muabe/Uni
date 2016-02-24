@@ -8,8 +8,6 @@
 
 package com.markjmind.uni.thread;
 
-import com.markjmind.uni.viewer.UpdateEvent;
-
 import java.util.ArrayList;
 
 /**

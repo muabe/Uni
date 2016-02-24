@@ -1,1 +1,1 @@
-include ':sample_app', ':uni', ':fragmenttest'
+include ':uni', ':fragmenttest'

@@ -1,6 +1,6 @@
 package com.markjmind.uni.temp;
 
-import com.markjmind.uni.hub.Store;
+import com.markjmind.uni.common.Store;
 
 /**
  * <br>捲土重來<br>

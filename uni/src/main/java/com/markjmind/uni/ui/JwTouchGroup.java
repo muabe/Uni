@@ -1,6 +1,6 @@
 package com.markjmind.uni.ui;
 
-import com.markjmind.uni.hub.Store;
+import com.markjmind.uni.common.Store;
 
 import android.view.MotionEvent;
 import android.view.View;

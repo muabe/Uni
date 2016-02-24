@@ -13,18 +13,9 @@ package com.markjmind.uni.thread;
  *
  * @author 오재웅(JaeWoong-Oh)
  * @email markjmind@gmail.com
- * @since 2016-02-17
+ * @since 2016-02-16
  */
-public interface ProcessObserver {
-    void onPreExecute(CancelAdapter cancelAdapter);
-
-    void doInBackground(UpdateEvent event,CancelAdapter cancelAdapter) throws Exception;
-
-    void onProgressUpdate(Object value, CancelAdapter cancelAdapter);
-
-    void onPostExecute();
-
-    void onFailExecute(boolean isException, String message, Exception e);
-
-    void onCancelled(boolean attached);
+public interface CancelObserver {
+    void cancel(String taskId);
+    void cancelAll();
 }

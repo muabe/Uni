@@ -8,7 +8,7 @@
 *---------------------------------------------------------------------------------
 *********************************************************************************/
 
-package com.markjmind.uni.hub;
+package com.markjmind.uni.common;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -99,7 +99,7 @@ public class Store<Value> extends LinkedHashMap<Object, Object> implements Compa
 			return defaultValue;
 		}
 		if(result instanceof java.lang.String){
-			return Integer.parseInt((String)result); 
+			return Integer.parseInt((String) result);
 		}
 		return ((Integer)result).intValue();
 	}
@@ -110,7 +110,7 @@ public class Store<Value> extends LinkedHashMap<Object, Object> implements Compa
 			return defaultValue;
 		}
 		if(result instanceof java.lang.String){
-			return Float.parseFloat((String)result); 
+			return Float.parseFloat((String) result);
 		}
 		return ((Float)result).floatValue();
 	}
@@ -122,15 +122,7 @@ public class Store<Value> extends LinkedHashMap<Object, Object> implements Compa
 		}
 		return ((Long)result).longValue();
 	}
-	
-	/**
-	 * key값에 대응하는 StoreList 객체를 가져온다
-	 */
-	public StoreList getStoreList(String key){
-		StoreList result = (StoreList)this.get(key);
-		return result;
-	}
-	
+
 	/**
 	 * Store의 에 배열로 값을 셋팅한다.
 	 */
@@ -386,12 +378,7 @@ public class Store<Value> extends LinkedHashMap<Object, Object> implements Compa
 	    put(key, value);
 		return this;
 	}
-	
-	public synchronized Store<Value> addStoreList(String key, StoreList storeList){
-	    put(key, storeList, Type_StoreList);
-		return this;
-	}
-	
+
 	public String getTypeName(String key){
 		return types.get(key);
 	}

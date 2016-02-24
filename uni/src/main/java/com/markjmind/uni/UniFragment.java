@@ -6,12 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.markjmind.uni.hub.Store;
+import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
 import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
-import com.markjmind.uni.thread.CancelObservable;
-import com.markjmind.uni.viewer.UpdateEvent;
+import com.markjmind.uni.thread.CancelObserver;
+import com.markjmind.uni.thread.UpdateEvent;
 
 
 /**
@@ -21,7 +21,7 @@ import com.markjmind.uni.viewer.UpdateEvent;
  *
  */
 
-public class UniFragment extends Fragment implements UniTask, CancelObservable {
+public class UniFragment extends Fragment implements UniTask, CancelObserver {
     public Store<?> param;
     public UniProgress progress;
 

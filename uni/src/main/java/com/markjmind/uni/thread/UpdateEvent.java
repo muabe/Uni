@@ -1,4 +1,4 @@
-package com.markjmind.uni.viewer;
+package com.markjmind.uni.thread;
 
 /**
  * Created by codemasta on 2015-09-10.

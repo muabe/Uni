@@ -14,13 +14,13 @@ package com.markjmind.uni.thread;
  * @email markjmind@gmail.com
  * @since 2016-02-16
  */
-public class CancelAdapter implements CancelObservable{
+public class CancelAdapter implements CancelObserver {
     private String taskId;
-    private CancelObservable cancelObservable;
+    private CancelObserver cancelObserver;
 
-    public CancelAdapter(String taskId, CancelObservable cancelObservable){
+    public CancelAdapter(String taskId, CancelObserver cancelObserver){
         this.taskId = taskId;
-        this.cancelObservable = cancelObservable;
+        this.cancelObserver = cancelObserver;
     }
 
     public String getTaskId(){
@@ -28,16 +28,16 @@ public class CancelAdapter implements CancelObservable{
     }
 
     public void cancel(){
-        cancelObservable.cancel(taskId);
+        cancelObserver.cancel(taskId);
     }
 
     @Override
     public void cancel(String taskId) {
-        cancelObservable.cancel(taskId);
+        cancelObserver.cancel(taskId);
     }
 
     @Override
     public void cancelAll() {
-        cancelObservable.cancelAll();
+        cancelObserver.cancelAll();
     }
 }

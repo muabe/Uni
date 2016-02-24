@@ -1,7 +1,7 @@
 package com.markjmind.uni;
 
 import com.markjmind.uni.thread.CancelAdapter;
-import com.markjmind.uni.viewer.UpdateEvent;
+import com.markjmind.uni.thread.UpdateEvent;
 
 /**
  * <br>捲土重來<br>

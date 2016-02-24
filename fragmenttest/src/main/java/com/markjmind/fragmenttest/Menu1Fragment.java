@@ -7,7 +7,7 @@ import com.markjmind.uni.UniFragment;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.thread.CancelAdapter;
-import com.markjmind.uni.viewer.UpdateEvent;
+import com.markjmind.uni.thread.UpdateEvent;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

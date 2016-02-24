@@ -20,7 +20,7 @@ import com.markjmind.uni.progress.OnProgressListener;
 import com.markjmind.uni.progress.ViewProgressInfo;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.viewer.Jwc;
-import com.markjmind.uni.viewer.UpdateEvent;
+import com.markjmind.uni.thread.UpdateEvent;
 
 /**
  * @author 오재웅(JaeWoong-Oh)

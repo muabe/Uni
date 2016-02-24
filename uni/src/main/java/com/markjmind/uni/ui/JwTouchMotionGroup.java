@@ -4,7 +4,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
-import com.markjmind.uni.hub.Store;
+import com.markjmind.uni.common.Store;
 
 /**
  * JwTouchMotionGroupLisener 정의할떄
