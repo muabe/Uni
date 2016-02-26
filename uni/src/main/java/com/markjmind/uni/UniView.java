@@ -14,6 +14,7 @@ import com.markjmind.uni.mapper.Mapper;
 import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.mapper.annotiation.adapter.LayoutAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
+import com.markjmind.uni.mapper.annotiation.adapter.ProgressAdapter;
 import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.CancelObservable;
@@ -28,7 +29,7 @@ import com.markjmind.uni.thread.UniMainAsyncTask;
  * @email markjmind@gmail.com
   * @since 2016-01-28
  */
-public class UniView extends FrameLayout implements UniTask, CancelObserver {
+public class UniView extends FrameLayout implements UniTask, CancelObserver{
     public Mapper mapper;
     public Store<?> param;
     public UniProgress progress;
@@ -114,9 +115,13 @@ public class UniView extends FrameLayout implements UniTask, CancelObserver {
     /*************************************************** excute 관련 *********************************************/
 
     private void bind(UniTask uniTask){
+        if(progress.get()==null){
+            mapper.addAdapter(new ProgressAdapter(progress));
+            mapper.inject(ProgressAdapter.class);
+        }
         uniTask.onBind();
         if(!isMapping) {
-            mapper.injectWithout(LayoutAdapter.class);
+            mapper.injectWithout(LayoutAdapter.class, ProgressAdapter.class);
             isMapping = true;
         }
     }
@@ -223,6 +228,7 @@ public class UniView extends FrameLayout implements UniTask, CancelObserver {
     public void onCancelled(boolean attached) {
 
     }
+
 
 
     /*************************************************** Task Process 관련 *********************************************/

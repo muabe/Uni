@@ -148,5 +148,4 @@ public class UniFragment extends Fragment implements UniTask, CancelObserver {
         uniView.onCancelled(attach);
     }
 
-
 }

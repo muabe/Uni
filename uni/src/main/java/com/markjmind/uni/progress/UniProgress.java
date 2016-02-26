@@ -145,7 +145,7 @@ public class UniProgress implements ProcessObserver {
         return this;
     }
 
-    public UniProgressDialog dialogInfo(UniProgressDialog progressInfo){
+    public UniProgressDialog set(UniProgressDialog progressInfo){
         this.progressInfo = progressInfo;
         this.listener = progressInfo.getListener();
         if(mode == Mode.view && progress!=null && progress.isShow()){
@@ -155,21 +155,9 @@ public class UniProgress implements ProcessObserver {
         return (UniProgressDialog)this.progressInfo;
     }
 
-    public void dialogInfo(int layoutId){
-        this.progressInfo = new ProgressInfo(layoutId) {
-            @Override
-            public Mode getMode() {
-                return Mode.dialog;
-            }
-        };
-        this.listener = null;
-        if(mode == Mode.view && progress!=null && progress.isShow()){
-            progress.dismiss();
-        }
-        this.mode = progressInfo.getMode();
-    }
 
-    public UniProgressView viewInfo(UniProgressView progressInfo){
+
+    public UniProgressView set(UniProgressView progressInfo){
         this.progressInfo = progressInfo;
         this.listener = progressInfo.getListener();
         if(mode == Mode.dialog && progress!=null && progress.isShow()){
@@ -179,21 +167,28 @@ public class UniProgress implements ProcessObserver {
         return (UniProgressView)this.progressInfo;
     }
 
-    public void viewInfo(int layoutId){
+    public void set(int layoutId, Mode progressMode){
+        final Mode tempMode = progressMode;
         this.progressInfo = new ProgressInfo(layoutId) {
             @Override
             public Mode getMode() {
-                return Mode.view;
+                return tempMode;
             }
         };
         this.listener = null;
-        if(mode == Mode.dialog && progress!=null && progress.isShow()){
-            progress.dismiss();
+        if(progressMode.equals(Mode.dialog)) {
+            if (mode == Mode.view && progress != null && progress.isShow()) {
+                progress.dismiss();
+            }
+        }else if(progressMode.equals(Mode.view)){
+            if(mode == Mode.dialog && progress!=null && progress.isShow()){
+                progress.dismiss();
+            }
         }
         this.mode = progressInfo.getMode();
     }
 
-    public ProgressInfo getInfo(){
+    public ProgressInfo get(){
         return this.progressInfo;
     }
 

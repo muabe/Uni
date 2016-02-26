@@ -15,8 +15,9 @@ import android.view.ViewGroup;
 
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.Mapper;
-import com.markjmind.uni.mapper.UniMapper;
+import com.markjmind.uni.mapper.annotiation.adapter.GetViewAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.LayoutAdapter;
+import com.markjmind.uni.mapper.annotiation.adapter.OnClickAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
 
 /**
@@ -67,7 +68,8 @@ public abstract class ProgressInfo {
             LayoutInflater inflater = ((LayoutInflater) finder.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
             layout = inflater.inflate(layoutId, finder, false);
         }else{
-            mapper = new UniMapper(finder, this);
+            mapper = new Mapper(finder, this);
+            mapper.addAdapter(new LayoutAdapter());
             mapper.inject(LayoutAdapter.class);
             if(layoutId == -1) {
                 layoutId = mapper.getAdapter(LayoutAdapter.class).getLayoutId();
@@ -76,6 +78,8 @@ public abstract class ProgressInfo {
             LayoutInflater inflater = ((LayoutInflater) finder.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
             layout = inflater.inflate(layoutId, finder, false);
             mapper.reset(layout, this);
+            mapper.addAdapter(new GetViewAdapter());
+            mapper.addAdapter(new OnClickAdapter());
             mapper.addAdapter(new ParamAdapter(param));
             mapper.injectWithout(LayoutAdapter.class);
         }

@@ -36,7 +36,7 @@ public class Menu2Fragment extends Fragment{
         uniView.param.add("2","2");
         uniView.param.add("a","aaa");
         uniView.param.add("b","bbb");
-        uniView.progress.viewInfo(new UniProgressView(R.layout.progress) {
+        uniView.progress.set(new UniProgressView(R.layout.progress) {
             ObjectAnimator obj;
 
             @Override

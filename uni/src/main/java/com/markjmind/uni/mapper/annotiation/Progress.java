@@ -8,6 +8,14 @@
 
 package com.markjmind.uni.mapper.annotiation;
 
+import com.markjmind.uni.progress.ProgressInfo;
+import com.markjmind.uni.progress.UniProgress;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * <br>捲土重來<br>
  *
@@ -15,5 +23,20 @@ package com.markjmind.uni.mapper.annotiation;
  * @email markjmind@gmail.com
  * @since 2016-02-26
  */
-public interface Progress {
+@Retention( RetentionPolicy.RUNTIME )
+@Target(ElementType.TYPE)
+public @interface Progress {
+    Class<? extends ProgressInfo> value() default None.class;
+    UniProgress.Mode mode() default UniProgress.Mode.dialog;
+    int res() default -1;
+
+    static class None extends ProgressInfo {
+        @Override
+        public UniProgress.Mode getMode() {
+            return UniProgress.Mode.none;
+        }
+    };
+
+
+
 }

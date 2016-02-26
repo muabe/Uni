@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity{
         menu2Fragment = new Menu2Fragment();
         menu3Fragment = new Menu3Fragment();
 
-        menu1Fragment.progress.dialogInfo(new UniProgressDialog(R.layout.progress) {
+        menu1Fragment.progress.set(new UniProgressDialog(R.layout.progress) {
             @Override
             public void onStart(View layout, CancelAdapter cancelAdapter) {
                 ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressBar);
