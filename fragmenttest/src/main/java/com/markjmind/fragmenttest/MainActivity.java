@@ -5,12 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ProgressBar;
 
 import com.markjmind.uni.UniView;
-import com.markjmind.uni.progress.UniProgressDialog;
-import com.markjmind.uni.thread.CancelAdapter;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -33,34 +29,7 @@ public class MainActivity extends AppCompatActivity{
         menu2Fragment = new Menu2Fragment();
         menu3Fragment = new Menu3Fragment();
 
-        menu1Fragment.progress.set(new UniProgressDialog(R.layout.progress) {
-            @Override
-            public void onStart(View layout, CancelAdapter cancelAdapter) {
-                ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressBar);
-                bar.setMax(100);
-                Button cancel = (Button) layout.findViewById(R.id.cancel);
-                final CancelAdapter adapter = cancelAdapter;
-                cancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ((Button) v).setText("취소중...");
-                        v.setEnabled(false);
-                        adapter.cancel();
-                    }
-                });
-            }
-
-            @Override
-            public void onUpdate(View layout, Object value, CancelAdapter cancelAdapter) {
-                ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressBar);
-                bar.setProgress((int) value);
-            }
-
-            @Override
-            public void onDestroy(View layout, boolean attach) {
-            }
-
-        });
+        menu1Fragment.progress.set(new SimpleProgressBar());
         fm = getFragmentManager();
         uni = (UniView)findViewById(R.id.uni);
         uni.excute();
@@ -99,6 +68,7 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(View v) {
                 menu3Fragment.param.add("ok", "okok");
                 menu3Fragment.param.add("c", "ccc");
+                menu3Fragment.progress.param.add("textName", "하이1");
                 fm.beginTransaction().replace(R.id.lyt, menu3Fragment).addToBackStack(null).commit();
             }
         });

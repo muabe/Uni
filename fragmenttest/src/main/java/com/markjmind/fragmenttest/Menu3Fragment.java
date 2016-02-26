@@ -24,15 +24,9 @@ public class Menu3Fragment extends UniFragment {
     @GetView
     Button btn;
 
-
-    @Override
-    public void onBind() {
-        progress.get().param.add("textName", "하이");
-    }
-
     @Override
     public void onPre() {
-
+        progress.param.add("textName", "하이");
     }
 
     @Override
@@ -52,7 +46,7 @@ public class Menu3Fragment extends UniFragment {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progress.get().param.add("textName","thread");
+                progress.param.add("textName","thread");
                 excute(new UniTaskAdapter(Menu3Fragment.this) {
 
                     @Override

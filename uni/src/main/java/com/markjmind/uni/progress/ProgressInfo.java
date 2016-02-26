@@ -42,7 +42,6 @@ public abstract class ProgressInfo {
 
     public ProgressInfo(int layoutId){
         this.layoutId = layoutId;
-        param = new Store<>();
     }
 
     public abstract UniProgress.Mode getMode();
@@ -63,7 +62,8 @@ public abstract class ProgressInfo {
         this.listener = listener;
     }
 
-    View mapperInit(ViewGroup finder) {
+    View mapperInit(ViewGroup finder, Store<?> param) {
+        this.param = param;
         if(listener == null) {
             LayoutInflater inflater = ((LayoutInflater) finder.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
             layout = inflater.inflate(layoutId, finder, false);
@@ -85,6 +85,5 @@ public abstract class ProgressInfo {
         }
         return layout;
     }
-
 
 }

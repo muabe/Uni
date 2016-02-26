@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.markjmind.uni.common.Store;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
 import com.markjmind.uni.thread.ProcessObserver;
@@ -16,6 +17,8 @@ import com.markjmind.uni.thread.ProcessObserver;
  * @since 2016-02-16
  */
 public class UniProgress implements ProcessObserver {
+    public Store<?> param;
+
     public enum Mode{
         none, view, dialog
     }
@@ -35,6 +38,7 @@ public class UniProgress implements ProcessObserver {
         this.mode = Mode.none;
         this.isEnable = true;
         this.theme = -1;
+        this.param = new Store<>();
     }
 
     public UniProgress(ViewGroup parents) {
@@ -109,7 +113,7 @@ public class UniProgress implements ProcessObserver {
             }
 
             if(progressInfo != null) {
-                layout = progressInfo.mapperInit(progressLayout);
+                layout = progressInfo.mapperInit(progressLayout, param);
             }
 
             if(listener != null){

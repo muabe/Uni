@@ -81,13 +81,13 @@ public class Menu1Fragment extends UniFragment {
     }
 
     @Override
-    public void onPostFail(String message, Object arg) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    public void onPost() {
+        textView.setText("끝");
     }
 
     @Override
-    public void onPost() {
-        textView.setText("끝");
+    public void onPostFail(String message, Object arg) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
