@@ -18,13 +18,15 @@ package com.markjmind.uni.thread;
 public interface ProcessObserver {
     void onPreExecute(CancelAdapter cancelAdapter);
 
-    void doInBackground(UpdateEvent event,CancelAdapter cancelAdapter) throws Exception;
+    void doInBackground(LoadEvent event,CancelAdapter cancelAdapter) throws Exception;
 
     void onProgressUpdate(Object value, CancelAdapter cancelAdapter);
 
     void onPostExecute();
 
-    void onFailExecute(boolean isException, String message, Exception e);
+    void onFailedExecute(String message, Object arg);
+
+    void onExceptionExecute(Exception e);
 
     void onCancelled(boolean attached);
 }

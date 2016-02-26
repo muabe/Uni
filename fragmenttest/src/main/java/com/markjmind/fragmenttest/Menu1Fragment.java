@@ -2,12 +2,13 @@ package com.markjmind.fragmenttest;
 
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.markjmind.uni.UniFragment;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.thread.CancelAdapter;
-import com.markjmind.uni.thread.UpdateEvent;
+import com.markjmind.uni.thread.LoadEvent;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -31,7 +32,7 @@ public class Menu1Fragment extends UniFragment {
     }
 
     @Override
-    public void onLoad(UpdateEvent event, CancelAdapter cancelAdapter) throws Exception {
+    public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
         {
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
@@ -62,6 +63,7 @@ public class Menu1Fragment extends UniFragment {
             Response response = client.newCall(request).execute();
             Log.i("DetachedObservable", response.body().string());
         }
+        event.fail("에러");
         event.update(70);
         {
             OkHttpClient client = new OkHttpClient();
@@ -79,7 +81,17 @@ public class Menu1Fragment extends UniFragment {
     }
 
     @Override
+    public void onPostFail(String message, Object arg) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void onPost() {
         textView.setText("끝");
+    }
+
+    @Override
+    public void onCancelled(boolean attach) {
+        Toast.makeText(getActivity(), "cancel", Toast.LENGTH_SHORT).show();
     }
 }

@@ -18,12 +18,12 @@ import android.view.ViewGroup;
  * @email markjmind@gmail.com
  * @since 2016-02-24
  */
-class ViewProgress implements UniProgress.ProgressInterface {
+class ProgressView implements UniProgress.ProgressInterface {
     private ViewGroup progressLayout;
     private boolean isShowing;
     private ViewGroup parents;
 
-    public ViewProgress(ViewGroup layout, ViewGroup parents){
+    public ProgressView(ViewGroup layout, ViewGroup parents){
         reset(layout, parents);
     }
 

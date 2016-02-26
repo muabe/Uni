@@ -24,22 +24,32 @@ public abstract class UniTaskAdapter implements UniTask {
         this.uniTask = uniTask;
     }
 
+    @Override
     public void onBind(){
 
     }
 
+    @Override
     public void onPre(){
 
     }
 
+    @Override
     public void onUpdate(Object value, CancelAdapter cancelAdapter){
 
     }
 
-    public void onFail(boolean isException, String message, Exception e){
-        uniTask.onFail(isException, message, e);
+    @Override
+    public void onPostFail(String message, Object arg){
+        uniTask.onPostFail(message, arg);
     }
 
+    @Override
+    public void onException(Exception e) {
+        uniTask.onException(e);
+    }
+
+    @Override
     public void onCancelled(boolean attached){
         uniTask.onCancelled(attached);
     }

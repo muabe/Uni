@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.markjmind.uni.common.StoreObserver;
+import com.markjmind.uni.exception.UniLoadFailException;
 
 /**
  * <br>捲土重來<br>
@@ -11,7 +12,7 @@ import com.markjmind.uni.common.StoreObserver;
  * @email markjmind@gmail.com
  * @since 2016-01-28
  */
-public class UniMainAsyncTask extends AsyncTask<Void, Object, Boolean> implements StoreObserver<CancelObservable>, UpdateEvent{
+public class UniMainAsyncTask extends AsyncTask<Void, Object, Boolean> implements StoreObserver<CancelObservable>, LoadEvent {
     private String taskId;
     private boolean isCancel;
     private CancelObservable observable;
@@ -65,7 +66,13 @@ public class UniMainAsyncTask extends AsyncTask<Void, Object, Boolean> implement
             if(result) { //성공
                 taskObservable.onPostExecute();
             }else{ // 실패
-                taskObservable.onFailExecute(false, "", doInBackException);
+                if(doInBackException instanceof UniLoadFailException){
+                    UniLoadFailException ulfe = (UniLoadFailException)doInBackException;
+                    taskObservable.onFailedExecute(ulfe.getMessage(), ulfe.getArg());
+                }else{
+                    taskObservable.onExceptionExecute(doInBackException);
+                }
+
             }
             observable.remove(this);
         }
@@ -92,6 +99,16 @@ public class UniMainAsyncTask extends AsyncTask<Void, Object, Boolean> implement
     public void update(Object value) {
         this.publishProgress(value);
      }
+
+    @Override
+    public void fail(String message) throws UniLoadFailException {
+        throw new UniLoadFailException(message, null);
+    }
+
+    @Override
+    public void fail(String message, Object arg) throws UniLoadFailException {
+        throw new UniLoadFailException(message, arg);
+    }
 
     @Override
     public void notifyChange(CancelObservable observable, Object data) {

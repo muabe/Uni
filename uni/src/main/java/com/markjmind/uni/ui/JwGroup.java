@@ -15,7 +15,7 @@ public class JwGroup {
 	public String currView = null;
 //	public Object currParam = null;
 	
-	protected Store<Store<Object>> group = new Store<Store<Object>>();
+	protected Store<Store<Object>> group = new Store<>();
 	protected int maxBackCount = 10;
 	protected JwOnGroupSelect onGroupSelect;
 	private boolean isHistory = false; 
@@ -40,9 +40,13 @@ public class JwGroup {
 	public void setOnGroupSelect(JwOnGroupSelect onGroupSelect){
 		this.onGroupSelect = onGroupSelect;
 	}
-	
+
+	public void add(View click_view){
+		this.add(""+(group.size()-1), click_view);
+	}
+
 	public void add(String name, View click_view){
-		add(name, click_view,null);
+		this.add(name, click_view,null);
 	}
 	
 	public void add(String name, View click_view, Object param){

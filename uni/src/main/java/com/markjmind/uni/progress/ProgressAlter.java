@@ -25,15 +25,15 @@ import android.view.WindowManager;
  * @email markjmind@gmail.com
  * @since 2016-02-24
  */
-class AlterProgress extends AlertDialog implements UniProgress.ProgressInterface {
+class ProgressAlter extends AlertDialog implements UniProgress.ProgressInterface {
     private ViewGroup progressLayout;
 
-    public AlterProgress(Context context, ViewGroup layout) {
+    public ProgressAlter(Context context, ViewGroup layout) {
         super(context);
         this.progressLayout = layout;
     }
 
-    public AlterProgress(Context context, ViewGroup layout, int theme) {
+    public ProgressAlter(Context context, ViewGroup layout, int theme) {
         super(context, theme);
         this.progressLayout = layout;
     }

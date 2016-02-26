@@ -7,11 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.markjmind.uni.UniView;
-import com.markjmind.uni.progress.DialogProgressInfo;
-import com.markjmind.uni.progress.OnProgressListener;
+import com.markjmind.uni.progress.UniProgressDialog;
 import com.markjmind.uni.thread.CancelAdapter;
 
 public class MainActivity extends AppCompatActivity{
@@ -34,7 +32,8 @@ public class MainActivity extends AppCompatActivity{
         menu1Fragment = new Menu1Fragment();
         menu2Fragment = new Menu2Fragment();
         menu3Fragment = new Menu3Fragment();
-        menu1Fragment.progress.bind(new DialogProgressInfo(R.layout.progress, new OnProgressListener() {
+
+        menu1Fragment.progress.dialogInfo(new UniProgressDialog(R.layout.progress) {
             @Override
             public void onStart(View layout, CancelAdapter cancelAdapter) {
                 ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressBar);
@@ -59,10 +58,9 @@ public class MainActivity extends AppCompatActivity{
 
             @Override
             public void onDestroy(View layout, boolean attach) {
-                Toast.makeText(layout.getContext(), "끝", Toast.LENGTH_SHORT).show();
             }
 
-        }));
+        });
         fm = getFragmentManager();
         uni = (UniView)findViewById(R.id.uni);
         uni.excute();

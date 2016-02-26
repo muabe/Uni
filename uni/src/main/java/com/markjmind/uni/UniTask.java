@@ -1,7 +1,7 @@
 package com.markjmind.uni;
 
 import com.markjmind.uni.thread.CancelAdapter;
-import com.markjmind.uni.thread.UpdateEvent;
+import com.markjmind.uni.thread.LoadEvent;
 
 /**
  * <br>捲土重來<br>
@@ -14,13 +14,15 @@ public interface UniTask {
 
     void onPre();
 
-    void onLoad(UpdateEvent event, CancelAdapter cancelAdapter) throws Exception;
+    void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception;
 
     void onUpdate(Object value, CancelAdapter cancelAdapter);
 
     void onPost();
 
-    void onFail(boolean isException, String message, Exception e);
+    void onPostFail(String message, Object arg);
+
+    void onException(Exception e);
 
     void onCancelled(boolean attached);
 

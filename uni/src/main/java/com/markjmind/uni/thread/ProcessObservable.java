@@ -28,7 +28,7 @@ public class ProcessObservable implements ProcessObserver {
     }
 
     @Override
-    public void doInBackground(UpdateEvent event, CancelAdapter cancelAdapter) throws Exception{
+    public void doInBackground(LoadEvent event, CancelAdapter cancelAdapter) throws Exception{
         for(ProcessObserver observer : observers){
             observer.doInBackground(event, cancelAdapter);
         }
@@ -49,9 +49,16 @@ public class ProcessObservable implements ProcessObserver {
     }
 
     @Override
-    public void onFailExecute(boolean isException, String message, Exception e) {
+    public void onFailedExecute(String message, Object arg) {
         for(ProcessObserver observer : observers){
-            observer.onFailExecute(isException, message, e);
+            observer.onFailedExecute(message, arg);
+        }
+    }
+
+    @Override
+    public void onExceptionExecute(Exception e) {
+        for(ProcessObserver observer : observers){
+            observer.onExceptionExecute(e);
         }
     }
 

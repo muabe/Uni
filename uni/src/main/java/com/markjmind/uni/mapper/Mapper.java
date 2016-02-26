@@ -29,6 +29,10 @@ public class Mapper {
 	private Field[] fields;
 	private HashMap<Class<?>, MapperAdapter> adapterMap = new HashMap<>();
 
+	protected Mapper(){
+
+	}
+
 	public Mapper(View finder){
 		this(finder, finder);
 	}
@@ -42,24 +46,42 @@ public class Mapper {
 	}
 
 	public Mapper(View finder, Object targetObject){
+		reset(finder, targetObject);
+	}
+
+	public Mapper(Activity finder, Object targetObject){
+		reset(finder, targetObject);
+	}
+
+	public Mapper(Dialog finder, Object targetObject){
+		reset(finder, targetObject);
+	}
+
+	public void reset(View finder, Object targetObject){
 		this.context = finder.getContext();
 		this.targetObject = targetObject;
 		this.finder = new Finder(finder);
 		this.targetClass = targetObject.getClass();
+		adapterMap.clear();
+		viewHash.clear();
 	}
 
-	public Mapper(Activity finder, Object targetObject){
+	public void reset(Activity finder, Object targetObject){
 		this.context = finder;
 		this.targetObject = targetObject;
 		this.finder = new Finder(finder);
 		this.targetClass = targetObject.getClass();
+		adapterMap.clear();
+		viewHash.clear();
 	}
 
-	public Mapper(Dialog finder, Object targetObject){
+	public void reset(Dialog finder, Object targetObject){
 		this.context = finder.getContext();
 		this.targetObject = targetObject;
 		this.finder = new Finder(finder);
 		this.targetClass = targetObject.getClass();
+		adapterMap.clear();
+		viewHash.clear();
 	}
 
 	private void setAdapterList(AccessibleObject[] abs, ArrayList<MapperAdapter<?, ?>> adapterList){
@@ -99,10 +121,9 @@ public class Mapper {
 
 	public void inject(Class<? extends MapperAdapter<? extends Annotation, ?>>... types){
 		if(adapterMap.size()>0) {
-			if(types==null){
+			if(types==null || types.length == 0){
 				types = new Class[adapterMap.size()];
 				types = adapterMap.keySet().toArray(types);
-				inject(types);
 			}
 			ArrayList<MapperAdapter<?, ?>> clzList = new ArrayList<>();
 			ArrayList<MapperAdapter<?, ?>> fieldList = new ArrayList<>();
@@ -157,4 +178,7 @@ public class Mapper {
 		adapterMap.remove(type);
 	}
 
+	public View findViewById(int id){
+		return finder.findViewById(id);
+	}
 }

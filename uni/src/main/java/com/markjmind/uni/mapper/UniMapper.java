@@ -10,6 +10,7 @@ package com.markjmind.uni.mapper;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.view.View;
 
 import com.markjmind.uni.mapper.annotiation.adapter.GetViewAdapter;
@@ -23,6 +24,10 @@ import com.markjmind.uni.mapper.annotiation.adapter.OnClickAdapter;
  * @since 2016-02-15
  */
 public class UniMapper extends Mapper{
+
+    public UniMapper(){
+
+    }
 
     public UniMapper(View finder){
         super(finder);
@@ -57,9 +62,31 @@ public class UniMapper extends Mapper{
         addAdapter(new OnClickAdapter());
     }
 
-    public void clear(){
-        viewHash.clear();
+
+    public void reset(View finder, Object targetObject){
+        super.reset(finder, targetObject);
+        initAdapter();
     }
+
+    public void reset(Activity finder, Object targetObject){
+        super.reset(finder, targetObject);
+        initAdapter();
+    }
+
+    public void reset(Dialog finder, Object targetObject){
+        super.reset(finder, targetObject);
+        initAdapter();
+    }
+
+
+    public Context getContext(){
+        return context;
+    }
+
+    public Object getTarget(){
+        return targetObject;
+    }
+
 
     //	public String[] injectBox(){
 //		if(targetClass.isAnnotationPresent(Box.class)){

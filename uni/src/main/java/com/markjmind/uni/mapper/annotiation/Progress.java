@@ -6,27 +6,14 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.markjmind.uni.progress;
+package com.markjmind.uni.mapper.annotiation;
 
 /**
  * <br>捲土重來<br>
  *
  * @author 오재웅(JaeWoong-Oh)
  * @email markjmind@gmail.com
- * @since 2016-02-19
+ * @since 2016-02-26
  */
-public class DialogProgressInfo extends ProgressInfo {
-
-    public DialogProgressInfo(int layoutId) {
-        super(layoutId);
-    }
-
-    public DialogProgressInfo(int layoutId, OnProgressListener listener) {
-        super(layoutId, listener);
-    }
-
-    @Override
-    public UniProgress.Mode getMode() {
-        return UniProgress.Mode.dialog;
-    }
+public interface Progress {
 }

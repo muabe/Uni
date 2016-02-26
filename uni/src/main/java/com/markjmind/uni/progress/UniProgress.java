@@ -1,15 +1,13 @@
 package com.markjmind.uni.progress;
 
-import android.content.Context;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.markjmind.uni.thread.CancelAdapter;
+import com.markjmind.uni.thread.LoadEvent;
 import com.markjmind.uni.thread.ProcessObserver;
-import com.markjmind.uni.thread.UpdateEvent;
 
 /**
  * <br>捲土重來<br>
@@ -58,7 +56,7 @@ public class UniProgress implements ProcessObserver {
     }
 
     @Override
-    public void doInBackground(UpdateEvent event, CancelAdapter cancelAdapter) throws Exception {
+    public void doInBackground(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
 
     }
 
@@ -75,7 +73,12 @@ public class UniProgress implements ProcessObserver {
     }
 
     @Override
-    public void onFailExecute(boolean isException, String message, Exception e) {
+    public void onFailedExecute(String message, Object arg) {
+        dismiss();
+    }
+
+    @Override
+    public void onExceptionExecute(Exception e) {
         dismiss();
     }
 
@@ -90,24 +93,23 @@ public class UniProgress implements ProcessObserver {
             if (mode == Mode.dialog) {
                 if (progress == null) {
                     if(theme == -1){
-                        progress = new AlterProgress(parents.getContext(), progressLayout);
+                        progress = new ProgressAlter(parents.getContext(), progressLayout);
                     }else{
-                        progress = new AlterProgress(parents.getContext(), progressLayout, theme);
+                        progress = new ProgressAlter(parents.getContext(), progressLayout, theme);
                     }
 
                 }
 
             }else if(mode == Mode.view){
                 if (progress == null) {
-                    progress = new ViewProgress(progressLayout, parents);
+                    progress = new ProgressView(progressLayout, parents);
                 }else{
-                    ((ViewProgress)progress).reset(progressLayout, parents);
+                    ((ProgressView)progress).reset(progressLayout, parents);
                 }
             }
 
             if(progressInfo != null) {
-                LayoutInflater inflater = ((LayoutInflater) parents.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
-                layout = inflater.inflate(progressInfo.getLayoutId(), progressLayout, false);
+                layout = progressInfo.mapperInit(progressLayout);
             }
 
             if(listener != null){
@@ -126,6 +128,9 @@ public class UniProgress implements ProcessObserver {
             if(listener !=null){
                 listener.onDestroy(layout, attach);
             }
+            if(progressInfo != null) {
+                progressInfo.param.clear();
+            }
             progress.dismiss();
         }
 
@@ -140,26 +145,56 @@ public class UniProgress implements ProcessObserver {
         return this;
     }
 
-
-
-    public UniProgress bind(DialogProgressInfo progressInfo){
+    public UniProgressDialog dialogInfo(UniProgressDialog progressInfo){
         this.progressInfo = progressInfo;
         this.listener = progressInfo.getListener();
         if(mode == Mode.view && progress!=null && progress.isShow()){
             progress.dismiss();
         }
         this.mode = progressInfo.getMode();
-        return this;
+        return (UniProgressDialog)this.progressInfo;
     }
 
-    public UniProgress bind(ViewProgressInfo viewProgressInfo){
-        progressInfo = viewProgressInfo;
+    public void dialogInfo(int layoutId){
+        this.progressInfo = new ProgressInfo(layoutId) {
+            @Override
+            public Mode getMode() {
+                return Mode.dialog;
+            }
+        };
+        this.listener = null;
+        if(mode == Mode.view && progress!=null && progress.isShow()){
+            progress.dismiss();
+        }
+        this.mode = progressInfo.getMode();
+    }
+
+    public UniProgressView viewInfo(UniProgressView progressInfo){
+        this.progressInfo = progressInfo;
         this.listener = progressInfo.getListener();
         if(mode == Mode.dialog && progress!=null && progress.isShow()){
             progress.dismiss();
         }
-        this.mode = viewProgressInfo.getMode();
-        return this;
+        this.mode = progressInfo.getMode();
+        return (UniProgressView)this.progressInfo;
+    }
+
+    public void viewInfo(int layoutId){
+        this.progressInfo = new ProgressInfo(layoutId) {
+            @Override
+            public Mode getMode() {
+                return Mode.view;
+            }
+        };
+        this.listener = null;
+        if(mode == Mode.dialog && progress!=null && progress.isShow()){
+            progress.dismiss();
+        }
+        this.mode = progressInfo.getMode();
+    }
+
+    public ProgressInfo getInfo(){
+        return this.progressInfo;
     }
 
     public boolean isAble(){

@@ -20,6 +20,9 @@ import android.view.View;
  * @since 2016-02-02
  */
 public class Finder {
+    private FinderInterFace finderInterFace;
+    private Context context;
+
     private abstract class FinderInterFace{
         private Object obj;
 
@@ -33,9 +36,6 @@ public class Finder {
 
         public abstract View findViewById(int id);
     }
-
-    private FinderInterFace finderInterFace;
-    private Context context;
 
     public Finder(View finder){
         this.context = finder.getContext();

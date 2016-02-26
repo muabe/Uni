@@ -1,17 +1,21 @@
 package com.markjmind.uni;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.markjmind.uni.common.Store;
-import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
+import com.markjmind.uni.mapper.Mapper;
+import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.CancelObserver;
-import com.markjmind.uni.thread.UpdateEvent;
+import com.markjmind.uni.thread.LoadEvent;
+
+import java.lang.reflect.InvocationTargetException;
 
 
 /**
@@ -22,10 +26,12 @@ import com.markjmind.uni.thread.UpdateEvent;
  */
 
 public class UniFragment extends Fragment implements UniTask, CancelObserver {
+    public Mapper mapper;
     public Store<?> param;
     public UniProgress progress;
 
     private UniView uniView;
+    private Class<? extends UniView> customUniView;
     private boolean isPopStack;
 
     /**
@@ -35,8 +41,13 @@ public class UniFragment extends Fragment implements UniTask, CancelObserver {
         super();
         isPopStack = false;
         uniView = null;
+        mapper = new UniMapper();
         param = new Store<>();
         progress = new UniProgress();
+    }
+
+    public <T extends UniView> UniFragment(Class<T> uniView){
+        customUniView = uniView;
     }
 
     @Override
@@ -47,11 +58,26 @@ public class UniFragment extends Fragment implements UniTask, CancelObserver {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(uniView == null || !isPopStack) {
-            uniView = new UniView(getActivity(), this, container);
-            uniView.setUniTask(this);
-            progress.setParents(uniView);
-            uniView.setUniProgress(progress);
-            uniView.addMapperAdapter(new ParamAdapter(param));
+            if(customUniView==null) {
+                uniView = new UniView(getActivity(), mapper);
+            }else{
+                try {
+                    uniView = (UniView)(customUniView.getConstructor(Context.class, Mapper.class)
+                                            .newInstance(getActivity(), mapper));
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (java.lang.InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+            ((UniMapper)mapper).reset(uniView, this);
+            uniView.init(this, param, progress);
+            uniView.injectLayout(container);
+
             setBackStack(false);
             uniView.excute();
         }
@@ -61,6 +87,12 @@ public class UniFragment extends Fragment implements UniTask, CancelObserver {
     public void setBackStack(boolean isPopStack) {
         this.isPopStack = isPopStack;
     }
+
+    public void excute(UniTask uniTask){
+        uniView.excute(uniTask);
+    }
+
+    /*************************************************** CancelObserver Interface 관련 *********************************************/
 
     @Override
     public void cancel(String id) {
@@ -72,9 +104,6 @@ public class UniFragment extends Fragment implements UniTask, CancelObserver {
         uniView.cancelAll();
     }
 
-    public void excute(UniTask uniInterfacece){
-        uniView.excute(uniInterfacece);
-    }
 
     /*************************************************** 인터페이스 관련 *********************************************/
 
@@ -89,7 +118,7 @@ public class UniFragment extends Fragment implements UniTask, CancelObserver {
     }
 
     @Override
-    public void onLoad(UpdateEvent event, CancelAdapter cancelAdapter) throws Exception {
+    public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
         uniView.onLoad(event, cancelAdapter);
     }
 
@@ -105,8 +134,13 @@ public class UniFragment extends Fragment implements UniTask, CancelObserver {
     }
 
     @Override
-    public void onFail(boolean isException, String message, Exception e) {
-        uniView.onFail(isException, message, e);
+    public void onPostFail(String message, Object arg) {
+        uniView.onPostFail(message, arg);
+    }
+
+    @Override
+    public void onException(Exception e) {
+        uniView.onException(e);
     }
 
     @Override

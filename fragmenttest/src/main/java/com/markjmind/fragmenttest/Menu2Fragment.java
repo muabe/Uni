@@ -16,11 +16,10 @@ import com.markjmind.uni.UniView;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.mapper.annotiation.Param;
-import com.markjmind.uni.progress.OnProgressListener;
-import com.markjmind.uni.progress.ViewProgressInfo;
+import com.markjmind.uni.progress.UniProgressView;
 import com.markjmind.uni.thread.CancelAdapter;
+import com.markjmind.uni.thread.LoadEvent;
 import com.markjmind.uni.viewer.Jwc;
-import com.markjmind.uni.thread.UpdateEvent;
 
 /**
  * @author 오재웅(JaeWoong-Oh)
@@ -37,13 +36,14 @@ public class Menu2Fragment extends Fragment{
         uniView.param.add("2","2");
         uniView.param.add("a","aaa");
         uniView.param.add("b","bbb");
-        uniView.progress.bind(new ViewProgressInfo(R.layout.progress, new OnProgressListener() {
+        uniView.progress.viewInfo(new UniProgressView(R.layout.progress) {
             ObjectAnimator obj;
+
             @Override
             public void onStart(View layout, CancelAdapter cancelAdapter) {
                 ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressBar);
                 bar.setMax(500);
-                Button cancel = (Button)layout.findViewById(R.id.cancel);
+                Button cancel = (Button) layout.findViewById(R.id.cancel);
                 final CancelAdapter adapter = cancelAdapter;
                 cancel.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -53,13 +53,14 @@ public class Menu2Fragment extends Fragment{
                 });
 
                 obj = ObjectAnimator.ofFloat(cancel, View.TRANSLATION_X,
-                        Jwc.getPix(layout.getContext(), 50)*-1
-                        ,Jwc.getPix(layout.getContext(),50));
+                        Jwc.getPix(layout.getContext(), 50) * -1
+                        , Jwc.getPix(layout.getContext(), 50));
                 obj.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     int count = 0;
+
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
-                        Log.e("d", ""+count++);
+                        Log.e("d", "" + count++);
                     }
                 });
                 obj.setDuration(1000);
@@ -80,7 +81,7 @@ public class Menu2Fragment extends Fragment{
                 obj.cancel();
             }
 
-        }));
+        });
         uniView.excute();
         return uniView;
     }
@@ -98,7 +99,7 @@ public class Menu2Fragment extends Fragment{
         }
 
         @Override
-        public void onLoad(UpdateEvent event, CancelAdapter cancelAdapter) throws Exception {
+        public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
             for(int i=0;i<500;i++){
                 event.update(i);
                 Thread.sleep(50);
