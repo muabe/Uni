@@ -121,6 +121,9 @@ public class UniView extends FrameLayout implements UniTask, CancelObserver{
             mapper.addAdapter(new ProgressAdapter(progress));
             mapper.inject(ProgressAdapter.class);
         }
+        if(progress.get()!=null){
+            progress.get().onBind();
+        }
         uniTask.onBind();
         if(!isMapping) {
             mapper.injectWithout(LayoutAdapter.class, ProgressAdapter.class);

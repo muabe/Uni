@@ -9,7 +9,6 @@
 package com.markjmind.fragmenttest;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -19,6 +18,7 @@ import com.markjmind.uni.UniTaskAdapter;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.mapper.annotiation.Progress;
+import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
 
@@ -31,7 +31,7 @@ import com.markjmind.uni.thread.LoadEvent;
  */
 
 @Layout(R.layout.simple_dialog)
-@Progress(type=SimpleProgressBar.class)
+@Progress(type=SimpleProgressBar.class, mode = UniProgress.VIEW)
 public class SimpleDialog extends UniDialog{
     @GetView
     Button button2;
@@ -55,7 +55,7 @@ public class SimpleDialog extends UniDialog{
                     public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
                         for (int i = 0; i <= 100; i++) {
                             event.update(i);
-                            Log.i("d", "" + i);
+//                            Log.i("d", "" + i);
                             Thread.sleep(10);
                         }
                     }
@@ -74,7 +74,7 @@ public class SimpleDialog extends UniDialog{
     public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
         for(int i=0;i<=100;i++){
             event.update(i);
-            Log.i("d", "" + i);
+//            Log.i("d", "" + i);
             Thread.sleep(10);
         }
         param.add("hi","hi");

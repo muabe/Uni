@@ -10,6 +10,7 @@ package com.markjmind.uni;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import com.markjmind.uni.common.Store;
@@ -78,14 +79,24 @@ public class UniDialog extends Dialog implements UniTask, CancelObserver{
         progress = new ProgressBuilder();
     }
 
+    public <T extends UniView> UniDialog(Context context, Class<T> uniView){
+        this(context);
+        customUniView = uniView;
+    }
+
+    public <T extends UniView> UniDialog(Context context, int themeResId, Class<T> uniView){
+        this(context, themeResId);
+        customUniView = uniView;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         uniView = UniBuilder.createUniView(getContext(), uniInterface, null);
         setContentView(uniView);
-        uniView.post(new Runnable() {
+        setOnShowListener(new OnShowListener() {
             @Override
-            public void run() {
+            public void onShow(DialogInterface dialog) {
                 uniView.excute();
             }
         });

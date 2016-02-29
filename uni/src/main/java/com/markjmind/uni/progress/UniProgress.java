@@ -24,6 +24,7 @@ public class UniProgress implements OnProgressListener{
     public static final int VIEW = 0;
     public static final int DIALOG = 1;
 
+    private int mode;
     public Store<?> param;
     public Mapper mapper;
 
@@ -71,6 +72,18 @@ public class UniProgress implements OnProgressListener{
             layout = inflater.inflate(layoutId, finder, false);
         }
         return layout;
+    }
+
+    public void setMode(int mode){
+        this.mode = mode;
+    }
+
+    public int getMode(){
+        return mode;
+    }
+
+    public void onBind(){
+
     }
 
     @Override
