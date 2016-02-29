@@ -16,7 +16,7 @@ import com.markjmind.uni.UniView;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.mapper.annotiation.Param;
-import com.markjmind.uni.progress.UniProgressView;
+import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
 import com.markjmind.uni.viewer.Jwc;
@@ -36,7 +36,7 @@ public class Menu2Fragment extends Fragment{
         uniView.param.add("2","2");
         uniView.param.add("a","aaa");
         uniView.param.add("b","bbb");
-        uniView.progress.set(new UniProgressView(R.layout.progress) {
+        uniView.progress.set(UniProgress.VIEW, new UniProgress(R.layout.progress) {
             ObjectAnimator obj;
 
             @Override

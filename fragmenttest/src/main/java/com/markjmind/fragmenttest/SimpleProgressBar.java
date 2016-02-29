@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.markjmind.uni.mapper.annotiation.Layout;
-import com.markjmind.uni.progress.UniProgressDialog;
+import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
 
 /**
@@ -24,7 +24,7 @@ import com.markjmind.uni.thread.CancelAdapter;
  * @since 2016-02-26
  */
 @Layout(R.layout.progress)
-public class SimpleProgressBar extends UniProgressDialog {
+public class SimpleProgressBar extends UniProgress {
     @Override
     public void onStart(View layout, CancelAdapter cancelAdapter) {
         ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressBar);

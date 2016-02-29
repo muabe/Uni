@@ -9,6 +9,7 @@ import com.markjmind.uni.UniTaskAdapter;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.mapper.annotiation.Progress;
+import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
 
@@ -19,10 +20,16 @@ import com.markjmind.uni.thread.LoadEvent;
  */
 
 @Layout(R.layout.item)
-@Progress(SimpleProgress.class)
+@Progress(mode = UniProgress.VIEW, type=SimpleProgress.class)
 public class Menu3Fragment extends UniFragment {
     @GetView
     Button btn;
+
+
+    @Override
+    public void onBind() {
+        Log.e("d", getMode(progress.getMode()));
+    }
 
     @Override
     public void onPre() {
@@ -33,7 +40,6 @@ public class Menu3Fragment extends UniFragment {
     public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
         for(int i=0;i<=100;i++){
             event.update(i);
-            Log.i("d", "" + i);
             Thread.sleep(10);
         }
         param.add("hi","hi");
@@ -46,14 +52,14 @@ public class Menu3Fragment extends UniFragment {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progress.param.add("textName","thread");
+                progress.param.add("textName", "thread");
+                progress.setMode(UniProgress.DIALOG);
                 excute(new UniTaskAdapter(Menu3Fragment.this) {
 
                     @Override
                     public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
                         for (int i = 0; i <= 100; i++) {
                             event.update(i);
-                            Log.i("d", "" + i);
                             Thread.sleep(10);
                         }
                     }
@@ -64,7 +70,18 @@ public class Menu3Fragment extends UniFragment {
                     }
 
                 });
+//                SimpleDialog d = new SimpleDialog(getActivity());
+//                d.show();
             }
         });
     }
+
+    public String getMode(int mode){
+        if(mode==0){
+            return "VIEW";
+        }else{
+            return "DIALGO";
+        }
+    }
+
 }

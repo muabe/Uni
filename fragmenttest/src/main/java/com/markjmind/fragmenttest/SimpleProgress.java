@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.mapper.annotiation.Param;
-import com.markjmind.uni.progress.UniProgressView;
+import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
 
 /**
@@ -25,7 +25,7 @@ import com.markjmind.uni.thread.CancelAdapter;
  * @since 2016-02-25
  */
 @Layout(R.layout.simple_progress)
-public class SimpleProgress extends UniProgressView {
+public class SimpleProgress extends UniProgress {
     @Param
     String textName="ok";
 

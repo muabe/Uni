@@ -15,7 +15,7 @@ import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.mapper.annotiation.adapter.LayoutAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ProgressAdapter;
-import com.markjmind.uni.progress.UniProgress;
+import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.CancelObservable;
 import com.markjmind.uni.thread.CancelObserver;
@@ -32,7 +32,7 @@ import com.markjmind.uni.thread.UniMainAsyncTask;
 public class UniView extends FrameLayout implements UniTask, CancelObserver{
     public Mapper mapper;
     public Store<?> param;
-    public UniProgress progress;
+    public ProgressBuilder progress;
 
     private View layout;
     private UniTask uniTask;
@@ -48,14 +48,14 @@ public class UniView extends FrameLayout implements UniTask, CancelObserver{
     public UniView(Context context) {
         super(context);
         this.mapper = new UniMapper(this, this);
-        init(this, new Store<>(), new UniProgress());
+        init(this, new Store<>(), new ProgressBuilder());
         injectLayout(this);
     }
 
     public UniView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mapper = new UniMapper(this, this);
-        init(this, new Store<>(), new UniProgress());
+        init(this, new Store<>(), new ProgressBuilder());
         //todo attrs에 layout이 있으면 onCreateView에 넣어주자
         injectLayout(this);
     }
@@ -63,11 +63,11 @@ public class UniView extends FrameLayout implements UniTask, CancelObserver{
     public UniView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.mapper = new UniMapper(this, this);
-        init(this, new Store<>(), new UniProgress());
+        init(this, new Store<>(), new ProgressBuilder());
         injectLayout(this);
     }
 
-    void init(UniTask uniTask, Store<?> param, UniProgress progress){
+    void init(UniTask uniTask, Store<?> param, final ProgressBuilder progress){
         this.uniTask = uniTask;
         this.param = param;
         progress.setParents(this);
@@ -85,6 +85,8 @@ public class UniView extends FrameLayout implements UniTask, CancelObserver{
 
             @Override
             public void onViewDetachedFromWindow(View v) {
+                UniView.this.param.clear();
+                progress.param.clear();
                 cancelObservable.setAttached(false);
                 cancelObservable.cancelAll();
             }

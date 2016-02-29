@@ -18,7 +18,7 @@ import android.view.ViewGroup;
  * @email markjmind@gmail.com
  * @since 2016-02-24
  */
-class ProgressView implements UniProgress.ProgressInterface {
+class ProgressView implements ProgressBuilder.ProgressInterface {
     private ViewGroup progressLayout;
     private boolean isShowing;
     private ViewGroup parents;
@@ -57,5 +57,10 @@ class ProgressView implements UniProgress.ProgressInterface {
             }
             isShowing = false;
         }
+    }
+
+    @Override
+    public int getMode() {
+        return UniProgress.VIEW;
     }
 }

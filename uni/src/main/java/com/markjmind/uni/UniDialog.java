@@ -1,10 +1,16 @@
+/*
+ * Copyright (c) 2016. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
 package com.markjmind.uni;
 
-import android.app.Fragment;
+import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.Mapper;
@@ -14,15 +20,14 @@ import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.CancelObserver;
 import com.markjmind.uni.thread.LoadEvent;
 
-
 /**
  * <br>捲土重來<br>
+ *
  * @author 오재웅(JaeWoong-Oh)
  * @email markjmind@gmail.com
- *
+ * @since 2016-02-26
  */
-
-public class UniFragment extends Fragment implements UniTask, CancelObserver{
+public class UniDialog extends Dialog implements UniTask, CancelObserver{
     public Mapper mapper;
     public Store<?> param;
     public ProgressBuilder progress;
@@ -33,7 +38,7 @@ public class UniFragment extends Fragment implements UniTask, CancelObserver{
     private UniBuilder.UniInterface uniInterface = new UniBuilder.UniInterface() {
         @Override
         public UniTask getUniTask() {
-            return UniFragment.this;
+            return UniDialog.this;
         }
         @Override
         public UniMapper getMapper() {
@@ -57,43 +62,34 @@ public class UniFragment extends Fragment implements UniTask, CancelObserver{
         }
     };
 
-    private boolean isPopStack;
-
-
-    /**
-     * 기본생성자
-     */
-    public UniFragment() {
-        super();
-        isPopStack = false;
+    public UniDialog(Context context) {
+        super(context);
         uniView = null;
         mapper = new UniMapper();
         param = new Store<>();
         progress = new ProgressBuilder();
     }
 
-    public <T extends UniView> UniFragment(Class<T> uniView){
-        customUniView = uniView;
+    public UniDialog(Context context, int themeResId) {
+        super(context, themeResId);
+        uniView = null;
+        mapper = new UniMapper();
+        param = new Store<>();
+        progress = new ProgressBuilder();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
+        uniView = UniBuilder.createUniView(getContext(), uniInterface, null);
+        setContentView(uniView);
+        uniView.post(new Runnable() {
+            @Override
+            public void run() {
+                uniView.excute();
+            }
+        });
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        if(uniView == null || !isPopStack) {
-            uniView = UniBuilder.createUniView(getActivity(), uniInterface, container);
-            setBackStack(false);
-            uniView.excute();
-        }
-        return uniView;
-    }
-
-    public void setBackStack(boolean isPopStack) {
-        this.isPopStack = isPopStack;
     }
 
     public void excute(UniTask uniTask){
@@ -155,8 +151,5 @@ public class UniFragment extends Fragment implements UniTask, CancelObserver{
     public void onCancelled(boolean attach) {
         uniView.onCancelled(attach);
     }
-
-
-
 
 }

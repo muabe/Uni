@@ -10,10 +10,8 @@ package com.markjmind.uni.mapper.annotiation.adapter;
 
 import com.markjmind.uni.mapper.ClassAdapter;
 import com.markjmind.uni.mapper.annotiation.Progress;
-import com.markjmind.uni.progress.ProgressInfo;
 import com.markjmind.uni.progress.UniProgress;
-import com.markjmind.uni.progress.UniProgressDialog;
-import com.markjmind.uni.progress.UniProgressView;
+import com.markjmind.uni.progress.ProgressBuilder;
 
 /**
  * <br>捲土重來<br>
@@ -23,9 +21,9 @@ import com.markjmind.uni.progress.UniProgressView;
  * @since 2016-02-26
  */
 public class ProgressAdapter extends ClassAdapter<Progress> {
-    private UniProgress progress;
+    private ProgressBuilder progress;
 
-    public ProgressAdapter(UniProgress progress){
+    public ProgressAdapter(ProgressBuilder progress){
         this.progress = progress;
     }
 
@@ -36,15 +34,13 @@ public class ProgressAdapter extends ClassAdapter<Progress> {
 
     @Override
     public void inject(Progress annotation, Class clz, Object targetObject) {
-        Class<ProgressInfo> value = (Class<ProgressInfo>) annotation.value();
-        if(!value.equals(Progress.None.class)){
+        Class<UniProgress> type = (Class<UniProgress>) annotation.type();
+        int mode = annotation.mode();
+
+        if(!type.equals(Progress.None.class)){
             try {
-                ProgressInfo info = (ProgressInfo)value.newInstance();
-                if(info.getMode().equals(UniProgress.Mode.dialog)){
-                    progress.set((UniProgressDialog)info);
-                }else if(info.getMode().equals(UniProgress.Mode.view)){
-                    progress.set((UniProgressView)info);
-                }
+                UniProgress info = (UniProgress)type.newInstance();
+                progress.set(mode, info);
             } catch (InstantiationException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
@@ -53,10 +49,6 @@ public class ProgressAdapter extends ClassAdapter<Progress> {
         }else{
             int res =  annotation.res();
             if(res != -1){
-                UniProgress.Mode mode = annotation.mode();
-                if(mode.equals(UniProgress.Mode.none)){
-                    mode = UniProgress.Mode.dialog;
-                }
                 progress.set(res, mode);
             }
         }

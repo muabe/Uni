@@ -8,7 +8,6 @@
 
 package com.markjmind.uni.mapper.annotiation;
 
-import com.markjmind.uni.progress.ProgressInfo;
 import com.markjmind.uni.progress.UniProgress;
 
 import java.lang.annotation.ElementType;
@@ -26,17 +25,11 @@ import java.lang.annotation.Target;
 @Retention( RetentionPolicy.RUNTIME )
 @Target(ElementType.TYPE)
 public @interface Progress {
-    Class<? extends ProgressInfo> value() default None.class;
-    UniProgress.Mode mode() default UniProgress.Mode.dialog;
+    Class<? extends UniProgress> type() default None.class;
+    int mode() default UniProgress.DIALOG;
     int res() default -1;
 
-    static class None extends ProgressInfo {
-        @Override
-        public UniProgress.Mode getMode() {
-            return UniProgress.Mode.none;
-        }
-    };
-
-
+    static class None extends UniProgress {
+    }
 
 }

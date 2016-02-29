@@ -25,7 +25,7 @@ import android.view.WindowManager;
  * @email markjmind@gmail.com
  * @since 2016-02-24
  */
-class ProgressAlter extends AlertDialog implements UniProgress.ProgressInterface {
+class ProgressAlter extends AlertDialog implements ProgressBuilder.ProgressInterface {
     private ViewGroup progressLayout;
 
     public ProgressAlter(Context context, ViewGroup layout) {
@@ -70,6 +70,11 @@ class ProgressAlter extends AlertDialog implements UniProgress.ProgressInterface
             progressLayout.removeAllViews();
         }
         super.dismiss();
+    }
+
+    @Override
+    public int getMode() {
+        return UniProgress.DIALOG;
     }
 
 }

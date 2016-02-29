@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.markjmind.uni.UniView;
+import com.markjmind.uni.progress.UniProgress;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity{
         menu2Fragment = new Menu2Fragment();
         menu3Fragment = new Menu3Fragment();
 
-        menu1Fragment.progress.set(new SimpleProgressBar());
+        menu1Fragment.progress.set(UniProgress.DIALOG, new SimpleProgressBar());
         fm = getFragmentManager();
         uni = (UniView)findViewById(R.id.uni);
         uni.excute();
