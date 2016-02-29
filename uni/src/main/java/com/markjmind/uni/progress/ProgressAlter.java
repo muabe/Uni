@@ -27,15 +27,18 @@ import android.view.WindowManager;
  */
 class ProgressAlter extends AlertDialog implements ProgressBuilder.ProgressInterface {
     private ViewGroup progressLayout;
+    private boolean isShowing;
 
     public ProgressAlter(Context context, ViewGroup layout) {
         super(context);
         this.progressLayout = layout;
+        isShowing = false;
     }
 
     public ProgressAlter(Context context, ViewGroup layout, int theme) {
         super(context, theme);
         this.progressLayout = layout;
+        isShowing = false;
     }
 
     @Override
@@ -52,12 +55,8 @@ class ProgressAlter extends AlertDialog implements ProgressBuilder.ProgressInter
         this.setCancelable(false);
     }
 
-    @Override
-    public boolean isShow() {
-        return super.isShowing();
-    }
-
     public synchronized void show(View view) {
+        isShowing = true;
         if(view!=null) {
             progressLayout.addView(view);
         }
@@ -65,10 +64,16 @@ class ProgressAlter extends AlertDialog implements ProgressBuilder.ProgressInter
     }
 
     @Override
+    public boolean isShowing() {
+        return isShowing;
+    }
+
+    @Override
     public synchronized void dismiss() {
         if(progressLayout !=null) {
             progressLayout.removeAllViews();
         }
+        isShowing = false;
         super.dismiss();
     }
 

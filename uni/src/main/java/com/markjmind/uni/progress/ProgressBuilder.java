@@ -1,6 +1,5 @@
 package com.markjmind.uni.progress;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +26,7 @@ public class ProgressBuilder implements ProcessObserver {
     private ProgressInterface progressInterface;
     private OnProgressListener listener;
     private int theme;
+    private boolean isShowing = false;
 
     private UniProgress uniProgress;
 
@@ -89,10 +89,7 @@ public class ProgressBuilder implements ProcessObserver {
     public synchronized void show(CancelAdapter cancelAdapter){
         if(isEnable) {
             if(uniProgress != null) {
-                if(progressInterface != null && progressInterface.isShow()) {
-                    progressInterface.dismiss();
-                    Log.e("d", "dismiss");
-                }
+                isShowing = true;
                 if (uniProgress.getMode() == UniProgress.DIALOG ) {
                     if (progressInterface == null || uniProgress.getMode() != progressInterface.getMode()) {
                         if(theme == -1){
@@ -120,12 +117,16 @@ public class ProgressBuilder implements ProcessObserver {
         }
     }
 
-    public void dismiss(){
+    public boolean isShowing(){
+        return isShowing;
+    }
+    public synchronized void dismiss(){
         this.dismiss(true);
+        isShowing = false;
     }
 
     public synchronized void dismiss(boolean attach){
-        if(uniProgress != null && progressInterface !=null && progressInterface.isShow()){
+        if(uniProgress != null && progressInterface !=null && progressInterface.isShowing()){
             if(listener !=null){
                 listener.onDestroy(layout, attach);
             }
@@ -134,6 +135,7 @@ public class ProgressBuilder implements ProcessObserver {
             }
             progressInterface.dismiss();
         }
+        isShowing = false;
 
     }
 
@@ -150,7 +152,7 @@ public class ProgressBuilder implements ProcessObserver {
         this.uniProgress = uniProgress;
         this.uniProgress.runListener = true;
         this.listener = uniProgress;
-        if(progressInterface !=null && progressInterface.isShow()){
+        if(progressInterface !=null && progressInterface.isShowing()){
             progressInterface.dismiss();
         }
         uniProgress.setMode(progressMode);
@@ -159,11 +161,11 @@ public class ProgressBuilder implements ProcessObserver {
 
     public UniProgress set(int progressMode, int layoutId){
         if(uniProgress!=null && progressMode == UniProgress.DIALOG) {
-            if (uniProgress.getMode() == UniProgress.VIEW && progressInterface != null && progressInterface.isShow()) {
+            if (uniProgress.getMode() == UniProgress.VIEW && progressInterface != null && progressInterface.isShowing()) {
                 progressInterface.dismiss();
             }
         }else if(uniProgress!=null && progressMode == UniProgress.VIEW){
-            if(uniProgress.getMode() == UniProgress.DIALOG && progressInterface !=null && progressInterface.isShow()){
+            if(uniProgress.getMode() == UniProgress.DIALOG && progressInterface !=null && progressInterface.isShowing()){
                 progressInterface.dismiss();
             }
         }
@@ -189,7 +191,7 @@ public class ProgressBuilder implements ProcessObserver {
 
 
     public interface ProgressInterface{
-        boolean isShow();
+        boolean isShowing();
         void show(View view);
         void dismiss();
         int getMode();

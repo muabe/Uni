@@ -33,7 +33,7 @@ class ProgressView implements ProgressBuilder.ProgressInterface {
     }
 
     @Override
-    public boolean isShow() {
+    public boolean isShowing() {
         return isShowing;
     }
 

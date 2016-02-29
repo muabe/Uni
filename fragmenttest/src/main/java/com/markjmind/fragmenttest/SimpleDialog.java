@@ -18,7 +18,6 @@ import com.markjmind.uni.UniTaskAdapter;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.mapper.annotiation.Progress;
-import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
 
@@ -31,7 +30,7 @@ import com.markjmind.uni.thread.LoadEvent;
  */
 
 @Layout(R.layout.simple_dialog)
-@Progress(type=SimpleProgressBar.class, mode = UniProgress.VIEW)
+@Progress(type=SimpleProgressBar.class)
 public class SimpleDialog extends UniDialog{
     @GetView
     Button button2;
@@ -42,32 +41,37 @@ public class SimpleDialog extends UniDialog{
 
     @Override
     public void onPre() {
-        progress.param.add("textName", "하이");
-        button2.setText(param.getString("hi"));
-        Toast.makeText(getContext(), "dfsfd", Toast.LENGTH_SHORT).show();
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progress.param.add("textName", "thread");
-                excute(new UniTaskAdapter(SimpleDialog.this) {
 
-                    @Override
-                    public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
-                        for (int i = 0; i <= 100; i++) {
-                            event.update(i);
-//                            Log.i("d", "" + i);
-                            Thread.sleep(10);
-                        }
+
+            progress.param.add("textName", "하이");
+            button2.setText(param.getString("hi"));
+            Toast.makeText(getContext(), "dfsfd", Toast.LENGTH_SHORT).show();
+            button2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!progress.isShowing()) {
+                        progress.param.add("textName", "thread");
+                        excute(new UniTaskAdapter(SimpleDialog.this) {
+
+                            @Override
+                            public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
+                                for (int i = 0; i <= 1000; i++) {
+                                    event.update(i / 10);
+//                                Log.i("d", "" + i);
+                                    Thread.sleep(10);
+                                }
+                            }
+
+                            @Override
+                            public void onPost() {
+                                button2.setText("완료");
+                            }
+
+                        });
                     }
+                }
+            });
 
-                    @Override
-                    public void onPost() {
-                        button2.setText("완료");
-                    }
-
-                });
-            }
-        });
     }
 
     @Override

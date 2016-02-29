@@ -8,8 +8,6 @@
 
 package com.markjmind.uni.thread;
 
-import android.util.Log;
-
 import com.markjmind.uni.common.StoreObservable;
 
 /**
@@ -30,7 +28,7 @@ public class CancelObservable extends StoreObservable<UniMainAsyncTask> implemen
     public synchronized void add(UniMainAsyncTask observer) {
         String className = observer.getId();
         super.add(observer);
-        Log.e("DetachedObservable", className+" add:"+size());
+//        Log.e("DetachedObservable", className+" add:"+size());
     }
 
     @Override
@@ -39,7 +37,7 @@ public class CancelObservable extends StoreObservable<UniMainAsyncTask> implemen
         if(observer != null) {
             String className = observer.getId();
             super.remove(id);
-            Log.e("DetachedObservable", className + " remove:" + size());
+//            Log.e("DetachedObservable", className + " remove:" + size());
         }
     }
 
@@ -49,7 +47,7 @@ public class CancelObservable extends StoreObservable<UniMainAsyncTask> implemen
         if(observer != null) {
             String className = observer.getId();
             get(id).cancel();
-            Log.e("DetachedObservable", className + " cancel:" + size());
+//            Log.e("DetachedObservable", className + " cancel:" + size());
             remove(id);
         }
     }

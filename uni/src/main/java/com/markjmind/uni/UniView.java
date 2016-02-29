@@ -134,12 +134,10 @@ public class UniView extends FrameLayout implements UniTask, CancelObserver{
     public String excute(UniTask uniTask){
         bind(uniTask);
         UniMainAsyncTask task = new UniMainAsyncTask(cancelObservable);
-        task.addTaskObserver(new UniProcessObserver(uniTask));
-
         if(progress.isAble()) {
             task.addTaskObserver(progress);
         }
-
+        task.addTaskObserver(new UniProcessObserver(uniTask));
         cancelObservable.add(task);
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
