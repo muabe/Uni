@@ -63,7 +63,6 @@ public class Menu1Fragment extends UniFragment {
             Response response = client.newCall(request).execute();
             Log.i("DetachedObservable", response.body().string());
         }
-        event.fail("프로그래스 중지");
         event.update(70);
         {
             OkHttpClient client = new OkHttpClient();
