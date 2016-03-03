@@ -30,12 +30,12 @@ public class UniProgress implements OnProgressListener{
 
     private int layoutId;
     protected View layout;
-    boolean runListener;
+    boolean hasListener;
 
     protected UniProgress(){
         this.layoutId = -1;
         param = new Store<>();
-        runListener = false;
+        hasListener = false;
     }
 
     public UniProgress(int layoutId){
@@ -52,7 +52,7 @@ public class UniProgress implements OnProgressListener{
 
     View mapperInit(ViewGroup finder, Store<?> param) {
         this.param = param;
-        if(runListener) {
+        if(hasListener) {
             mapper = new Mapper(finder, this);
             mapper.addAdapter(new LayoutAdapter());
             mapper.inject(LayoutAdapter.class);
@@ -68,6 +68,9 @@ public class UniProgress implements OnProgressListener{
             mapper.addAdapter(new ParamAdapter(param));
             mapper.injectWithout(LayoutAdapter.class);
         }else{
+            if(layoutId == -1) {
+
+            }
             LayoutInflater inflater = ((LayoutInflater) finder.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
             layout = inflater.inflate(layoutId, finder, false);
         }

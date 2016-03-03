@@ -49,7 +49,7 @@ public class ProgressAdapter extends ClassAdapter<Progress> {
         }else{
             int res =  annotation.res();
             if(res != -1){
-                progress.set(res, mode);
+                progress.set(mode, res);
             }
         }
     }

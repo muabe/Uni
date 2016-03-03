@@ -18,8 +18,8 @@ import com.markjmind.uni.thread.LoadEvent;
  * @since 2016-01-28
  */
 
-@Layout(R.layout.item)
-@Progress(mode = UniProgress.VIEW, type=SimpleProgress.class)
+@Layout(R.layout.ok)
+@Progress(mode = UniProgress.VIEW, res=R.layout.one_progress)
 public class Menu3Fragment extends UniFragment {
     @GetView
     Button btn;

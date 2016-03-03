@@ -150,7 +150,7 @@ public class ProgressBuilder implements ProcessObserver {
 
     public UniProgress set(int progressMode, UniProgress uniProgress){
         this.uniProgress = uniProgress;
-        this.uniProgress.runListener = true;
+        this.uniProgress.hasListener = true;
         this.listener = uniProgress;
         if(progressInterface !=null && progressInterface.isShowing()){
             progressInterface.dismiss();
@@ -170,7 +170,7 @@ public class ProgressBuilder implements ProcessObserver {
             }
         }
         this.uniProgress = new UniProgress(layoutId);
-        this.uniProgress.runListener = false;
+        this.uniProgress.hasListener = false;
         this.listener = null;
         uniProgress.setMode(progressMode);
         return this.uniProgress;

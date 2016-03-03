@@ -40,16 +40,16 @@ public class UniView extends FrameLayout implements UniTask, CancelObserver{
     private CancelObservable cancelObservable;
     private boolean isAsync;
 
-    protected UniView(Context context, Mapper mapper) {
-        super(context);
-        this.mapper = mapper;
-    }
-
     public UniView(Context context) {
         super(context);
         this.mapper = new UniMapper(this, this);
         init(this, new Store<>(), new ProgressBuilder());
         injectLayout(this);
+    }
+
+    protected UniView(Context context, Mapper mapper) {
+        super(context);
+        this.mapper = mapper;
     }
 
     public UniView(Context context, AttributeSet attrs) {
