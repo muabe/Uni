@@ -12,6 +12,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.View;
 
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.Mapper;
@@ -35,6 +36,8 @@ public class UniDialog extends Dialog implements UniTask, CancelObserver{
 
     private UniView uniView;
     private Class<? extends UniView> customUniView;
+
+    private OnDismissResult onDismissResult;
 
     private UniBuilder.UniInterface uniInterface = new UniBuilder.UniInterface() {
         @Override
@@ -100,7 +103,6 @@ public class UniDialog extends Dialog implements UniTask, CancelObserver{
                 uniView.excute();
             }
         });
-
     }
 
     public void excute(UniTask uniTask){
@@ -161,6 +163,63 @@ public class UniDialog extends Dialog implements UniTask, CancelObserver{
     @Override
     public void onCancelled(boolean attach) {
         uniView.onCancelled(attach);
+    }
+
+    /*************************************************** 추가 리스너 관련 *********************************************/
+
+    public void setClickViewListener(int id, ClickViewListener onClickView){
+        final ClickViewListener finalTemp = onClickView;
+        findViewById(id).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finalTemp.onClick(UniDialog.this, v);
+            }
+        });
+    }
+
+    public void dismiss(Object arg){
+        if(onDismissResult!=null){
+            onDismissResult.setArg(arg);
+        }
+    }
+
+    public void setDismissResultLstener(DismissResultLstener dismissResultLstener) {
+        if(dismissResultLstener ==null){
+            setOnDismissListener(null);
+        }else {
+            onDismissResult = new OnDismissResult(dismissResultLstener);
+            setOnDismissListener(new Dialog.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    onDismissResult.onResult();
+                }
+            });
+        }
+    }
+
+    interface DismissResultLstener {
+        public void onDismiss(Object arg);
+    }
+
+    interface ClickViewListener {
+        public void onClick(UniDialog uniDialog, View view);
+    }
+
+    private class OnDismissResult{
+        private Object arg;
+        private DismissResultLstener dismissResultLstener;
+
+        public OnDismissResult(DismissResultLstener dismissResultLstener){
+            this.dismissResultLstener = dismissResultLstener;
+        }
+
+        void setArg(Object arg) {
+            this.arg = arg;
+        }
+
+        void onResult(){
+            dismissResultLstener.onDismiss(arg);
+        }
     }
 
 }
