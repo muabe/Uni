@@ -1,5 +1,6 @@
 package com.markjmind.uni;
 
+import android.content.Context;
 import android.view.View;
 
 import com.markjmind.uni.common.Store;
@@ -22,6 +23,7 @@ public class UniTask implements UniInterface{
     public ProgressBuilder progress;
 
     private UniView uniView;
+    private Context context;
 
 
     public UniTask(){
@@ -58,6 +60,9 @@ public class UniTask implements UniInterface{
         }
     };
 
+    public Context getContext(){
+        return context;
+    }
 
     @Override
     public void onBind() {
@@ -100,16 +105,20 @@ public class UniTask implements UniInterface{
     }
 
     void init(UniView uniView){
-        uniView.setUniInterface(this);
-        uniView.mapper.reset(uniView, this);
-        uniView.init(uniBuildInterface.getUniInterface(), uniBuildInterface.getParam(), uniBuildInterface.getProgress());
-        uniView.injectLayout(uniView);
-
+        this.uniView = uniView;
+        this.context = uniView.getContext();
+        this.uniView.setUniInterface(this);
+        mapper.reset(this.uniView, this);
+        this.uniView.init(this, mapper, param, progress);
     }
 
     public View findViewById(int id){
         return uniView.findViewById(id);
     }
 
+
+    public UniView getUniView(){
+        return uniView;
+    }
 
 }

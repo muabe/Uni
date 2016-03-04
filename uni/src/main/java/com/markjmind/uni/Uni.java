@@ -28,10 +28,10 @@ import java.lang.reflect.InvocationTargetException;
  * @since 2016-02-26
  */
 public class Uni {
-    public static UniView createUniView(Context context, final UniBuildInterface uniBuildInterface, ViewGroup container){
+    static UniView createUniView(Context context, final UniBuildInterface uniBuildInterface, ViewGroup container){
         UniView uniView;
         if(uniBuildInterface.getCustomUniView()==null) {
-            uniView = new UniView(context, uniBuildInterface.getMapper());
+            uniView = new UniView(context);
         }else{
             try {
                 uniView = (UniView)(uniBuildInterface.getCustomUniView().getConstructor(Context.class, Mapper.class)
@@ -62,14 +62,38 @@ public class Uni {
             }
         });
         ((UniMapper) uniBuildInterface.getMapper()).reset(uniView, uniBuildInterface.getUniInterface());
-        uniView.init(uniBuildInterface.getUniInterface(), uniBuildInterface.getParam(), uniBuildInterface.getProgress());
+        uniView.init(uniBuildInterface.getUniInterface(), uniBuildInterface.getMapper(), uniBuildInterface.getParam(), uniBuildInterface.getProgress());
         if(container==null){
             uniView.injectLayout(uniView);
         }else{
             uniView.injectLayout(container);
         }
-
         return uniView;
+    }
+
+    public static UniView create(Context context, UniTask task, ViewGroup container){
+        UniView uniView = new UniView(context);
+        task.init(uniView);
+        if(container==null){
+            uniView.injectLayout(uniView);
+        }else{
+            uniView.injectLayout(container);
+        }
+        return uniView;
+    }
+    public static UniView create(Context context, UniTask task){
+        return Uni.create(context, task, null);
+    }
+
+    public static void add(ViewGroup parent, UniTask task){
+        UniView uniView = Uni.create(parent.getContext(), task, null);
+        parent.addView(uniView);
+        uniView.excute();
+    }
+
+    public static void replace(ViewGroup parent, UniTask task){
+        parent.removeAllViews();
+        Uni.add(parent, task);
     }
 
     public static UniView bind(Activity activity, int id, UniTask task){
@@ -77,6 +101,11 @@ public class Uni {
         task.init(uniView);
         return uniView;
     }
+    public static UniView bind(UniView uniView, UniTask task){
+        task.init(uniView);
+        return uniView;
+    }
+
     interface UniBuildInterface {
         UniInterface getUniInterface();
         UniMapper getMapper();

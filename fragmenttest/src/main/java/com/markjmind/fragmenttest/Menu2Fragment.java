@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.markjmind.uni.UniView;
+import com.markjmind.uni.UniTask;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.mapper.annotiation.Param;
@@ -31,11 +31,11 @@ public class Menu2Fragment extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        uniView = new TestUni(getActivity());
+        uniView = new TestUni();
         uniView.param.add("1", "1");
         uniView.param.add("2","2");
         uniView.param.add("a","aaa");
-        uniView.param.add("b","bbb");
+        uniView.param.add("b", "bbb");
         uniView.progress.set(UniProgress.VIEW, new UniProgress(R.layout.progress) {
             ObjectAnimator obj;
 
@@ -82,21 +82,19 @@ public class Menu2Fragment extends Fragment{
             }
 
         });
-        uniView.excute();
-        return uniView;
+//        uniView.excute();
+        return uniView.getUniView();
     }
 
     @Layout(R.layout.uniview)
-    class TestUni extends UniView{
+    class TestUni extends UniTask {
         @Param
         String a,b;
 
         @GetView
         Button button;
 
-        public TestUni(Context context) {
-            super(context);
-        }
+
 
         @Override
         public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {

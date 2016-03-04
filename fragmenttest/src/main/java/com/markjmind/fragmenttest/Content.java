@@ -1,9 +1,8 @@
 package com.markjmind.fragmenttest;
 
-import android.content.Context;
 import android.widget.Button;
 
-import com.markjmind.uni.UniView;
+import com.markjmind.uni.UniTask;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.mapper.annotiation.Progress;
@@ -20,12 +19,9 @@ import com.markjmind.uni.thread.LoadEvent;
  */
 @Layout(R.layout.content)
 @Progress(type = SimpleProgress.class, mode = UniProgress.VIEW)
-public class Content extends UniView{
+public class Content extends UniTask{
     @GetView
     Button button3;
-    public Content(Context context) {
-        super(context);
-    }
 
     @Override
     public void onLoad(LoadEvent loadEvent, CancelAdapter cancelAdapter) throws Exception {
@@ -34,6 +30,6 @@ public class Content extends UniView{
 
     @Override
     public void onPost() {
-        button3.setText("soikd");
+        button3.setText("끝");
     }
 }

@@ -11,7 +11,6 @@ import android.widget.FrameLayout;
 
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.Mapper;
-import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.mapper.annotiation.adapter.LayoutAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ProgressAdapter;
@@ -40,35 +39,28 @@ public class UniView extends FrameLayout implements UniInterface, CancelObserver
     private CancelObservable cancelObservable;
     private boolean isAsync;
 
-    public UniView(Context context) {
+    protected UniView(Context context) {
         super(context);
-        this.mapper = new UniMapper(this, this);
-        init(this, new Store<>(), new ProgressBuilder());
-        injectLayout(this);
-    }
-
-    protected UniView(Context context, Mapper mapper) {
-        super(context);
-        this.mapper = mapper;
     }
 
     public UniView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.mapper = new UniMapper(this, this);
-        init(this, new Store<>(), new ProgressBuilder());
-        //todo attrs에 layout이 있으면 onCreateView에 넣어주자
-        injectLayout(this);
+//        this.mapper = new UniMapper(this, this);
+//        init(this, new Store<>(), new ProgressBuilder());
+//        //todo attrs에 layout이 있으면 onCreateView에 넣어주자
+//        injectLayout(this);
     }
 
     public UniView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.mapper = new UniMapper(this, this);
-        init(this, new Store<>(), new ProgressBuilder());
-        injectLayout(this);
+//        this.mapper = new UniMapper(this, this);
+//        init(this, new Store<>(), new ProgressBuilder());
+//        injectLayout(this);
     }
 
-    void init(UniInterface uniInterface, Store<?> param, final ProgressBuilder progress){
+    void init(UniInterface uniInterface, Mapper mapper, Store<?> param, final ProgressBuilder progress){
         this.uniInterface = uniInterface;
+        this.mapper = mapper;
         this.param = param;
         progress.setParents(this);
         this.progress = progress;
