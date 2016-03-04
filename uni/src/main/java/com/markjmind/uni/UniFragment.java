@@ -22,7 +22,7 @@ import com.markjmind.uni.thread.LoadEvent;
  *
  */
 
-public class UniFragment extends Fragment implements UniTask, CancelObserver{
+public class UniFragment extends Fragment implements UniInterface, CancelObserver{
     public Mapper mapper;
     public Store<?> param;
     public ProgressBuilder progress;
@@ -30,9 +30,9 @@ public class UniFragment extends Fragment implements UniTask, CancelObserver{
     private UniView uniView;
     private Class<? extends UniView> customUniView;
 
-    private UniBuilder.UniInterface uniInterface = new UniBuilder.UniInterface() {
+    private Uni.UniBuildInterface uniBuildInterface = new Uni.UniBuildInterface() {
         @Override
-        public UniTask getUniTask() {
+        public UniInterface getUniInterface() {
             return UniFragment.this;
         }
         @Override
@@ -85,7 +85,7 @@ public class UniFragment extends Fragment implements UniTask, CancelObserver{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         if(uniView == null || !isPopStack) {
-            uniView = UniBuilder.createUniView(getActivity(), uniInterface, container);
+            uniView = Uni.createUniView(getActivity(), uniBuildInterface, container);
             setBackStack(false);
             uniView.excute();
         }
@@ -96,8 +96,8 @@ public class UniFragment extends Fragment implements UniTask, CancelObserver{
         this.isPopStack = isPopStack;
     }
 
-    public void excute(UniTask uniTask){
-        uniView.excute(uniTask);
+    public void excute(UniInterface uniInterface){
+        uniView.excute(uniInterface);
     }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/

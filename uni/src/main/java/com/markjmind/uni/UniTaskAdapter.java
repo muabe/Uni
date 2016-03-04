@@ -17,11 +17,11 @@ import com.markjmind.uni.thread.CancelAdapter;
  * @email markjmind@gmail.com
  * @since 2016-02-18
  */
-public abstract class UniTaskAdapter implements UniTask {
-    UniTask uniTask;
+public abstract class UniTaskAdapter implements UniInterface {
+    UniInterface uniInterface;
 
-    public UniTaskAdapter(UniTask uniTask){
-        this.uniTask = uniTask;
+    public UniTaskAdapter(UniInterface uniInterface){
+        this.uniInterface = uniInterface;
     }
 
     @Override
@@ -41,20 +41,20 @@ public abstract class UniTaskAdapter implements UniTask {
 
     @Override
     public void onPostFail(String message, Object arg){
-        uniTask.onPostFail(message, arg);
+        uniInterface.onPostFail(message, arg);
     }
 
     @Override
     public void onException(Exception e) {
-        uniTask.onException(e);
+        uniInterface.onException(e);
     }
 
     @Override
     public void onCancelled(boolean attached){
-        uniTask.onCancelled(attached);
+        uniInterface.onCancelled(attached);
     }
 
-    public UniTask getParents(){
-        return uniTask;
+    public UniInterface getParents(){
+        return uniInterface;
     }
 }

@@ -8,6 +8,7 @@
 
 package com.markjmind.uni;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,15 +27,15 @@ import java.lang.reflect.InvocationTargetException;
  * @email markjmind@gmail.com
  * @since 2016-02-26
  */
-class UniBuilder {
-    public static UniView createUniView(Context context, final UniInterface uniInterface, ViewGroup container){
+public class Uni {
+    public static UniView createUniView(Context context, final UniBuildInterface uniBuildInterface, ViewGroup container){
         UniView uniView;
-        if(uniInterface.getCustomUniView()==null) {
-            uniView = new UniView(context, uniInterface.getMapper());
+        if(uniBuildInterface.getCustomUniView()==null) {
+            uniView = new UniView(context, uniBuildInterface.getMapper());
         }else{
             try {
-                uniView = (UniView)(uniInterface.getCustomUniView().getConstructor(Context.class, Mapper.class)
-                        .newInstance(context, uniInterface.getMapper()));
+                uniView = (UniView)(uniBuildInterface.getCustomUniView().getConstructor(Context.class, Mapper.class)
+                        .newInstance(context, uniBuildInterface.getMapper()));
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
                 return null;
@@ -57,11 +58,11 @@ class UniBuilder {
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-                uniInterface.reset();
+                uniBuildInterface.reset();
             }
         });
-        ((UniMapper)uniInterface.getMapper()).reset(uniView, uniInterface.getUniTask());
-        uniView.init(uniInterface.getUniTask(), uniInterface.getParam(), uniInterface.getProgress());
+        ((UniMapper) uniBuildInterface.getMapper()).reset(uniView, uniBuildInterface.getUniInterface());
+        uniView.init(uniBuildInterface.getUniInterface(), uniBuildInterface.getParam(), uniBuildInterface.getProgress());
         if(container==null){
             uniView.injectLayout(uniView);
         }else{
@@ -71,9 +72,13 @@ class UniBuilder {
         return uniView;
     }
 
-
-    interface UniInterface{
-        UniTask getUniTask();
+    public static UniView bind(Activity activity, int id, UniTask task){
+        UniView uniView = (UniView)activity.findViewById(id);
+        task.init(uniView);
+        return uniView;
+    }
+    interface UniBuildInterface {
+        UniInterface getUniInterface();
         UniMapper getMapper();
         Class<? extends UniView> getCustomUniView();
         Store<?> getParam();

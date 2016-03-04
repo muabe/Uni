@@ -29,7 +29,7 @@ import com.markjmind.uni.thread.LoadEvent;
  * @email markjmind@gmail.com
  * @since 2016-02-26
  */
-public class UniDialog extends Dialog implements UniTask, CancelObserver{
+public class UniDialog extends Dialog implements UniInterface, CancelObserver{
     public Mapper mapper;
     public Store<?> param;
     public ProgressBuilder progress;
@@ -39,9 +39,9 @@ public class UniDialog extends Dialog implements UniTask, CancelObserver{
 
     private OnDismissResult onDismissResult;
 
-    private UniBuilder.UniInterface uniInterface = new UniBuilder.UniInterface() {
+    private Uni.UniBuildInterface uniBuildInterface = new Uni.UniBuildInterface() {
         @Override
-        public UniTask getUniTask() {
+        public UniInterface getUniInterface() {
             return UniDialog.this;
         }
         @Override
@@ -95,7 +95,7 @@ public class UniDialog extends Dialog implements UniTask, CancelObserver{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        uniView = UniBuilder.createUniView(getContext(), uniInterface, null);
+        uniView = Uni.createUniView(getContext(), uniBuildInterface, null);
         setContentView(uniView);
         setOnShowListener(new OnShowListener() {
             @Override
@@ -105,8 +105,8 @@ public class UniDialog extends Dialog implements UniTask, CancelObserver{
         });
     }
 
-    public void excute(UniTask uniTask){
-        uniView.excute(uniTask);
+    public void excute(UniInterface uniInterface){
+        uniView.excute(uniInterface);
     }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/

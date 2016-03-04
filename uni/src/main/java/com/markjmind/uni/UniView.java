@@ -29,13 +29,13 @@ import com.markjmind.uni.thread.UniMainAsyncTask;
  * @email markjmind@gmail.com
   * @since 2016-01-28
  */
-public class UniView extends FrameLayout implements UniTask, CancelObserver{
+public class UniView extends FrameLayout implements UniInterface, CancelObserver{
     public Mapper mapper;
     public Store<?> param;
     public ProgressBuilder progress;
 
     private View layout;
-    private UniTask uniTask;
+    private UniInterface uniInterface;
     private boolean isMapping;
     private CancelObservable cancelObservable;
     private boolean isAsync;
@@ -67,8 +67,8 @@ public class UniView extends FrameLayout implements UniTask, CancelObserver{
         injectLayout(this);
     }
 
-    void init(UniTask uniTask, Store<?> param, final ProgressBuilder progress){
-        this.uniTask = uniTask;
+    void init(UniInterface uniInterface, Store<?> param, final ProgressBuilder progress){
+        this.uniInterface = uniInterface;
         this.param = param;
         progress.setParents(this);
         this.progress = progress;
@@ -93,6 +93,11 @@ public class UniView extends FrameLayout implements UniTask, CancelObserver{
         });
     }
 
+    void setUniInterface(UniInterface uniInterface){
+        this.uniInterface = uniInterface;
+    }
+
+
     void injectLayout(ViewGroup container){
         if(layout==null) {
             mapper.inject(LayoutAdapter.class);
@@ -116,7 +121,7 @@ public class UniView extends FrameLayout implements UniTask, CancelObserver{
 
     /*************************************************** excute 관련 *********************************************/
 
-    private void bind(UniTask uniTask){
+    private void bind(UniInterface uniInterface){
         if(progress.get()==null){
             mapper.addAdapter(new ProgressAdapter(progress));
             mapper.inject(ProgressAdapter.class);
@@ -124,20 +129,20 @@ public class UniView extends FrameLayout implements UniTask, CancelObserver{
         if(progress.get()!=null){
             progress.get().onBind();
         }
-        uniTask.onBind();
+        uniInterface.onBind();
         if(!isMapping) {
             mapper.injectWithout(LayoutAdapter.class, ProgressAdapter.class);
             isMapping = true;
         }
     }
 
-    public String excute(UniTask uniTask){
-        bind(uniTask);
+    public String excute(UniInterface uniInterface){
+        bind(uniInterface);
         UniMainAsyncTask task = new UniMainAsyncTask(cancelObservable);
         if(progress.isAble()) {
             task.addTaskObserver(progress);
         }
-        task.addTaskObserver(new UniProcessObserver(uniTask));
+        task.addTaskObserver(new UniProcessObserver(uniInterface));
         cancelObservable.add(task);
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -149,9 +154,9 @@ public class UniView extends FrameLayout implements UniTask, CancelObserver{
 
     public String excute(boolean isAsync){
         if(isAsync) {
-            return this.excute(uniTask);
+            return this.excute(uniInterface);
         }else{
-            bind(uniTask);
+            bind(uniInterface);
             onPost();
             return null;
         }
@@ -237,45 +242,45 @@ public class UniView extends FrameLayout implements UniTask, CancelObserver{
     /*************************************************** Task Process 관련 *********************************************/
 
     class UniProcessObserver implements ProcessObserver {
-        private UniTask uniTask;
+        private UniInterface uniInterface;
 
-        public UniProcessObserver(UniTask uniTask) {
-            this.uniTask = uniTask;
+        public UniProcessObserver(UniInterface uniInterface) {
+            this.uniInterface = uniInterface;
         }
 
         @Override
         public void onPreExecute(CancelAdapter cancelAdapter) {
-            this.uniTask.onPre();
+            this.uniInterface.onPre();
         }
 
         @Override
         public void doInBackground(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
-            this.uniTask.onLoad(event, cancelAdapter);
+            this.uniInterface.onLoad(event, cancelAdapter);
         }
 
         @Override
         public void onProgressUpdate(Object value, CancelAdapter cancelAdapter) {
-            this.uniTask.onUpdate(value, cancelAdapter);
+            this.uniInterface.onUpdate(value, cancelAdapter);
         }
 
         @Override
         public void onPostExecute() {
-            this.uniTask.onPost();
+            this.uniInterface.onPost();
         }
 
         @Override
         public void onFailedExecute(String message, Object arg) {
-            this.uniTask.onPostFail(message, arg);
+            this.uniInterface.onPostFail(message, arg);
         }
 
         @Override
         public void onExceptionExecute(Exception e) {
-            this.uniTask.onException(e);
+            this.uniInterface.onException(e);
         }
 
         @Override
         public void onCancelled(boolean attached) {
-            this.uniTask.onCancelled(attached);
+            this.uniInterface.onCancelled(attached);
         }
     }
 
