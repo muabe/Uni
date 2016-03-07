@@ -82,7 +82,7 @@ public class Menu2Fragment extends Fragment{
             }
 
         });
-//        uniView.excute();
+
         return uniView.getUniView();
     }
 

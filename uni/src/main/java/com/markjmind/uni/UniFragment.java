@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.Mapper;
-import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.CancelObserver;
@@ -23,39 +22,11 @@ import com.markjmind.uni.thread.LoadEvent;
  */
 
 public class UniFragment extends Fragment implements UniInterface, CancelObserver{
+    private UniTask uniTask;
+    private UniView uniView;
     public Mapper mapper;
     public Store<?> param;
     public ProgressBuilder progress;
-
-    private UniView uniView;
-    private Class<? extends UniView> customUniView;
-
-    private Uni.UniBuildInterface uniBuildInterface = new Uni.UniBuildInterface() {
-        @Override
-        public UniInterface getUniInterface() {
-            return UniFragment.this;
-        }
-        @Override
-        public UniMapper getMapper() {
-            return (UniMapper)mapper;
-        }
-        @Override
-        public Class<? extends UniView> getCustomUniView() {
-            return customUniView;
-        }
-        @Override
-        public Store<?> getParam() {
-            return param;
-        }
-        @Override
-        public ProgressBuilder getProgress() {
-            return progress;
-        }
-        @Override
-        public void reset() {
-            param.clear();
-        }
-    };
 
     private boolean isPopStack;
 
@@ -65,15 +36,13 @@ public class UniFragment extends Fragment implements UniInterface, CancelObserve
      */
     public UniFragment() {
         super();
-        isPopStack = false;
         uniView = null;
-        mapper = new UniMapper();
-        param = new Store<>();
-        progress = new ProgressBuilder();
-    }
+        uniTask = new UniTask();
+        mapper = uniTask.mapper;
+        param = uniTask.param;
+        progress = uniTask.progress;
 
-    public <T extends UniView> UniFragment(Class<T> uniView){
-        customUniView = uniView;
+        isPopStack = false;
     }
 
     @Override
@@ -83,33 +52,41 @@ public class UniFragment extends Fragment implements UniInterface, CancelObserve
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         if(uniView == null || !isPopStack) {
-            uniView = Uni.createUniView(getActivity(), uniBuildInterface, container);
+            uniView = new UniView(getActivity());
+            uniTask.init(uniView, this, this, true, container);
             setBackStack(false);
-            uniView.excute();
+            uniTask.excute();
         }
         return uniView;
+    }
+
+    public void setAsync(boolean isAsync){
+        this.uniTask.setAsync(isAsync);
     }
 
     public void setBackStack(boolean isPopStack) {
         this.isPopStack = isPopStack;
     }
 
+    public void excute(){
+        uniTask.excute();
+    }
+
     public void excute(UniInterface uniInterface){
-        uniView.excute(uniInterface);
+        uniTask.excute(uniInterface);
     }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/
 
     @Override
     public void cancel(String id) {
-        uniView.cancel(id);
+        uniTask.cancel(id);
     }
 
     @Override
     public void cancelAll() {
-        uniView.cancelAll();
+        uniTask.cancelAll();
     }
 
 
@@ -117,43 +94,35 @@ public class UniFragment extends Fragment implements UniInterface, CancelObserve
 
     @Override
     public void onBind() {
-        uniView.onBind();
     }
 
     @Override
     public void onPre() {
-        uniView.onPre();
     }
 
     @Override
     public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
-        uniView.onLoad(event, cancelAdapter);
     }
 
     @Override
     public void onUpdate(Object value, CancelAdapter cancelAdapter) {
-        uniView.onUpdate(value, cancelAdapter);
 
     }
 
     @Override
     public void onPost() {
-        uniView.onPost();
     }
 
     @Override
     public void onPostFail(String message, Object arg) {
-        uniView.onPostFail(message, arg);
     }
 
     @Override
     public void onException(Exception e) {
-        uniView.onException(e);
     }
 
     @Override
     public void onCancelled(boolean attach) {
-        uniView.onCancelled(attach);
     }
 
 

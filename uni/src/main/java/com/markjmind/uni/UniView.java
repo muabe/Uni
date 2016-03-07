@@ -1,26 +1,12 @@
 package com.markjmind.uni;
 
 import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.markjmind.uni.common.Store;
-import com.markjmind.uni.mapper.Mapper;
-import com.markjmind.uni.mapper.annotiation.adapter.LayoutAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
-import com.markjmind.uni.mapper.annotiation.adapter.ProgressAdapter;
-import com.markjmind.uni.progress.ProgressBuilder;
-import com.markjmind.uni.thread.CancelAdapter;
-import com.markjmind.uni.thread.CancelObservable;
-import com.markjmind.uni.thread.CancelObserver;
-import com.markjmind.uni.thread.LoadEvent;
-import com.markjmind.uni.thread.ProcessObserver;
-import com.markjmind.uni.thread.UniMainAsyncTask;
 
 /**
  * <br>捲土重來<br>
@@ -28,251 +14,62 @@ import com.markjmind.uni.thread.UniMainAsyncTask;
  * @email markjmind@gmail.com
   * @since 2016-01-28
  */
-public class UniView extends FrameLayout implements UniInterface, CancelObserver{
-    public Mapper mapper;
-    public Store<?> param;
-    public ProgressBuilder progress;
+public class UniView extends FrameLayout{
 
-    private View layout;
-    private UniInterface uniInterface;
-    private boolean isMapping;
-    private CancelObservable cancelObservable;
-    private boolean isAsync;
+    private View view;
+    private UniTask uniTask;
+    private ViewGroup layout;
 
-    protected UniView(Context context) {
+
+    public UniView(Context context) {
         super(context);
+        layout = new FrameLayout(context);
+        this.addView(layout);
     }
 
     public UniView(Context context, AttributeSet attrs) {
         super(context, attrs);
-//        this.mapper = new UniMapper(this, this);
-//        init(this, new Store<>(), new ProgressBuilder());
-//        //todo attrs에 layout이 있으면 onCreateView에 넣어주자
-//        injectLayout(this);
+        layout = new FrameLayout(context);
+        this.addView(layout);
     }
 
     public UniView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-//        this.mapper = new UniMapper(this, this);
-//        init(this, new Store<>(), new ProgressBuilder());
-//        injectLayout(this);
+        layout = new FrameLayout(context);
+        this.addView(layout);
     }
 
-    void init(UniInterface uniInterface, Mapper mapper, Store<?> param, final ProgressBuilder progress){
-        this.uniInterface = uniInterface;
-        this.mapper = mapper;
-        this.param = param;
-        progress.setParents(this);
-        this.progress = progress;
-
-        isMapping = false;
-        isAsync = true;
-        cancelObservable = new CancelObservable();
-        mapper.addAdapter(new ParamAdapter(param));
+    void init(UniTask task){
+        setUniTask(task);
+        uniTask.mapper.addAdapter(new ParamAdapter(uniTask.param));
         addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
-                cancelObservable.setAttached(true);
+                uniTask.getCancelObservable().setAttached(true);
             }
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-                UniView.this.param.clear();
-                progress.param.clear();
-                cancelObservable.setAttached(false);
-                cancelObservable.cancelAll();
+                uniTask.param.clear();
+                uniTask.progress.param.clear();
+                uniTask.getCancelObservable().setAttached(false);
+                uniTask.getCancelObservable().cancelAll();
             }
         });
     }
 
-    void setUniInterface(UniInterface uniInterface){
-        this.uniInterface = uniInterface;
+    void setUniTask(UniTask uniTask){
+        this.uniTask = uniTask;
+        this.uniTask.progress.setParents(this);
     }
 
 
-    void injectLayout(ViewGroup container){
-        if(layout==null) {
-            mapper.inject(LayoutAdapter.class);
-            int layoutId = mapper.getAdapter(LayoutAdapter.class).getLayoutId();
-            if(layoutId>0) {
-                LayoutInflater inflater = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
-                layout = inflater.inflate(layoutId, container, false);
-            }
-        }
-        setView(layout);
-    }
-
-    private void setView(View layout) {
+    void setView(View layout) {
         this.removeAllViews();
-        this.layout = layout;
+        this.view = layout;
         if(layout !=null) {
             this.addView(layout);
-            this.setLayoutParams(this.layout.getLayoutParams());
-        }
-    }
-
-    /*************************************************** excute 관련 *********************************************/
-
-    private void bind(UniInterface uniInterface){
-        if(progress.get()==null){
-            mapper.addAdapter(new ProgressAdapter(progress));
-            mapper.inject(ProgressAdapter.class);
-        }
-        if(progress.get()!=null){
-            progress.get().onBind();
-        }
-        uniInterface.onBind();
-        if(!isMapping) {
-            mapper.injectWithout(LayoutAdapter.class, ProgressAdapter.class);
-            isMapping = true;
-        }
-    }
-
-    public String excute(UniInterface uniInterface){
-        bind(uniInterface);
-        UniMainAsyncTask task = new UniMainAsyncTask(cancelObservable);
-        if(progress.isAble()) {
-            task.addTaskObserver(progress);
-        }
-        task.addTaskObserver(new UniProcessObserver(uniInterface));
-        cancelObservable.add(task);
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        } else {
-            task.execute();
-        }
-        return task.getId();
-    }
-
-    public String excute(boolean isAsync){
-        if(isAsync) {
-            return this.excute(uniInterface);
-        }else{
-            bind(uniInterface);
-            onPost();
-            return null;
-        }
-    }
-
-    public String excute(){
-        return this.excute(this.isAsync);
-    }
-
-    public String replace(ViewGroup parents){
-        parents.removeAllViews();
-        parents.addView(this);
-        return excute();
-    }
-
-    public String add(ViewGroup parents, int index){
-        parents.addView(this, index);
-        return excute();
-    }
-
-    public String add(ViewGroup parents){
-        parents.addView(this);
-        return excute();
-    }
-
-    /*************************************************** CancelObserver Interface 관련 *********************************************/
-
-    @Override
-    public void cancel(String id){
-        cancelObservable.cancel(id);
-    }
-
-    @Override
-    public void cancelAll(){
-        cancelObservable.cancelAll();
-    }
-
-
-    /*************************************************** UniTask Interface 관련 *********************************************/
-
-    @Override
-    public void onBind() {
-
-    }
-
-    @Override
-    public void onPre() {
-
-    }
-
-    @Override
-    public void onLoad(LoadEvent loadEvent, CancelAdapter cancelAdapter) throws Exception {
-
-    }
-
-    @Override
-    public void onUpdate(Object value, CancelAdapter cancelAdapter) {
-
-    }
-
-    @Override
-    public void onPost() {
-
-    }
-
-    @Override
-    public void onPostFail(String message, Object arg) {
-
-    }
-
-    @Override
-    public void onException(Exception e) {
-
-    }
-
-    @Override
-    public void onCancelled(boolean attached) {
-
-    }
-
-
-
-    /*************************************************** Task Process 관련 *********************************************/
-
-    class UniProcessObserver implements ProcessObserver {
-        private UniInterface uniInterface;
-
-        public UniProcessObserver(UniInterface uniInterface) {
-            this.uniInterface = uniInterface;
-        }
-
-        @Override
-        public void onPreExecute(CancelAdapter cancelAdapter) {
-            this.uniInterface.onPre();
-        }
-
-        @Override
-        public void doInBackground(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
-            this.uniInterface.onLoad(event, cancelAdapter);
-        }
-
-        @Override
-        public void onProgressUpdate(Object value, CancelAdapter cancelAdapter) {
-            this.uniInterface.onUpdate(value, cancelAdapter);
-        }
-
-        @Override
-        public void onPostExecute() {
-            this.uniInterface.onPost();
-        }
-
-        @Override
-        public void onFailedExecute(String message, Object arg) {
-            this.uniInterface.onPostFail(message, arg);
-        }
-
-        @Override
-        public void onExceptionExecute(Exception e) {
-            this.uniInterface.onException(e);
-        }
-
-        @Override
-        public void onCancelled(boolean attached) {
-            this.uniInterface.onCancelled(attached);
+            this.setLayoutParams(this.view.getLayoutParams());
         }
     }
 

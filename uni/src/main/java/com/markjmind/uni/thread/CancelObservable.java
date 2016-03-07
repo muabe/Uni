@@ -23,7 +23,6 @@ public class CancelObservable extends StoreObservable<UniMainAsyncTask> implemen
         isAttached = false;
     }
 
-
     @Override
     public synchronized void add(UniMainAsyncTask observer) {
         String className = observer.getId();

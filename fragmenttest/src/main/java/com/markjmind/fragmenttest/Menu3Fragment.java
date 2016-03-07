@@ -1,6 +1,5 @@
 package com.markjmind.fragmenttest;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -27,7 +26,7 @@ public class Menu3Fragment extends UniFragment {
 
     @Override
     public void onBind() {
-        Log.e("d", getMode(progress.get().getMode()));
+
     }
 
     @Override

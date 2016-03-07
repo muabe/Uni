@@ -18,6 +18,7 @@ import com.markjmind.uni.thread.LoadEvent;
  * @email markjmind@gmail.com
  * @since 2016-03-03
  */
+//@Layout(R.layout.content)
 @Progress(mode = UniProgress.VIEW, res = R.layout.one_progress)
 public class Content2 extends UniTask {
     @GetView

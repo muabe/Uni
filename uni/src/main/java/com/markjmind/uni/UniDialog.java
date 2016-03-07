@@ -16,7 +16,6 @@ import android.view.View;
 
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.Mapper;
-import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.CancelObserver;
@@ -30,95 +29,66 @@ import com.markjmind.uni.thread.LoadEvent;
  * @since 2016-02-26
  */
 public class UniDialog extends Dialog implements UniInterface, CancelObserver{
+    private UniTask uniTask;
+    private UniView uniView;
     public Mapper mapper;
     public Store<?> param;
     public ProgressBuilder progress;
 
-    private UniView uniView;
-    private Class<? extends UniView> customUniView;
-
     private OnDismissResult onDismissResult;
 
-    private Uni.UniBuildInterface uniBuildInterface = new Uni.UniBuildInterface() {
-        @Override
-        public UniInterface getUniInterface() {
-            return UniDialog.this;
-        }
-        @Override
-        public UniMapper getMapper() {
-            return (UniMapper)mapper;
-        }
-        @Override
-        public Class<? extends UniView> getCustomUniView() {
-            return customUniView;
-        }
-        @Override
-        public Store<?> getParam() {
-            return param;
-        }
-        @Override
-        public ProgressBuilder getProgress() {
-            return progress;
-        }
-        @Override
-        public void reset() {
-            param.clear();
-        }
-    };
-
-    public UniDialog(Context context) {
+   public UniDialog(Context context) {
         super(context);
         uniView = null;
-        mapper = new UniMapper();
-        param = new Store<>();
-        progress = new ProgressBuilder();
+        uniTask = new UniTask();
+        mapper = uniTask.mapper;
+        param = uniTask.param;
+        progress = uniTask.progress;
     }
 
     public UniDialog(Context context, int themeResId) {
         super(context, themeResId);
         uniView = null;
-        mapper = new UniMapper();
-        param = new Store<>();
-        progress = new ProgressBuilder();
+        uniTask = new UniTask();
+        mapper = uniTask.mapper;
+        param = uniTask.param;
+        progress = uniTask.progress;
     }
 
-    public <T extends UniView> UniDialog(Context context, Class<T> uniView){
-        this(context);
-        customUniView = uniView;
-    }
-
-    public <T extends UniView> UniDialog(Context context, int themeResId, Class<T> uniView){
-        this(context, themeResId);
-        customUniView = uniView;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        uniView = Uni.createUniView(getContext(), uniBuildInterface, null);
+        uniView = new UniView(getContext());
         setContentView(uniView);
+        uniTask.init(uniView, this, this, true, null);
+
         setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                uniView.excute();
+                uniTask.excute();
             }
         });
     }
 
+    public void excute(){
+        uniTask.excute();
+    }
+
     public void excute(UniInterface uniInterface){
-        uniView.excute(uniInterface);
+        uniTask.excute(uniInterface);
     }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/
 
     @Override
     public void cancel(String id) {
-        uniView.cancel(id);
+        uniTask.cancel(id);
     }
 
     @Override
     public void cancelAll() {
-        uniView.cancelAll();
+        uniTask.cancelAll();
     }
 
 
@@ -126,43 +96,35 @@ public class UniDialog extends Dialog implements UniInterface, CancelObserver{
 
     @Override
     public void onBind() {
-        uniView.onBind();
     }
 
     @Override
     public void onPre() {
-        uniView.onPre();
     }
 
     @Override
     public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
-        uniView.onLoad(event, cancelAdapter);
     }
 
     @Override
     public void onUpdate(Object value, CancelAdapter cancelAdapter) {
-        uniView.onUpdate(value, cancelAdapter);
 
     }
 
     @Override
     public void onPost() {
-        uniView.onPost();
     }
 
     @Override
     public void onPostFail(String message, Object arg) {
-        uniView.onPostFail(message, arg);
     }
 
     @Override
     public void onException(Exception e) {
-        uniView.onException(e);
     }
 
     @Override
     public void onCancelled(boolean attach) {
-        uniView.onCancelled(attach);
     }
 
     /*************************************************** 추가 리스너 관련 *********************************************/
