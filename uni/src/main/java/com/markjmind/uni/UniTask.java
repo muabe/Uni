@@ -1,6 +1,8 @@
 package com.markjmind.uni;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -28,7 +30,7 @@ import com.markjmind.uni.thread.UniMainAsyncTask;
  * @since 2016-03-04
  */
 public class UniTask implements UniInterface, CancelObserver {
-    private UniView uniView;
+    private UniLayout uniLayout;
     public Mapper mapper;
     public Store<?> param;
     public ProgressBuilder progress;
@@ -43,7 +45,7 @@ public class UniTask implements UniInterface, CancelObserver {
 
 
     public UniTask(){
-        uniView = null;
+        uniLayout = null;
         mapper = new UniMapper();
         param = new Store<>();
         progress = new ProgressBuilder();
@@ -58,22 +60,22 @@ public class UniTask implements UniInterface, CancelObserver {
         int layoutId = mapper.getAdapter(LayoutAdapter.class).getLayoutId();
         if(layoutId>0) {
             LayoutInflater inflater = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
-            uniView.setView(inflater.inflate(layoutId, container, false));
+            uniLayout.setView(inflater.inflate(layoutId, container, false));
         }
 
     }
 
-    void init(UniView uniView, Object mappingObj, UniInterface uniInterface, boolean injectLayout, ViewGroup container){
+    void init(UniLayout uniLayout, Object mappingObj, UniInterface uniInterface, boolean injectLayout, ViewGroup container){
         isMapping = false;
-        this.uniView = uniView;
-        this.context = uniView.getContext();
-        this.uniView.setUniTask(this);
-        mapper.reset(this.uniView, mappingObj);
+        this.uniLayout = uniLayout;
+        this.context = uniLayout.getContext();
+        this.uniLayout.setUniTask(this);
+        mapper.reset(this.uniLayout, mappingObj);
         this.uniInterface = uniInterface;
-        this.uniView.init(this);
+        this.uniLayout.init(this);
         if(injectLayout) {
             if (container == null) {
-                injectLayout(uniView);
+                injectLayout(uniLayout);
             } else {
                 injectLayout(container);
             }
@@ -86,30 +88,49 @@ public class UniTask implements UniInterface, CancelObserver {
         return cancelObservable;
     }
 
-    /*************************************************** 외부지원 함수 관련 *********************************************/
-    public void bind(UniView uniView){
-        this.init(uniView, this, this, false, null);
+    /*************************************************** Uni 외부지원 함수 관련 *********************************************/
+    public void bind(UniLayout uniLayout){
+        this.init(uniLayout, this, this, false, null);
     }
 
     public void create(Context context){
-        this.init(new UniView(context), this, this, true, null);
-    }
-
-    public Context getContext(){
-        return context;
+        this.init(new UniLayout(context), this, this, true, null);
     }
 
     public View findViewById(int id){
-        return uniView.findViewById(id);
+        return uniLayout.findViewById(id);
     }
 
-    public UniView getUniView(){
-        return uniView;
+    public View findViewWithTag(Object tag){
+        return uniLayout.findViewWithTag(tag);
+    }
+
+    public UniLayout getUniLayout(){
+        return uniLayout;
     }
 
     public void setAsync(boolean isAsync){
         this.isAsync = isAsync;
     }
+
+
+    /*************************************************** Context 함수 관련 *********************************************/
+    public Context getContext(){
+        return context;
+    }
+
+    public Resources getResource(){
+        return context.getResources();
+    }
+
+    public Context getApplicationContext(){
+        return context.getApplicationContext();
+    }
+
+    public PackageManager getPackageManager(){
+        return context.getPackageManager();
+    }
+
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/
     @Override
@@ -136,10 +157,19 @@ public class UniTask implements UniInterface, CancelObserver {
 
 
     public String excute(){
-        return this.excute(uniInterface);
+        if(isAsync) {
+            return this.run(uniInterface);
+        }else{
+            onPost();
+            return null;
+        }
     }
 
     public String excute(UniInterface uniInterface){
+        return run(uniInterface);
+    }
+
+    String run(UniInterface uniInterface){
         if(progress.get()==null){
             mapper.addAdapter(new ProgressAdapter(progress));
             mapper.inject(ProgressAdapter.class);

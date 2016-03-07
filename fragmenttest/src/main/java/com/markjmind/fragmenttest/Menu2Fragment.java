@@ -83,7 +83,7 @@ public class Menu2Fragment extends Fragment{
 
         });
 
-        return uniView.getUniView();
+        return uniView.getUniLayout();
     }
 
     @Layout(R.layout.uniview)

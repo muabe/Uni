@@ -14,26 +14,26 @@ import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
  * @email markjmind@gmail.com
   * @since 2016-01-28
  */
-public class UniView extends FrameLayout{
+public class UniLayout extends FrameLayout{
 
     private View view;
     private UniTask uniTask;
     private ViewGroup layout;
 
 
-    public UniView(Context context) {
+    public UniLayout(Context context) {
         super(context);
         layout = new FrameLayout(context);
         this.addView(layout);
     }
 
-    public UniView(Context context, AttributeSet attrs) {
+    public UniLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         layout = new FrameLayout(context);
         this.addView(layout);
     }
 
-    public UniView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public UniLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         layout = new FrameLayout(context);
         this.addView(layout);

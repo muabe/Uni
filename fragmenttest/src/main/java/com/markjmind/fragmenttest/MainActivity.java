@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.markjmind.uni.UniTask;
-import com.markjmind.uni.UniView;
+import com.markjmind.uni.UniLayout;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Progress;
 import com.markjmind.uni.progress.UniProgress;
@@ -34,13 +34,13 @@ public class MainActivity extends Activity {
 
             Content content = new Content();
             content.create(this);
-            frame.addView(content.getUniView());
+            frame.addView(content.getUniLayout());
             content.excute();
 
 //            Uni.add(frame, content);
 
             Content2 content2 = new Content2();
-            content2.bind((UniView) findViewById(R.id.aaa));
+            content2.bind((UniLayout) findViewById(R.id.aaa));
             content2.excute();
 
         }else {

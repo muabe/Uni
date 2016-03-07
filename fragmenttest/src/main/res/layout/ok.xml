@@ -4,7 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent" android:id="@+id/frame">
 
-    <com.markjmind.uni.UniView
+    <com.markjmind.uni.UniLayout
         android:layout_width="match_parent"
         android:layout_height="300dp" android:id="@+id/aaa" android:background="#330000ff">
         <Button
@@ -18,6 +18,6 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
             android:id="@+id/text"/>
-    </com.markjmind.uni.UniView>
+    </com.markjmind.uni.UniLayout>
 
 </LinearLayout>

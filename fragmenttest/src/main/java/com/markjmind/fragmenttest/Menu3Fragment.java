@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.markjmind.uni.UniFragment;
+import com.markjmind.uni.UniTaskAdapter;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.mapper.annotiation.Progress;
@@ -50,26 +51,27 @@ public class Menu3Fragment extends UniFragment {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                progress.param.add("textName", "thread");
+                progress.param.add("textName", "thread");
+                progress.set(UniProgress.VIEW, new SimpleProgressBar());
 //                progress.get().setMode(UniProgress.DIALOG);
-//                excute(new UniTaskAdapter(Menu3Fragment.this) {
-//
-//                    @Override
-//                    public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
-//                        for (int i = 0; i <= 100; i++) {
-//                            event.update(i);
-//                            Thread.sleep(10);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onPost() {
-//                        btn.setText("완료");
-//                    }
-//
-//                });
-                SimpleDialog d = new SimpleDialog(getActivity());
-                d.show();
+                excute(new UniTaskAdapter(Menu3Fragment.this) {
+
+                    @Override
+                    public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
+                        for (int i = 0; i <= 100; i++) {
+                            event.update(i);
+                            Thread.sleep(10);
+                        }
+                    }
+
+                    @Override
+                    public void onPost() {
+                        btn.setText("완료");
+                    }
+
+                });
+//                SimpleDialog d = new SimpleDialog(getActivity());
+//                d.show();
             }
         });
     }

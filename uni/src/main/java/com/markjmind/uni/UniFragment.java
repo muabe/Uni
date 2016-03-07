@@ -23,7 +23,7 @@ import com.markjmind.uni.thread.LoadEvent;
 
 public class UniFragment extends Fragment implements UniInterface, CancelObserver{
     private UniTask uniTask;
-    private UniView uniView;
+    private UniLayout uniLayout;
     public Mapper mapper;
     public Store<?> param;
     public ProgressBuilder progress;
@@ -36,7 +36,7 @@ public class UniFragment extends Fragment implements UniInterface, CancelObserve
      */
     public UniFragment() {
         super();
-        uniView = null;
+        uniLayout = null;
         uniTask = new UniTask();
         mapper = uniTask.mapper;
         param = uniTask.param;
@@ -52,13 +52,13 @@ public class UniFragment extends Fragment implements UniInterface, CancelObserve
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(uniView == null || !isPopStack) {
-            uniView = new UniView(getActivity());
-            uniTask.init(uniView, this, this, true, container);
+        if(uniLayout == null || !isPopStack) {
+            uniLayout = new UniLayout(getActivity());
+            uniTask.init(uniLayout, this, this, true, container);
             setBackStack(false);
             uniTask.excute();
         }
-        return uniView;
+        return uniLayout;
     }
 
     public void setAsync(boolean isAsync){

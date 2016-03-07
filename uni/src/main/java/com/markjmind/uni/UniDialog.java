@@ -30,7 +30,7 @@ import com.markjmind.uni.thread.LoadEvent;
  */
 public class UniDialog extends Dialog implements UniInterface, CancelObserver{
     private UniTask uniTask;
-    private UniView uniView;
+    private UniLayout uniLayout;
     public Mapper mapper;
     public Store<?> param;
     public ProgressBuilder progress;
@@ -39,7 +39,7 @@ public class UniDialog extends Dialog implements UniInterface, CancelObserver{
 
    public UniDialog(Context context) {
         super(context);
-        uniView = null;
+        uniLayout = null;
         uniTask = new UniTask();
         mapper = uniTask.mapper;
         param = uniTask.param;
@@ -48,7 +48,7 @@ public class UniDialog extends Dialog implements UniInterface, CancelObserver{
 
     public UniDialog(Context context, int themeResId) {
         super(context, themeResId);
-        uniView = null;
+        uniLayout = null;
         uniTask = new UniTask();
         mapper = uniTask.mapper;
         param = uniTask.param;
@@ -59,9 +59,9 @@ public class UniDialog extends Dialog implements UniInterface, CancelObserver{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        uniView = new UniView(getContext());
-        setContentView(uniView);
-        uniTask.init(uniView, this, this, true, null);
+        uniLayout = new UniLayout(getContext());
+        setContentView(uniLayout);
+        uniTask.init(uniLayout, this, this, true, null);
 
         setOnShowListener(new OnShowListener() {
             @Override
