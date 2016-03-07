@@ -14,7 +14,7 @@ import com.markjmind.uni.mapper.MethodAdapter;
 import com.markjmind.uni.exception.ErrorMessage;
 import com.markjmind.uni.exception.UinMapperException;
 import com.markjmind.uni.mapper.annotiation.OnClick;
-import com.markjmind.uni.viewer.OnClickListenerReceiver;
+import com.markjmind.uni.common.OnClickListenerReceiver;
 
 import java.lang.reflect.Method;
 

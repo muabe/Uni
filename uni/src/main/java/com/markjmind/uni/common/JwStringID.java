@@ -1,4 +1,4 @@
-package com.markjmind.uni.viewer;
+package com.markjmind.uni.common;
 
 import android.content.Context;
 

@@ -19,7 +19,7 @@ import com.markjmind.uni.mapper.annotiation.Param;
 import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
-import com.markjmind.uni.viewer.Jwc;
+import com.markjmind.uni.common.Jwc;
 
 /**
  * @author 오재웅(JaeWoong-Oh)

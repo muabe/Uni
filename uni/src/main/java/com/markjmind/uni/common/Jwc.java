@@ -1,4 +1,4 @@
-package com.markjmind.uni.viewer;
+package com.markjmind.uni.common;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,6 +9,8 @@ import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.markjmind.uni.common.JwViewController;
+
 /**
  * start : 2012.08.30<br>
  * <br>
@@ -18,7 +20,7 @@ import android.view.WindowManager;
  * @author 오재웅      
  * @version 2013.11.17
  */
-public class Jwc extends JwViewController{ 
+public class Jwc extends JwViewController {
 	
 	
 	public static Drawable getDrawable(int R_drawable_id,View view){
