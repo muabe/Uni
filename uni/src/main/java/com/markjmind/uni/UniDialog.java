@@ -18,7 +18,6 @@ import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.Mapper;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
-import com.markjmind.uni.thread.CancelObserver;
 import com.markjmind.uni.thread.LoadEvent;
 
 /**
@@ -28,7 +27,7 @@ import com.markjmind.uni.thread.LoadEvent;
  * @email markjmind@gmail.com
  * @since 2016-02-26
  */
-public class UniDialog extends Dialog implements UniInterface, CancelObserver{
+public class UniDialog extends Dialog implements UniInterface{
     private UniTask uniTask;
     private UniLayout uniLayout;
     public Mapper mapper;
@@ -81,12 +80,10 @@ public class UniDialog extends Dialog implements UniInterface, CancelObserver{
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/
 
-    @Override
     public void cancel(String id) {
         uniTask.cancel(id);
     }
 
-    @Override
     public void cancelAll() {
         uniTask.cancelAll();
     }

@@ -17,7 +17,6 @@ import com.markjmind.uni.mapper.annotiation.adapter.ProgressAdapter;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.CancelObservable;
-import com.markjmind.uni.thread.CancelObserver;
 import com.markjmind.uni.thread.LoadEvent;
 import com.markjmind.uni.thread.ProcessObserver;
 import com.markjmind.uni.thread.UniMainAsyncTask;
@@ -29,7 +28,7 @@ import com.markjmind.uni.thread.UniMainAsyncTask;
  * @email markjmind@gmail.com
  * @since 2016-03-04
  */
-public class UniTask implements UniInterface, CancelObserver {
+public class UniTask implements UniInterface{
     private UniLayout uniLayout;
     public Mapper mapper;
     public Store<?> param;
@@ -79,8 +78,6 @@ public class UniTask implements UniInterface, CancelObserver {
             } else {
                 injectLayout(container);
             }
-        }else{
-//            uniView.setView();
         }
     }
 
@@ -133,12 +130,10 @@ public class UniTask implements UniInterface, CancelObserver {
 
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/
-    @Override
     public void cancel(String id){
         cancelObservable.cancel(id);
     }
 
-    @Override
     public void cancelAll(){
         cancelObservable.cancelAll();
     }
