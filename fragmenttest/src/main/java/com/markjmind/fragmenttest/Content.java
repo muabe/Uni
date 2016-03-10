@@ -31,5 +31,6 @@ public class Content extends UniTask{
     @Override
     public void onPost() {
         button3.setText("끝");
+        button3.setText((String)(getUniLayout().getRootView().findViewById(R.id.rootView).getTag()));
     }
 }

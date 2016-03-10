@@ -34,7 +34,8 @@ public class Content2 extends UniTask {
     @Override
     public void onPost()   {
         Toast.makeText(getContext(),"hi",Toast.LENGTH_SHORT).show();
-        button3.setText("안뇽");
+        button3.setText((String)(getUniLayout().getRootView().findViewById(R.id.rootView).getTag()));
         text.setText("ok");
+
     }
 }

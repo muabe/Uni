@@ -1,5 +1,7 @@
 package com.markjmind.uni;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -90,8 +92,26 @@ public class UniTask implements UniInterface{
         this.init(uniLayout, this, this, false, null);
     }
 
-    public void create(Context context){
+    public UniLayout create(Context context){
         this.init(new UniLayout(context), this, this, true, null);
+        return getUniLayout();
+    }
+
+    public void add(ViewGroup parent){
+        parent.addView(create(parent.getContext()));
+    }
+
+    public void add(Activity activity, int parent_id){
+        ((ViewGroup)activity.findViewById(parent_id)).addView(create(activity));
+    }
+
+    public void add(Dialog dialog, int parent_id){
+        ((ViewGroup)dialog.findViewById(parent_id)).addView(create(dialog.getContext()));
+    }
+
+    public void replace(ViewGroup parent){
+        parent.removeAllViews();
+        add(parent);
     }
 
     public View findViewById(int id){

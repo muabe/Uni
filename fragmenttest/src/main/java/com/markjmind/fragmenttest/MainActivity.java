@@ -5,15 +5,10 @@ import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.Toast;
 
-import com.markjmind.uni.UniTask;
-import com.markjmind.uni.UniLayout;
-import com.markjmind.uni.mapper.annotiation.GetView;
-import com.markjmind.uni.mapper.annotiation.Progress;
+import com.markjmind.uni.Uni;
 import com.markjmind.uni.progress.UniProgress;
-import com.markjmind.uni.thread.CancelAdapter;
-import com.markjmind.uni.thread.LoadEvent;
 
 public class MainActivity extends Activity {
 
@@ -23,7 +18,7 @@ public class MainActivity extends Activity {
     Menu3Fragment menu3Fragment;
     FragmentManager fm;
 
-    boolean isTask = false;
+    boolean isTask = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,16 +27,13 @@ public class MainActivity extends Activity {
             setContentView(R.layout.ok);
             ViewGroup frame = (ViewGroup)findViewById(R.id.frame);
 
-            Content content = new Content();
-            content.create(this);
+            Content content = Uni.create(this, Content.class);
             frame.addView(content.getUniLayout());
             content.excute();
 
-//            Uni.add(frame, content);
-
-            Content2 content2 = new Content2();
-            content2.bind((UniLayout) findViewById(R.id.aaa));
+            Content2 content2 = Uni.bind(this, R.id.aaa, Content2.class);
             content2.excute();
+            Toast.makeText(this, (String)(frame.getRootView().findViewById(R.id.frame).getTag()), Toast.LENGTH_SHORT).show();
 
         }else {
             setContentView(R.layout.activity_main);
@@ -91,21 +83,5 @@ public class MainActivity extends Activity {
        }else{
             super.onBackPressed();
        }
-    }
-
-    @Progress(type = SimpleProgress.class, mode = UniProgress.VIEW)
-    class TaskTest extends UniTask{
-        @GetView
-        Button aabtn;
-
-        @Override
-        public void onLoad(LoadEvent loadEvent, CancelAdapter cancelAdapter) throws Exception {
-            Thread.sleep(3000);
-        }
-
-        @Override
-        public void onPost() {
-            aabtn.setText("alksd");
-        }
     }
 }
