@@ -20,7 +20,7 @@ import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.CancelObservable;
 import com.markjmind.uni.thread.LoadEvent;
-import com.markjmind.uni.thread.ProcessObserver;
+import com.markjmind.uni.thread.ProcessAdapter;
 import com.markjmind.uni.thread.UniMainAsyncTask;
 
 /**
@@ -63,8 +63,8 @@ public class UniTask implements UniInterface{
             LayoutInflater inflater = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
             uniLayout.setView(inflater.inflate(layoutId, container, false));
         }
-
     }
+
 
     void init(UniLayout uniLayout, Object mappingObj, UniInterface uniInterface, boolean injectLayout, ViewGroup container){
         isMapping = false;
@@ -203,7 +203,7 @@ public class UniTask implements UniInterface{
         if(progress.isAble()) {
             task.addTaskObserver(progress);
         }
-        task.addTaskObserver(new UniProcessObserver(uniInterface));
+        task.addTaskObserver(new ProcessAdapter(uniInterface));
         cancelObservable.add(task);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -256,48 +256,7 @@ public class UniTask implements UniInterface{
 
     }
 
-    /*************************************************** Task Process 관련 *********************************************/
-    class UniProcessObserver implements ProcessObserver {
-        private UniInterface uniInterface;
 
-        public UniProcessObserver(UniInterface uniInterface) {
-            this.uniInterface = uniInterface;
-        }
-
-        @Override
-        public void onPreExecute(CancelAdapter cancelAdapter) {
-            this.uniInterface.onPre();
-        }
-
-        @Override
-        public void doInBackground(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
-            this.uniInterface.onLoad(event, cancelAdapter);
-        }
-
-        @Override
-        public void onProgressUpdate(Object value, CancelAdapter cancelAdapter) {
-            this.uniInterface.onUpdate(value, cancelAdapter);
-        }
-
-        @Override
-        public void onPostExecute() {
-            this.uniInterface.onPost();
-        }
-
-        @Override
-        public void onFailedExecute(String message, Object arg) {
-            this.uniInterface.onPostFail(message, arg);
-        }
-
-        @Override
-        public void onExceptionExecute(Exception e) {
-            this.uniInterface.onException(e);
-        }
-
-        @Override
-        public void onCancelled(boolean attached) {
-            this.uniInterface.onCancelled(attached);
-        }
-    }
 
 }
+
