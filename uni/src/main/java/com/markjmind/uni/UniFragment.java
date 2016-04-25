@@ -51,12 +51,16 @@ public class UniFragment extends Fragment implements UniInterface{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(uniLayout == null || !isPopStack) {
+        if(uniLayout == null || isPopStack) {
             uniLayout = new UniLayout(getActivity());
             uniTask.init(uniLayout, this, this, true, container);
-            setBackStack(false);
+            setRefreshBackStack(false);
             uniTask.excute();
         }
+        return uniLayout;
+    }
+
+    public View getView(){
         return uniLayout;
     }
 
@@ -68,7 +72,7 @@ public class UniFragment extends Fragment implements UniInterface{
         this.uniTask.setAsync(isAsync);
     }
 
-    public void setBackStack(boolean isPopStack) {
+    public void setRefreshBackStack(boolean isPopStack) {
         this.isPopStack = isPopStack;
     }
 
