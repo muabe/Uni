@@ -8,10 +8,6 @@ import android.widget.FrameLayout;
 
 import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 /**
  * <br>捲土重來<br>
  * @author 오재웅(JaeWoong-Oh)
@@ -75,11 +71,6 @@ public class UniLayout extends FrameLayout{
             this.addView(this.view);
             this.setLayoutParams(this.view.getLayoutParams());
         }
-    }
-
-    public static void run(InputStream inputStream){
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-
     }
 
 }

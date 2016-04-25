@@ -60,6 +60,10 @@ public class UniFragment extends Fragment implements UniInterface{
         return uniLayout;
     }
 
+    public View findViewById(int id){
+        return uniLayout.findViewById(id);
+    }
+
     public void setAsync(boolean isAsync){
         this.uniTask.setAsync(isAsync);
     }
