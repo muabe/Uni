@@ -16,7 +16,7 @@ import com.markjmind.uni.common.StoreObservable;
  * @email markjmind@gmail.com
  * @since 2016-01-28
  */
-public class CancelObservable extends StoreObservable<UniMainAsyncTask> implements CancelObserver {
+public class CancelObservable extends StoreObservable<UniMainThread> implements CancelObserver {
     private boolean isAttached;
 
     public CancelObservable(){
@@ -24,7 +24,7 @@ public class CancelObservable extends StoreObservable<UniMainAsyncTask> implemen
     }
 
     @Override
-    public synchronized void add(UniMainAsyncTask observer) {
+    public synchronized void add(UniMainThread observer) {
         String className = observer.getId();
         super.add(observer);
 //        Log.e("DetachedObservable", className+" add:"+size());
@@ -32,7 +32,7 @@ public class CancelObservable extends StoreObservable<UniMainAsyncTask> implemen
 
     @Override
     public synchronized void remove(String id) {
-        UniMainAsyncTask observer = get(id);
+        UniMainThread observer = get(id);
         if(observer != null) {
             String className = observer.getId();
             super.remove(id);
@@ -42,7 +42,7 @@ public class CancelObservable extends StoreObservable<UniMainAsyncTask> implemen
 
     @Override
     public synchronized void cancel(String id){
-        UniMainAsyncTask observer = get(id);
+        UniMainThread observer = get(id);
         if(observer != null) {
             String className = observer.getId();
             get(id).cancel();

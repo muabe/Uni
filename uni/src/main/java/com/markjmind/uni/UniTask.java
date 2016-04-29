@@ -21,7 +21,7 @@ import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.CancelObservable;
 import com.markjmind.uni.thread.LoadEvent;
 import com.markjmind.uni.thread.ProcessAdapter;
-import com.markjmind.uni.thread.UniMainAsyncTask;
+import com.markjmind.uni.thread.UniMainThread;
 
 /**
  * <br>捲土重來<br>
@@ -199,7 +199,7 @@ public class UniTask implements UniInterface{
             isMapping = true;
         }
 
-        UniMainAsyncTask task = new UniMainAsyncTask(cancelObservable);
+        UniMainThread task = new UniMainThread(cancelObservable);
         if(progress.isAble()) {
             task.addTaskObserver(progress);
         }

@@ -12,7 +12,7 @@ import com.markjmind.uni.exception.UniLoadFailException;
  * @email markjmind@gmail.com
  * @since 2016-01-28
  */
-public class UniMainAsyncTask extends AsyncTask<Void, Object, Boolean> implements StoreObserver<CancelObservable>, LoadEvent {
+public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements StoreObserver<CancelObservable>, LoadEvent {
     private String taskId;
     private boolean isCancel;
     private CancelObservable observable;
@@ -21,7 +21,7 @@ public class UniMainAsyncTask extends AsyncTask<Void, Object, Boolean> implement
 
     private Exception doInBackException;
 
-    public UniMainAsyncTask(CancelObservable observable){
+    public UniMainThread(CancelObservable observable){
         this.isCancel = false;
         this.observable = observable;
         this.taskId = ""+this.hashCode();
@@ -120,7 +120,7 @@ public class UniMainAsyncTask extends AsyncTask<Void, Object, Boolean> implement
         return taskId;
     }
 
-    public UniMainAsyncTask addTaskObserver(ProcessObserver observer){
+    public UniMainThread addTaskObserver(ProcessObserver observer){
         taskObservable.add(observer);
         return this;
     }
