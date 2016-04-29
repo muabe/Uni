@@ -113,6 +113,10 @@ class JwViewController {
 		return ((LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(layout_id, null);
 //		return View.inflate(context, layout_id,null);
 	}
+
+	public static View getViewInfalter(int layout_id, Context context, ViewGroup parents){
+		return ((LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(layout_id, parents);
+	}
 	
 	public static View findViewById(int R_id, Activity activity){
 		return activity.findViewById(R_id);
