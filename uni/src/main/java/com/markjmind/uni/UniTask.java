@@ -65,7 +65,6 @@ public class UniTask implements UniInterface{
         }
     }
 
-
     void init(UniLayout uniLayout, Object mappingObj, UniInterface uniInterface, boolean injectLayout, ViewGroup container){
         isMapping = false;
         this.uniLayout = uniLayout;
@@ -173,7 +172,7 @@ public class UniTask implements UniInterface{
 
     public String excute(){
         if(isAsync) {
-            return this.run(uniInterface);
+            return this.excute(uniInterface);
         }else{
             onPost();
             return null;
@@ -181,10 +180,6 @@ public class UniTask implements UniInterface{
     }
 
     public String excute(UniInterface uniInterface){
-        return run(uniInterface);
-    }
-
-    String run(UniInterface uniInterface){
         if(progress.get()==null){
             mapper.addAdapter(new ProgressAdapter(progress));
             mapper.inject(ProgressAdapter.class);
@@ -212,8 +207,6 @@ public class UniTask implements UniInterface{
         }
         return task.getId();
     }
-
-
 
     /*************************************************** UniTask Interface 관련 *********************************************/
     @Override
@@ -255,8 +248,6 @@ public class UniTask implements UniInterface{
     public void onCancelled(boolean attached) {
 
     }
-
-
 
 }
 
