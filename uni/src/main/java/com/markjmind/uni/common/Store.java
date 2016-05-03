@@ -123,6 +123,14 @@ public class Store<Value> extends LinkedHashMap<Object, Object> implements Compa
 		return ((Long)result).longValue();
 	}
 
+	public boolean getBool(String key){
+		Object result = this.get(key);
+		if(result instanceof java.lang.String){
+			return Boolean.parseBoolean((String)result);
+		}
+		return ((Boolean)result).booleanValue();
+	}
+
 	/**
 	 * Store의 에 배열로 값을 셋팅한다.
 	 */

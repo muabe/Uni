@@ -61,7 +61,7 @@ public class UniTask implements UniInterface{
         int layoutId = mapper.getAdapter(LayoutAdapter.class).getLayoutId();
         if(layoutId>0) {
             LayoutInflater inflater = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
-            uniLayout.setView(inflater.inflate(layoutId, container, false));
+            uniLayout.setLayout(inflater.inflate(layoutId, container, false));
         }
     }
 
