@@ -89,14 +89,18 @@ public class UniLayout extends FrameLayout implements UniInterface{
 
     public void excute(){
         if(uniTask==null){
-            init(new UniTask());
+            UniTask task = new UniTask();
+            this.uniTask = task;
+            this.uniTask.init(this, this, this, true, null);
         }
         uniTask.excute();
     }
 
     public void excute(UniInterface uniInterface){
         if(uniTask==null){
-            init(new UniTask());
+            UniTask task = new UniTask();
+            this.uniTask = task;
+            this.uniTask.init(this, this, this, true, null);
         }
         uniTask.excute(uniInterface);
     }
