@@ -11,6 +11,7 @@ import com.markjmind.uni.mapper.Mapper;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
+import com.markjmind.uni.thread.UniAsyncTask;
 
 
 /**
@@ -53,14 +54,14 @@ public class UniFragment extends Fragment implements UniInterface{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(uniLayout == null || isPopStack) {
             uniLayout = new UniLayout(getActivity());
-            uniTask.init(uniLayout, this, this, true, container);
+            uniTask.init(uniLayout, this, this, container);
             setRefreshBackStack(false);
             uniTask.excute();
         }
         return uniLayout;
     }
 
-    public View getView(){
+    public View getUniLayout(){
         return uniLayout;
     }
 
@@ -76,12 +77,21 @@ public class UniFragment extends Fragment implements UniInterface{
         this.isPopStack = isPopStack;
     }
 
-    public void excute(){
-        uniTask.excute();
+    /*************************************************** 실행 관련 *********************************************/
+    public void post(){
+        uniTask.post();
     }
 
-    public void excute(UniInterface uniInterface){
-        uniTask.excute(uniInterface);
+    public String excute(){
+        return uniTask.excute();
+    }
+
+    protected String excute(UniAsyncTask uniAsyncTask, UniLoadFail uniLoadFail){
+        return uniTask.excute(uniAsyncTask, uniLoadFail);
+    }
+
+    protected String excute(UniAsyncTask uniAsyncTask){
+        return uniTask.excute(uniAsyncTask);
     }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/
@@ -92,7 +102,6 @@ public class UniFragment extends Fragment implements UniInterface{
     public void cancelAll() {
         uniTask.cancelAll();
     }
-
 
     /*************************************************** 인터페이스 관련 *********************************************/
 

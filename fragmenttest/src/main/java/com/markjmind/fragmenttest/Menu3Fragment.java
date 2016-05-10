@@ -2,15 +2,17 @@ package com.markjmind.fragmenttest;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.markjmind.uni.UniFragment;
-import com.markjmind.uni.UniTaskAdapter;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.mapper.annotiation.Progress;
+import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
+import com.markjmind.uni.thread.UniAsyncTask;
 
 /**
  * @author 오재웅(JaeWoong-Oh)
@@ -41,6 +43,7 @@ public class Menu3Fragment extends UniFragment {
             event.update(i);
             Thread.sleep(10);
         }
+
         param.add("hi","hi");
 
     }
@@ -53,8 +56,13 @@ public class Menu3Fragment extends UniFragment {
             public void onClick(View v) {
                 progress.param.add("textName", "thread");
                 progress.set(UniProgress.VIEW, new SimpleProgressBar());
+                ProgressBuilder p = new ProgressBuilder();
 //                progress.get().setMode(U```niProgress.DIALOG);
-                excute(new UniTaskAdapter(Menu3Fragment.this) {
+                excute(new UniAsyncTask() {
+                    @Override
+                    public void onPre() {
+                        Toast.makeText(getUniLayout().getContext(),"hdi",Toast.LENGTH_LONG).show();
+                    }
 
                     @Override
                     public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
@@ -68,7 +76,6 @@ public class Menu3Fragment extends UniFragment {
                     public void onPost() {
                         btn.setText("완료");
                     }
-
                 });
 //                SimpleDialog d = new SimpleDialog(getActivity());
 //                d.show();

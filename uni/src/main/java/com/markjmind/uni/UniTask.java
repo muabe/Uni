@@ -1,7 +1,5 @@
 package com.markjmind.uni;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -65,7 +63,7 @@ public class UniTask implements UniInterface{
         }
     }
 
-    void init(UniLayout uniLayout, Object mappingObj, UniInterface uniInterface, boolean injectLayout, ViewGroup container){
+    void init(UniLayout uniLayout, Object mappingObj, UniInterface uniInterface, ViewGroup container){
         isMapping = false;
         this.uniLayout = uniLayout;
         this.context = uniLayout.getContext();
@@ -73,12 +71,11 @@ public class UniTask implements UniInterface{
         mapper.reset(this.uniLayout, mappingObj);
         this.uniInterface = uniInterface;
         this.uniLayout.init(this);
-        if(injectLayout) {
-            if (container == null) {
-                injectLayout(uniLayout);
-            } else {
-                injectLayout(container);
-            }
+        uniInterface.onBind();
+        if (container == null) {
+            injectLayout(uniLayout);
+        } else {
+            injectLayout(container);
         }
     }
 
@@ -87,32 +84,6 @@ public class UniTask implements UniInterface{
     }
 
     /*************************************************** Uni 외부지원 함수 관련 *********************************************/
-    public void bind(UniLayout uniLayout){
-        this.init(uniLayout, this, this, false, null);
-    }
-
-    public UniLayout create(Context context){
-        this.init(new UniLayout(context), this, this, true, null);
-        return getUniLayout();
-    }
-
-    public void add(ViewGroup parent){
-        parent.addView(create(parent.getContext()));
-    }
-
-    public void add(Activity activity, int parent_id){
-        ((ViewGroup)activity.findViewById(parent_id)).addView(create(activity));
-    }
-
-    public void add(Dialog dialog, int parent_id){
-        ((ViewGroup)dialog.findViewById(parent_id)).addView(create(dialog.getContext()));
-    }
-
-    public void replace(ViewGroup parent){
-        parent.removeAllViews();
-        add(parent);
-    }
-
     public View findViewById(int id){
         return uniLayout.findViewById(id);
     }
@@ -172,7 +143,7 @@ public class UniTask implements UniInterface{
 
     public String excute(){
         if(isAsync) {
-            return this.excute(uniInterface);
+            return this.excute(uniInterface, null);
         }else{
             onPost();
             return null;
@@ -180,6 +151,10 @@ public class UniTask implements UniInterface{
     }
 
     public String excute(UniInterface uniInterface){
+        return this.excute(uniInterface, null);
+    }
+
+    public String excute(UniInterface uniInterface, UniLoadFail uniLoadFail){
         if(progress.get()==null){
             mapper.addAdapter(new ProgressAdapter(progress));
             mapper.inject(ProgressAdapter.class);
@@ -187,7 +162,6 @@ public class UniTask implements UniInterface{
         if(progress.get()!=null){
             progress.get().onBind();
         }
-        uniInterface.onBind();
 
         if(!isMapping) {
             mapper.injectWithout(LayoutAdapter.class, ProgressAdapter.class);
@@ -198,7 +172,7 @@ public class UniTask implements UniInterface{
         if(progress.isAble()) {
             task.addTaskObserver(progress);
         }
-        task.addTaskObserver(new ProcessAdapter(uniInterface));
+        task.addTaskObserver(new ProcessAdapter(uniInterface, uniLoadFail));
         cancelObservable.add(task);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

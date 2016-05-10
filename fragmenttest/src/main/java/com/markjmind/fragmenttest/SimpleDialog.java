@@ -14,12 +14,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.markjmind.uni.UniDialog;
-import com.markjmind.uni.UniTaskAdapter;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.mapper.annotiation.Progress;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
+import com.markjmind.uni.thread.UniAsyncTask;
 
 /**
  * <br>捲土重來<br>
@@ -51,7 +51,7 @@ public class SimpleDialog extends UniDialog{
                 public void onClick(View v) {
                     if (!progress.isShowing()) {
                         progress.param.add("textName", "thread");
-                        excute(new UniTaskAdapter(SimpleDialog.this) {
+                        excute(new UniAsyncTask() {
 
                             @Override
                             public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {

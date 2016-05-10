@@ -35,12 +35,7 @@ public class ProgressBuilder implements ProcessObserver {
         this.theme = -1;
         this.param = new Store<>();
     }
-
-    public ProgressBuilder(ViewGroup parents) {
-        this();
-        setParents(parents);
-    }
-
+    
     public void setParents(ViewGroup parents){
         this.parents = parents;
         this.progressLayout = new LinearLayout(parents.getContext());

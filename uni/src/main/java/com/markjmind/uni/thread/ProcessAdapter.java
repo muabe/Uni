@@ -1,6 +1,7 @@
 package com.markjmind.uni.thread;
 
 import com.markjmind.uni.UniInterface;
+import com.markjmind.uni.UniLoadFail;
 
 /**
  * <br>捲土重來<br>
@@ -11,9 +12,11 @@ import com.markjmind.uni.UniInterface;
  */
 public class ProcessAdapter implements ProcessObserver {
     private UniInterface uniInterface;
+    private UniLoadFail uniLoadFail;
 
-    public ProcessAdapter(UniInterface uniInterface) {
+    public ProcessAdapter(UniInterface uniInterface, UniLoadFail uniLoadFail) {
         this.uniInterface = uniInterface;
+        this.uniLoadFail = uniLoadFail;
     }
 
     @Override
@@ -43,11 +46,19 @@ public class ProcessAdapter implements ProcessObserver {
 
     @Override
     public void onExceptionExecute(Exception e) {
-        this.uniInterface.onException(e);
+        if(uniLoadFail==null) {
+            this.uniInterface.onException(e);
+        }else{
+            this.uniLoadFail.onException(e);
+        }
     }
 
     @Override
     public void onCancelled(boolean attached) {
-        this.uniInterface.onCancelled(attached);
+        if(uniLoadFail==null) {
+            this.uniInterface.onCancelled(attached);
+        }else{
+            this.uniLoadFail.onCancelled(attached);
+        }
     }
 }

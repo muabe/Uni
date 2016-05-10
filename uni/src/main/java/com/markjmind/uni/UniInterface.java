@@ -9,7 +9,7 @@ import com.markjmind.uni.thread.LoadEvent;
  * @email markjmind@gmail.com
  * @since 2016-01-28
  */
-public interface UniInterface {
+public interface UniInterface extends UniLoadFail{
     void onBind();
 
     void onPre();
@@ -21,9 +21,5 @@ public interface UniInterface {
     void onPost();
 
     void onPostFail(String message, Object arg);
-
-    void onException(Exception e);
-
-    void onCancelled(boolean attached);
 
 }

@@ -19,7 +19,7 @@ import com.markjmind.uni.thread.LoadEvent;
  */
 @Layout(R.layout.content)
 @Progress(type = SimpleProgress.class, mode = UniProgress.VIEW)
-public class Content extends UniTask{
+public class ContentDown extends UniTask{
     @GetView
     Button button3;
 
@@ -31,6 +31,5 @@ public class Content extends UniTask{
     @Override
     public void onPost() {
         button3.setText("끝");
-        button3.setText((String)(getUniLayout().getRootView().findViewById(R.id.rootView).getTag()));
     }
 }

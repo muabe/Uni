@@ -5,9 +5,8 @@ import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.markjmind.uni.Uni;
+import com.markjmind.uni.UniLayout;
 import com.markjmind.uni.progress.UniProgress;
 
 public class MainActivity extends Activity {
@@ -18,7 +17,7 @@ public class MainActivity extends Activity {
     Menu3Fragment menu3Fragment;
     FragmentManager fm;
 
-    boolean isTask = true;
+    boolean isTask = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,17 +26,19 @@ public class MainActivity extends Activity {
             setContentView(R.layout.ok);
             ViewGroup frame = (ViewGroup)findViewById(R.id.frame);
 
-            Content content = Uni.create(this, Content.class);
-            frame.addView(content.getUniLayout());
-            content.excute();
+            UniLayout upLayout = (UniLayout)findViewById(R.id.aaa);
+            ContentUp contentUp = new ContentUp();
+            upLayout.bind(contentUp);
+            upLayout.excute();
 
-            Content2 content2 = Uni.bind(this, R.id.aaa, Content2.class);
-            content2.excute();
-            Toast.makeText(this, (String)(frame.getRootView().findViewById(R.id.frame).getTag()), Toast.LENGTH_SHORT).show();
+            UniLayout uniLayout = new UniLayout(this);
+            ContentDown contentDown = new ContentDown();
+            uniLayout.bind(contentDown);
+            frame.addView(uniLayout);
+            uniLayout.excute();
 
         }else {
             setContentView(R.layout.activity_main);
-
 
             lyt = (ViewGroup) findViewById(R.id.lyt);
             menu1Fragment = new Menu1Fragment();

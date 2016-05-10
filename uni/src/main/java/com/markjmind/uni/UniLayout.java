@@ -12,6 +12,7 @@ import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
+import com.markjmind.uni.thread.UniAsyncTask;
 
 /**
  * <br>捲土重來<br>
@@ -85,25 +86,40 @@ public class UniLayout extends FrameLayout implements UniInterface{
         }
     }
 
-    /*************************************************** 공통 *********************************************/
-
-    public void excute(){
-        if(uniTask==null){
-            UniTask task = new UniTask();
-            this.uniTask = task;
-            this.uniTask.init(this, this, this, true, null);
-        }
-        uniTask.excute();
+    public void bind(UniTask uniTask){
+        uniTask.init(this, uniTask, uniTask, null);
     }
 
-    public void excute(UniInterface uniInterface){
+
+    /*************************************************** 실행 관련 *********************************************/
+    public void post(){
         if(uniTask==null){
             UniTask task = new UniTask();
-            this.uniTask = task;
-            this.uniTask.init(this, this, this, true, null);
+            task.init(this, this, this, null);
         }
-        uniTask.excute(uniInterface);
+        uniTask.post();
     }
+
+    public String excute(){
+        if(uniTask==null){
+            UniTask task = new UniTask();
+            task.init(this, this, this, null);
+        }
+        return uniTask.excute();
+    }
+    protected String excute(UniAsyncTask uniAsyncTask){
+        return this.excute(uniAsyncTask, null);
+    }
+
+
+    protected String excute(UniAsyncTask uniAsyncTask, UniLoadFail uniLoadFail){
+        if(uniTask==null){
+            UniTask task = new UniTask();
+            task.init(this, this, this, null);
+        }
+        return uniTask.excute(uniAsyncTask, uniLoadFail);
+    }
+
 
     public void cancel(String id) {
         uniTask.cancel(id);

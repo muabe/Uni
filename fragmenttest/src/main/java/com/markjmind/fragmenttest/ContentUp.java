@@ -20,7 +20,7 @@ import com.markjmind.uni.thread.LoadEvent;
  */
 //@Layout(R.layout.content)
 @Progress(mode = UniProgress.VIEW, res = R.layout.one_progress)
-public class Content2 extends UniTask {
+public class ContentUp extends UniTask {
     @GetView
     Button button3;
     @GetView
