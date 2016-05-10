@@ -88,10 +88,16 @@ public class UniLayout extends FrameLayout implements UniInterface{
     /*************************************************** 공통 *********************************************/
 
     public void excute(){
+        if(uniTask==null){
+            init(new UniTask());
+        }
         uniTask.excute();
     }
 
     public void excute(UniInterface uniInterface){
+        if(uniTask==null){
+            init(new UniTask());
+        }
         uniTask.excute(uniInterface);
     }
 
