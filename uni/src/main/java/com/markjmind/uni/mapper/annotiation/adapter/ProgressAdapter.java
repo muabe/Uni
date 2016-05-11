@@ -34,22 +34,24 @@ public class ProgressAdapter extends ClassAdapter<Progress> {
 
     @Override
     public void inject(Progress annotation, Class clz, Object targetObject) {
-        Class<UniProgress> type = (Class<UniProgress>) annotation.type();
-        int mode = annotation.mode();
+        if(progress!=null) {
+            Class<UniProgress> type = (Class<UniProgress>) annotation.type();
+            int mode = annotation.mode();
 
-        if(!type.equals(Progress.None.class)){
-            try {
-                UniProgress info = (UniProgress)type.newInstance();
-                progress.set(mode, info);
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }else{
-            int res =  annotation.res();
-            if(res != -1){
-                progress.set(mode, res);
+            if (!type.equals(Progress.None.class)) {
+                try {
+                    UniProgress info = (UniProgress) type.newInstance();
+                    progress.set(mode, info);
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                int res = annotation.res();
+                if (res != -1) {
+                    progress.set(mode, res);
+                }
             }
         }
     }

@@ -19,7 +19,6 @@ import com.markjmind.uni.mapper.Mapper;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
-import com.markjmind.uni.thread.UniAsyncTask;
 
 /**
  * <br>捲土重來<br>
@@ -33,7 +32,7 @@ public class UniDialog extends Dialog implements UniInterface{
     private UniLayout uniLayout;
     public Mapper mapper;
     public Store<?> param;
-    public ProgressBuilder progress;
+    public ProgressBuilder progress = new ProgressBuilder();
 
     private OnDismissResult onDismissResult;
 
@@ -43,7 +42,6 @@ public class UniDialog extends Dialog implements UniInterface{
         uniTask = new UniTask();
         mapper = uniTask.mapper;
         param = uniTask.param;
-        progress = uniTask.progress;
     }
 
     public UniDialog(Context context, int themeResId) {
@@ -52,7 +50,6 @@ public class UniDialog extends Dialog implements UniInterface{
         uniTask = new UniTask();
         mapper = uniTask.mapper;
         param = uniTask.param;
-        progress = uniTask.progress;
     }
 
 
@@ -61,41 +58,46 @@ public class UniDialog extends Dialog implements UniInterface{
         super.onCreate(savedInstanceState);
         uniLayout = new UniLayout(getContext());
         setContentView(uniLayout);
-        uniTask.init(uniLayout, this, this, null);
+        uniTask.init(uniLayout, progress, this, this, null);
 
         setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                uniTask.excute();
+                uniTask.excute(progress);
             }
         });
     }
 
+    /*************************************************** 필수 항목 *********************************************/
+    public UniLayout getUniLayout(){
+        return uniLayout;
+    }
+
     /*************************************************** 실행 관련 *********************************************/
     public void post(){
-        uniTask.post();
+        uniLayout.post();
     }
 
     public String excute(){
-        return uniTask.excute();
+        return uniLayout.excute();
     }
 
-    protected String excute(UniAsyncTask uniAsyncTask, UniLoadFail uniLoadFail){
-        return uniTask.excute(uniAsyncTask, uniLoadFail);
-    }
-
-    protected String excute(UniAsyncTask uniAsyncTask){
-        return uniTask.excute(uniAsyncTask);
-    }
+//    protected String excute(UniAsyncTask uniAsyncTask, UniLoadFail uniLoadFail){
+//        return uniTask.excute(uniAsyncTask, uniLoadFail);
+//    }
+//
+//    protected String excute(UniAsyncTask uniAsyncTask){
+//        return uniTask.excute(uniAsyncTask);
+//    }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/
 
     public void cancel(String id) {
-        uniTask.cancel(id);
+        uniLayout.cancel(id);
     }
 
     public void cancelAll() {
-        uniTask.cancelAll();
+        uniLayout.cancelAll();
     }
 
 

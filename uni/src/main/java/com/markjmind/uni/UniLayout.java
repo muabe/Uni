@@ -12,7 +12,6 @@ import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
-import com.markjmind.uni.thread.UniAsyncTask;
 
 /**
  * <br>捲土重來<br>
@@ -24,33 +23,42 @@ public class UniLayout extends FrameLayout implements UniInterface{
 
     private View view;
     private UniTask uniTask;
-    private ViewGroup layout;
+    private ViewGroup frameLayout;
     public Mapper mapper;
     public Store<?> param;
-    public ProgressBuilder progress;
+    public ProgressBuilder progress = new ProgressBuilder();
 
 
 
     public UniLayout(Context context) {
         super(context);
-        layout = new FrameLayout(context);
-        this.addView(layout);
+        frameLayout = new FrameLayout(context);
+        this.addView(frameLayout);
+        this.progress.setParents(this);
+        param = new Store<>();
     }
 
     public UniLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        layout = new FrameLayout(context);
-        this.addView(layout);
+        frameLayout = new FrameLayout(context);
+        this.addView(frameLayout);
+        this.progress.setParents(this);
     }
 
     public UniLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        layout = new FrameLayout(context);
-        this.addView(layout);
+        frameLayout = new FrameLayout(context);
+        this.addView(frameLayout);
+        this.progress.setParents(this);
     }
 
-    void init(UniTask task){
+    void init(UniTask task, ProgressBuilder pro){
         setUniTask(task);
+        if(pro!=null) {
+            this.progress = pro;
+            this.progress.setParents(this);
+        }
+
         uniTask.mapper.addAdapter(new ParamAdapter(uniTask.param));
         addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
             @Override
@@ -61,7 +69,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
             @Override
             public void onViewDetachedFromWindow(View v) {
                 uniTask.param.clear();
-                uniTask.progress.param.clear();
+                progress.param.clear();
                 uniTask.getCancelObservable().setAttached(false);
                 uniTask.getCancelObservable().cancelAll();
             }
@@ -72,12 +80,13 @@ public class UniLayout extends FrameLayout implements UniInterface{
         this.uniTask = uniTask;
         mapper = uniTask.mapper;
         param = uniTask.param;
-        progress = uniTask.progress;
-        this.uniTask.progress.setParents(this);
     }
 
+    UniTask getUniTask(){
+        return uniTask;
+    }
 
-    protected void setLayout(View view) {
+    protected void setFrameLayout(View view) {
         this.removeAllViews();
         this.view = view;
         if(this.view !=null) {
@@ -87,7 +96,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     }
 
     public void bind(UniTask uniTask){
-        uniTask.init(this, uniTask, uniTask, null);
+        uniTask.init(this, progress, uniTask, uniTask, null);
     }
 
 
@@ -95,7 +104,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     public void post(){
         if(uniTask==null){
             UniTask task = new UniTask();
-            task.init(this, this, this, null);
+            task.init(this, progress, this, this, null);
         }
         uniTask.post();
     }
@@ -103,22 +112,22 @@ public class UniLayout extends FrameLayout implements UniInterface{
     public String excute(){
         if(uniTask==null){
             UniTask task = new UniTask();
-            task.init(this, this, this, null);
+            task.init(this, progress, this, this, null);
         }
-        return uniTask.excute();
+        return uniTask.excute(progress);
     }
-    protected String excute(UniAsyncTask uniAsyncTask){
-        return this.excute(uniAsyncTask, null);
-    }
+//    protected String excute(UniAsyncTask uniAsyncTask){
+//        return this.excute(uniAsyncTask, null);
+//    }
 
 
-    protected String excute(UniAsyncTask uniAsyncTask, UniLoadFail uniLoadFail){
-        if(uniTask==null){
-            UniTask task = new UniTask();
-            task.init(this, this, this, null);
-        }
-        return uniTask.excute(uniAsyncTask, uniLoadFail);
-    }
+//    protected String excute(UniAsyncTask uniAsyncTask, UniLoadFail uniLoadFail){
+//        if(uniTask==null){
+//            UniTask task = new UniTask();
+//            task.init(this, progress, this, this, null);
+//        }
+//        return uniTask.excute(uniAsyncTask, uniLoadFail);
+//    }
 
 
     public void cancel(String id) {

@@ -11,7 +11,6 @@ import com.markjmind.uni.mapper.Mapper;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
-import com.markjmind.uni.thread.UniAsyncTask;
 
 
 /**
@@ -40,7 +39,7 @@ public class UniFragment extends Fragment implements UniInterface{
         uniTask = new UniTask();
         mapper = uniTask.mapper;
         param = uniTask.param;
-        progress = uniTask.progress;
+        progress = new ProgressBuilder();
 
         isPopStack = false;
     }
@@ -54,16 +53,14 @@ public class UniFragment extends Fragment implements UniInterface{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(uniLayout == null || isPopStack) {
             uniLayout = new UniLayout(getActivity());
-            uniTask.init(uniLayout, this, this, container);
-            setRefreshBackStack(false);
-            uniTask.excute();
+            uniTask.init(uniLayout, progress, this, this, container);
+//            setRefreshBackStack(false);
+            uniTask.excute(progress);
         }
         return uniLayout;
     }
 
-    public View getUniLayout(){
-        return uniLayout;
-    }
+
 
     public View findViewById(int id){
         return uniLayout.findViewById(id);
@@ -77,22 +74,27 @@ public class UniFragment extends Fragment implements UniInterface{
         this.isPopStack = isPopStack;
     }
 
+    /*************************************************** 필수 항목 *********************************************/
+    public UniLayout getUniLayout(){
+        return uniLayout;
+    }
+
     /*************************************************** 실행 관련 *********************************************/
     public void post(){
         uniTask.post();
     }
 
     public String excute(){
-        return uniTask.excute();
+        return uniTask.excute(progress);
     }
 
-    protected String excute(UniAsyncTask uniAsyncTask, UniLoadFail uniLoadFail){
-        return uniTask.excute(uniAsyncTask, uniLoadFail);
-    }
-
-    protected String excute(UniAsyncTask uniAsyncTask){
-        return uniTask.excute(uniAsyncTask);
-    }
+//    protected String excute(UniAsyncTask uniAsyncTask, UniLoadFail uniLoadFail){
+//        return uniTask.excute(uniAsyncTask, uniLoadFail);
+//    }
+//
+//    protected String excute(UniAsyncTask uniAsyncTask){
+//        return uniTask.excute(uniAsyncTask);
+//    }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/
     public void cancel(String id) {

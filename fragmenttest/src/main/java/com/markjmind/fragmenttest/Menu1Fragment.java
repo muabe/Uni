@@ -82,6 +82,7 @@ public class Menu1Fragment extends UniFragment {
     @Override
     public void onPost() {
         textView.setText("끝");
+        setRefreshBackStack(true);
     }
 
     @Override

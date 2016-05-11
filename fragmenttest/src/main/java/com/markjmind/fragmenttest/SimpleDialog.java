@@ -19,7 +19,7 @@ import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.mapper.annotiation.Progress;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
-import com.markjmind.uni.thread.UniAsyncTask;
+import com.markjmind.uni.UniAsyncTask;
 
 /**
  * <br>捲土重來<br>
@@ -42,7 +42,6 @@ public class SimpleDialog extends UniDialog{
     @Override
     public void onPre() {
 
-
             progress.param.add("textName", "하이");
             button2.setText(param.getString("hi"));
             Toast.makeText(getContext(), "dfsfd", Toast.LENGTH_SHORT).show();
@@ -51,8 +50,7 @@ public class SimpleDialog extends UniDialog{
                 public void onClick(View v) {
                     if (!progress.isShowing()) {
                         progress.param.add("textName", "thread");
-                        excute(new UniAsyncTask() {
-
+                        new UniAsyncTask(getUniLayout()){
                             @Override
                             public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
                                 for (int i = 0; i <= 1000; i++) {
@@ -66,8 +64,7 @@ public class SimpleDialog extends UniDialog{
                             public void onPost() {
                                 button2.setText("완료");
                             }
-
-                        });
+                        }.excute();
                     }
                 }
             });

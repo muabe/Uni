@@ -1,7 +1,5 @@
 package com.markjmind.fragmenttest;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -10,16 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ProgressBar;
 
 import com.markjmind.uni.UniTask;
 import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.mapper.annotiation.Param;
-import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
-import com.markjmind.uni.common.Jwc;
 
 /**
  * @author 오재웅(JaeWoong-Oh)
@@ -36,52 +31,52 @@ public class Menu2Fragment extends Fragment{
         uniView.param.add("2","2");
         uniView.param.add("a","aaa");
         uniView.param.add("b", "bbb");
-        uniView.progress.set(UniProgress.VIEW, new UniProgress(R.layout.progress) {
-            ObjectAnimator obj;
-
-            @Override
-            public void onStart(View layout, CancelAdapter cancelAdapter) {
-                ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressBar);
-                bar.setMax(500);
-                Button cancel = (Button) layout.findViewById(R.id.cancel);
-                final CancelAdapter adapter = cancelAdapter;
-                cancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        adapter.cancel();
-                    }
-                });
-
-                obj = ObjectAnimator.ofFloat(cancel, View.TRANSLATION_X,
-                        Jwc.getPix(layout.getContext(), 50) * -1
-                        , Jwc.getPix(layout.getContext(), 50));
-                obj.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    int count = 0;
-
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        Log.e("d", "" + count++);
-                    }
-                });
-                obj.setDuration(1000);
-                obj.setRepeatCount(5000);
-                obj.setRepeatMode(ObjectAnimator.REVERSE);
-                obj.start();
-            }
-
-            @Override
-            public void onUpdate(View layout, Object value, CancelAdapter cancelAdapter) {
-                ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressBar);
-                bar.setProgress((int) value);
-
-            }
-
-            @Override
-            public void onDestroy(View layout, boolean attach) {
-                obj.cancel();
-            }
-
-        });
+//        uniView.progress.set(UniProgress.VIEW, new UniProgress(R.layout.progress) {
+//            ObjectAnimator obj;
+//
+//            @Override
+//            public void onStart(View layout, CancelAdapter cancelAdapter) {
+//                ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressBar);
+//                bar.setMax(500);
+//                Button cancel = (Button) layout.findViewById(R.id.cancel);
+//                final CancelAdapter adapter = cancelAdapter;
+//                cancel.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        adapter.cancel();
+//                    }
+//                });
+//
+//                obj = ObjectAnimator.ofFloat(cancel, View.TRANSLATION_X,
+//                        Jwc.getPix(layout.getContext(), 50) * -1
+//                        , Jwc.getPix(layout.getContext(), 50));
+//                obj.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//                    int count = 0;
+//
+//                    @Override
+//                    public void onAnimationUpdate(ValueAnimator animation) {
+//                        Log.e("d", "" + count++);
+//                    }
+//                });
+//                obj.setDuration(1000);
+//                obj.setRepeatCount(5000);
+//                obj.setRepeatMode(ObjectAnimator.REVERSE);
+//                obj.start();
+//            }
+//
+//            @Override
+//            public void onUpdate(View layout, Object value, CancelAdapter cancelAdapter) {
+//                ProgressBar bar = (ProgressBar) layout.findViewById(R.id.progressBar);
+//                bar.setProgress((int) value);
+//
+//            }
+//
+//            @Override
+//            public void onDestroy(View layout, boolean attach) {
+//                obj.cancel();
+//            }
+//
+//        });
 
         return uniView.getUniLayout();
     }

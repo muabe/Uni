@@ -32,7 +32,7 @@ public class UniTask implements UniInterface{
     private UniLayout uniLayout;
     public Mapper mapper;
     public Store<?> param;
-    public ProgressBuilder progress;
+//    public ProgressBuilder progress;
 
 
     private Context context;
@@ -47,36 +47,39 @@ public class UniTask implements UniInterface{
         uniLayout = null;
         mapper = new UniMapper();
         param = new Store<>();
-        progress = new ProgressBuilder();
         uniInterface = this;
         cancelObservable = new CancelObservable();
         isAsync = true;
     }
-
 
     void injectLayout(ViewGroup container){
         mapper.inject(LayoutAdapter.class);
         int layoutId = mapper.getAdapter(LayoutAdapter.class).getLayoutId();
         if(layoutId>0) {
             LayoutInflater inflater = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
-            uniLayout.setLayout(inflater.inflate(layoutId, container, false));
+            uniLayout.setFrameLayout(inflater.inflate(layoutId, container, false));
         }
     }
 
-    void init(UniLayout uniLayout, Object mappingObj, UniInterface uniInterface, ViewGroup container){
+    void init(UniLayout uniLayout, ProgressBuilder progress, Object mappingObj, UniInterface uniInterface, ViewGroup container){
         isMapping = false;
+//        this.progress = progress;
         this.uniLayout = uniLayout;
         this.context = uniLayout.getContext();
-        this.uniLayout.setUniTask(this);
         mapper.reset(this.uniLayout, mappingObj);
         this.uniInterface = uniInterface;
-        this.uniLayout.init(this);
+        this.uniLayout.init(this, progress);
         uniInterface.onBind();
         if (container == null) {
             injectLayout(uniLayout);
         } else {
             injectLayout(container);
         }
+    }
+
+    void init(Object mappingObj, UniInterface uniInterface){
+        this.uniInterface = uniInterface;
+        uniInterface.onBind();
     }
 
     CancelObservable getCancelObservable(){
@@ -141,26 +144,28 @@ public class UniTask implements UniInterface{
 
 
 
-    public String excute(){
+    public String excute(ProgressBuilder progress){
         if(isAsync) {
-            return this.excute(uniInterface, null);
+            return this.excute(progress, uniInterface, null);
         }else{
             onPost();
             return null;
         }
     }
 
-    public String excute(UniInterface uniInterface){
-        return this.excute(uniInterface, null);
+    private String excute(ProgressBuilder progress, UniInterface uniInterface){
+        return this.excute(progress, uniInterface, null);
     }
 
-    public String excute(UniInterface uniInterface, UniLoadFail uniLoadFail){
-        if(progress.get()==null){
-            mapper.addAdapter(new ProgressAdapter(progress));
-            mapper.inject(ProgressAdapter.class);
-        }
-        if(progress.get()!=null){
-            progress.get().onBind();
+    private String excute(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail){
+        if(progress!=null) {
+            if (progress.get() == null) {
+                mapper.addAdapter(new ProgressAdapter(progress));
+                mapper.inject(ProgressAdapter.class);
+            }
+            if (progress.get() != null) {
+                progress.get().onBind();
+            }
         }
 
         if(!isMapping) {
@@ -168,6 +173,10 @@ public class UniTask implements UniInterface{
             isMapping = true;
         }
 
+        return run(progress, uniInterface, uniLoadFail);
+    }
+
+    String run(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail){
         UniMainThread task = new UniMainThread(cancelObservable);
         if(progress.isAble()) {
             task.addTaskObserver(progress);

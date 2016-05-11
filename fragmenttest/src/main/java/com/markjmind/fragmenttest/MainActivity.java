@@ -17,7 +17,7 @@ public class MainActivity extends Activity {
     Menu3Fragment menu3Fragment;
     FragmentManager fm;
 
-    boolean isTask = false;
+    boolean isTask = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
