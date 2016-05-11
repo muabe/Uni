@@ -43,6 +43,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
         frameLayout = new FrameLayout(context);
         this.addView(frameLayout);
         this.progress.setParents(this);
+        param = new Store<>();
     }
 
     public UniLayout(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -50,16 +51,20 @@ public class UniLayout extends FrameLayout implements UniInterface{
         frameLayout = new FrameLayout(context);
         this.addView(frameLayout);
         this.progress.setParents(this);
+        param = new Store<>();
     }
 
-    void init(UniTask task, ProgressBuilder pro){
+    void init(UniTask task, Store<?> par, ProgressBuilder pro){
         setUniTask(task);
+        if(par!=null){
+            this.param = par;
+        }
         if(pro!=null) {
             this.progress = pro;
             this.progress.setParents(this);
         }
 
-        uniTask.mapper.addAdapter(new ParamAdapter(uniTask.param));
+        uniTask.mapper.addAdapter(new ParamAdapter(param));
         addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
@@ -68,7 +73,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-                uniTask.param.clear();
+                param.clear();
                 progress.param.clear();
                 uniTask.getCancelObservable().setAttached(false);
                 uniTask.getCancelObservable().cancelAll();
@@ -79,7 +84,6 @@ public class UniLayout extends FrameLayout implements UniInterface{
     void setUniTask(UniTask uniTask){
         this.uniTask = uniTask;
         mapper = uniTask.mapper;
-        param = uniTask.param;
     }
 
     UniTask getUniTask(){
@@ -96,7 +100,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     }
 
     public void bind(UniTask uniTask){
-        uniTask.init(this, progress, uniTask, uniTask, null);
+        uniTask.syncUniLayout(this, null, progress, uniTask, uniTask, null);
     }
 
 
@@ -104,7 +108,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     public void post(){
         if(uniTask==null){
             UniTask task = new UniTask();
-            task.init(this, progress, this, this, null);
+            task.syncUniLayout(this, null, null, this, this, null);
         }
         uniTask.post();
     }
@@ -112,7 +116,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     public String excute(){
         if(uniTask==null){
             UniTask task = new UniTask();
-            task.init(this, progress, this, this, null);
+            task.syncUniLayout(this, null, null, this, this, null);
         }
         return uniTask.excute(progress);
     }

@@ -24,6 +24,7 @@ public abstract class UniAsyncTask implements UniInterface{
     public UniAsyncTask(UniLayout uniLayout){
         setUniTask(uniLayout.getUniTask());
         progress = uniLayout.progress;
+        param = uniLayout.param;
     }
 
     public UniAsyncTask(UniFragment uniFragment){
@@ -36,7 +37,6 @@ public abstract class UniAsyncTask implements UniInterface{
 
     void setUniTask(UniTask uniTask){
         this.uniTask = uniTask;
-        param = uniTask.param;
     }
 
     @Override

@@ -41,7 +41,7 @@ public class UniDialog extends Dialog implements UniInterface{
         uniLayout = null;
         uniTask = new UniTask();
         mapper = uniTask.mapper;
-        param = uniTask.param;
+        param = new Store<>();
     }
 
     public UniDialog(Context context, int themeResId) {
@@ -49,7 +49,7 @@ public class UniDialog extends Dialog implements UniInterface{
         uniLayout = null;
         uniTask = new UniTask();
         mapper = uniTask.mapper;
-        param = uniTask.param;
+        param = new Store<>();
     }
 
 
@@ -58,7 +58,7 @@ public class UniDialog extends Dialog implements UniInterface{
         super.onCreate(savedInstanceState);
         uniLayout = new UniLayout(getContext());
         setContentView(uniLayout);
-        uniTask.init(uniLayout, progress, this, this, null);
+        uniTask.syncUniLayout(uniLayout, param, progress, this, this, null);
 
         setOnShowListener(new OnShowListener() {
             @Override

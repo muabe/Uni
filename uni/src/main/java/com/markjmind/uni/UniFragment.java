@@ -38,7 +38,7 @@ public class UniFragment extends Fragment implements UniInterface{
         uniLayout = null;
         uniTask = new UniTask();
         mapper = uniTask.mapper;
-        param = uniTask.param;
+        param = new Store<>();
         progress = new ProgressBuilder();
 
         isPopStack = false;
@@ -53,7 +53,7 @@ public class UniFragment extends Fragment implements UniInterface{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(uniLayout == null || isPopStack) {
             uniLayout = new UniLayout(getActivity());
-            uniTask.init(uniLayout, progress, this, this, container);
+            uniTask.syncUniLayout(uniLayout, param, progress, this, this, container);
 //            setRefreshBackStack(false);
             uniTask.excute(progress);
         }

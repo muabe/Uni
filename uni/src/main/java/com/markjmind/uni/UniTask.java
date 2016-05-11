@@ -31,7 +31,6 @@ import com.markjmind.uni.thread.UniMainThread;
 public class UniTask implements UniInterface{
     private UniLayout uniLayout;
     public Mapper mapper;
-    public Store<?> param;
 //    public ProgressBuilder progress;
 
 
@@ -46,7 +45,6 @@ public class UniTask implements UniInterface{
     public UniTask(){
         uniLayout = null;
         mapper = new UniMapper();
-        param = new Store<>();
         uniInterface = this;
         cancelObservable = new CancelObservable();
         isAsync = true;
@@ -61,14 +59,14 @@ public class UniTask implements UniInterface{
         }
     }
 
-    void init(UniLayout uniLayout, ProgressBuilder progress, Object mappingObj, UniInterface uniInterface, ViewGroup container){
+    void syncUniLayout(UniLayout uniLayout, Store<?> param, ProgressBuilder progress, Object mappingObj, UniInterface uniInterface, ViewGroup container){
         isMapping = false;
 //        this.progress = progress;
         this.uniLayout = uniLayout;
         this.context = uniLayout.getContext();
         mapper.reset(this.uniLayout, mappingObj);
         this.uniInterface = uniInterface;
-        this.uniLayout.init(this, progress);
+        this.uniLayout.init(this, param, progress);
         uniInterface.onBind();
         if (container == null) {
             injectLayout(uniLayout);
