@@ -28,6 +28,7 @@ public class MainActivity extends Activity {
 
             UniLayout upLayout = (UniLayout)findViewById(R.id.aaa);
             ContentUp contentUp = new ContentUp();
+            contentUp.param.add("what","are you doing?");
             upLayout.bind(contentUp);
             upLayout.excute();
 

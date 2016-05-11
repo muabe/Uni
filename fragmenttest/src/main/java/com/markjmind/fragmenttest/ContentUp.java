@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.markjmind.uni.UniTask;
 import com.markjmind.uni.mapper.annotiation.GetView;
+import com.markjmind.uni.mapper.annotiation.Param;
 import com.markjmind.uni.mapper.annotiation.Progress;
 import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
@@ -25,6 +26,8 @@ public class ContentUp extends UniTask {
     Button button3;
     @GetView
     TextView text;
+    @Param
+    String what;
 
     @Override
     public void onLoad(LoadEvent loadEvent, CancelAdapter cancelAdapter) throws Exception {
@@ -35,7 +38,7 @@ public class ContentUp extends UniTask {
     public void onPost()   {
         Toast.makeText(getContext(),"hi",Toast.LENGTH_SHORT).show();
         button3.setText((String)(getUniLayout().getRootView().findViewById(R.id.rootView).getTag()));
-        text.setText("ok");
+        text.setText(what);
 
     }
 }

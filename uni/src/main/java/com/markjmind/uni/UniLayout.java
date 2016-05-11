@@ -100,7 +100,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     }
 
     public void bind(UniTask uniTask){
-        uniTask.syncUniLayout(this, null, progress, uniTask, uniTask, null);
+        uniTask.syncUniLayout(this, uniTask.param, progress, uniTask, uniTask, null);
     }
 
 
