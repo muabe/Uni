@@ -108,7 +108,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     public void post(){
         if(uniTask==null){
             UniTask task = new UniTask();
-            task.syncUniLayout(this, null, null, this, this, null);
+            task.syncUniLayout(this, param, progress, this, this, null);
         }
         uniTask.post();
     }
@@ -116,7 +116,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     public String excute(){
         if(uniTask==null){
             UniTask task = new UniTask();
-            task.syncUniLayout(this, null, null, this, this, null);
+            task.syncUniLayout(this, param, progress, this, this, null);
         }
         return uniTask.excute(progress);
     }

@@ -40,7 +40,6 @@ public class UniFragment extends Fragment implements UniInterface{
         mapper = uniTask.mapper;
         param = new Store<>();
         progress = new ProgressBuilder();
-
         isPopStack = false;
     }
 
@@ -55,12 +54,14 @@ public class UniFragment extends Fragment implements UniInterface{
             uniLayout = new UniLayout(getActivity());
             uniTask.syncUniLayout(uniLayout, param, progress, this, this, container);
 //            setRefreshBackStack(false);
-            uniTask.excute(progress);
+            if(uniTask.isAsync()) {
+                uniTask.excute(progress);
+            }else{
+                uniTask.post();
+            }
         }
         return uniLayout;
     }
-
-
 
     public View findViewById(int id){
         return uniLayout.findViewById(id);
@@ -68,6 +69,10 @@ public class UniFragment extends Fragment implements UniInterface{
 
     public void setAsync(boolean isAsync){
         this.uniTask.setAsync(isAsync);
+    }
+
+    public boolean isAsync(){
+        return this.uniTask.isAsync();
     }
 
     public void setRefreshBackStack(boolean isPopStack) {
@@ -86,6 +91,10 @@ public class UniFragment extends Fragment implements UniInterface{
 
     public String excute(){
         return uniTask.excute(progress);
+    }
+
+    public void excute(boolean isAsync){
+        uniTask.post();
     }
 
 //    protected String excute(UniAsyncTask uniAsyncTask, UniLoadFail uniLoadFail){

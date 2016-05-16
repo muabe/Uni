@@ -105,6 +105,10 @@ public class UniTask implements UniInterface{
         this.isAsync = isAsync;
     }
 
+    public boolean isAsync(){
+        return this.isAsync;
+    }
+
 
     /*************************************************** Context 함수 관련 *********************************************/
     public Context getContext(){
