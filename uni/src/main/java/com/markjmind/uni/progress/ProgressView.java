@@ -45,6 +45,9 @@ class ProgressView implements ProgressBuilder.ProgressInterface {
             if(view!=null) {
                 progressLayout.addView(view);
             }
+            if(progressLayout.getAnimation() != null) {
+                progressLayout.getAnimation().cancel();
+            }
             AlphaAnimation alphaAnimation = new AlphaAnimation(0f,1f);
             alphaAnimation.setDuration(300);
             progressLayout.setAnimation(alphaAnimation);
@@ -56,10 +59,16 @@ class ProgressView implements ProgressBuilder.ProgressInterface {
     public synchronized void dismiss() {
         if(isShowing) {
             if(progressLayout !=null) {
+                if(progressLayout.getAnimation() != null) {
+                    progressLayout.getAnimation().cancel();
+                }
                 progressLayout.setAnimation(null);
                 AlphaAnimation alphaAnimation = new AlphaAnimation(1f,0f);
                 alphaAnimation.setDuration(300);
                 if(progressLayout.getChildCount() > 0){
+                    if(progressLayout.getChildAt(0).getAnimation() != null) {
+                        progressLayout.getChildAt(0).getAnimation().cancel();
+                    }
                     progressLayout.getChildAt(0).setAnimation(alphaAnimation);
                 }
                 progressLayout.setAnimation(alphaAnimation);
