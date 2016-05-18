@@ -10,6 +10,7 @@ package com.markjmind.uni.progress;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 
 /**
  * <br>捲土重來<br>
@@ -44,6 +45,9 @@ class ProgressView implements ProgressBuilder.ProgressInterface {
             if(view!=null) {
                 progressLayout.addView(view);
             }
+            AlphaAnimation alphaAnimation = new AlphaAnimation(0f,1f);
+            alphaAnimation.setDuration(300);
+            progressLayout.setAnimation(alphaAnimation);
             parents.addView(progressLayout);
         }
     }
@@ -52,6 +56,13 @@ class ProgressView implements ProgressBuilder.ProgressInterface {
     public synchronized void dismiss() {
         if(isShowing) {
             if(progressLayout !=null) {
+                progressLayout.setAnimation(null);
+                AlphaAnimation alphaAnimation = new AlphaAnimation(1f,0f);
+                alphaAnimation.setDuration(300);
+                if(progressLayout.getChildCount() > 0){
+                    progressLayout.getChildAt(0).setAnimation(alphaAnimation);
+                }
+                progressLayout.setAnimation(alphaAnimation);
                 progressLayout.removeAllViews();
                 parents.removeView(progressLayout);
             }

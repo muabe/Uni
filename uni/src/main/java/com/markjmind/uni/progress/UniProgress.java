@@ -89,6 +89,10 @@ public class UniProgress implements OnProgressListener{
 
     }
 
+    public View getLayout(){
+        return layout;
+    }
+
     @Override
     public void onStart(View layout, CancelAdapter cancelAdapter) {
 
