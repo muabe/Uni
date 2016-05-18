@@ -89,6 +89,10 @@ public class UniTask implements UniInterface{
     }
 
     /*************************************************** Uni 외부지원 함수 관련 *********************************************/
+    public void setUniInterface(UniInterface uniInterface){
+        this.uniInterface = uniInterface;
+    }
+
     public View findViewById(int id){
         return uniLayout.findViewById(id);
     }
@@ -150,7 +154,7 @@ public class UniTask implements UniInterface{
 
 
 
-    String excute(ProgressBuilder progress){
+    protected String excute(ProgressBuilder progress){
         if(isAsync) {
             return this.excute(progress, uniInterface, null);
         }else{
@@ -159,7 +163,7 @@ public class UniTask implements UniInterface{
         }
     }
 
-    private String excute(ProgressBuilder progress, UniInterface uniInterface){
+    protected String excute(ProgressBuilder progress, UniInterface uniInterface){
         return this.excute(progress, uniInterface, null);
     }
 
