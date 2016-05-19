@@ -88,6 +88,10 @@ public class UniTask implements UniInterface{
         return cancelObservable;
     }
 
+    public UniInterface getUniInterface() {
+        return uniInterface;
+    }
+
     /*************************************************** Uni 외부지원 함수 관련 *********************************************/
     public void setUniInterface(UniInterface uniInterface){
         this.uniInterface = uniInterface;

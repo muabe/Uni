@@ -1,7 +1,6 @@
 package com.markjmind.uni.thread;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.markjmind.uni.common.StoreObserver;
 import com.markjmind.uni.exception.UniLoadFailException;
@@ -61,7 +60,6 @@ public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements S
 
     @Override
     protected void onPostExecute(Boolean result) {
-        Log.e("DetachedObservable", getId()+" Post");
         if(!isCancel){
             if(result) { //성공
                 taskObservable.onPostExecute();

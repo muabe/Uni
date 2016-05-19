@@ -27,7 +27,7 @@ public class ProgressBuilder implements ProcessObserver {
     private OnProgressListener listener;
     private int theme;
     private boolean isShowing = false;
-
+    private boolean autoCancel = true;
     private UniProgress uniProgress;
 
     public ProgressBuilder(){
@@ -78,7 +78,13 @@ public class ProgressBuilder implements ProcessObserver {
 
     @Override
     public void onCancelled(boolean attach) {
-        dismiss(attach);
+        if(autoCancel) {
+            dismiss(attach);
+        }
+    }
+
+    public void setAutoCancel(boolean autoCancel){
+        this.autoCancel = autoCancel;
     }
 
     public synchronized void show(CancelAdapter cancelAdapter){

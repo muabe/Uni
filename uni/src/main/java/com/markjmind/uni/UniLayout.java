@@ -100,7 +100,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     }
 
     public void bind(UniTask uniTask){
-        uniTask.syncUniLayout(this, uniTask.param, progress, uniTask, uniTask, null);
+        uniTask.syncUniLayout(this, uniTask.param, uniTask.progress, uniTask, uniTask.getUniInterface(), null);
     }
 
 
@@ -119,6 +119,16 @@ public class UniLayout extends FrameLayout implements UniInterface{
             task.syncUniLayout(this, param, progress, this, this, null);
         }
         return uniTask.excute(progress);
+    }
+
+    public String excute(boolean isAsync){
+        if(isAsync){
+            return excute();
+        }else{
+            post();
+            return null;
+        }
+
     }
 //    protected String excute(UniAsyncTask uniAsyncTask){
 //        return this.excute(uniAsyncTask, null);
