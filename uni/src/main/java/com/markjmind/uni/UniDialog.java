@@ -82,13 +82,6 @@ public class UniDialog extends Dialog implements UniInterface{
         return uniLayout.excute();
     }
 
-//    protected String excute(UniAsyncTask uniAsyncTask, UniLoadFail uniLoadFail){
-//        return uniTask.excute(uniAsyncTask, uniLoadFail);
-//    }
-//
-//    protected String excute(UniAsyncTask uniAsyncTask){
-//        return uniTask.excute(uniAsyncTask);
-//    }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/
 
@@ -100,6 +93,9 @@ public class UniDialog extends Dialog implements UniInterface{
         uniLayout.cancelAll();
     }
 
+    public void setAutoTaskCanceled(boolean autoCanceled) {
+        uniLayout.setTaskAutoCanceled(autoCanceled);
+    }
 
     /*************************************************** 인터페이스 관련 *********************************************/
 

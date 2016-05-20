@@ -97,14 +97,6 @@ public class UniFragment extends Fragment implements UniInterface{
         uniTask.post();
     }
 
-//    protected String excute(UniAsyncTask uniAsyncTask, UniLoadFail uniLoadFail){
-//        return uniTask.excute(uniAsyncTask, uniLoadFail);
-//    }
-//
-//    protected String excute(UniAsyncTask uniAsyncTask){
-//        return uniTask.excute(uniAsyncTask);
-//    }
-
     /*************************************************** CancelObserver Interface 관련 *********************************************/
     public void cancel(String id) {
         uniTask.cancel(id);
@@ -112,6 +104,10 @@ public class UniFragment extends Fragment implements UniInterface{
 
     public void cancelAll() {
         uniTask.cancelAll();
+    }
+
+    public void setTaskAutoCanceled(boolean autoCanceled) {
+        uniTask.setTaskAutoCanceled(autoCanceled);
     }
 
     /*************************************************** 인터페이스 관련 *********************************************/

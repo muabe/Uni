@@ -145,6 +145,10 @@ public class UniTask implements UniInterface{
         cancelObservable.cancelAll();
     }
 
+    public void setTaskAutoCanceled(boolean autoCanceled) {
+        cancelObservable.setTaskAutoCanceled(autoCanceled);
+    }
+
 
     /*************************************************** excute 관련 *********************************************/
     public void post(){

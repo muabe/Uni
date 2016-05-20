@@ -103,8 +103,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
         uniTask.syncUniLayout(this, uniTask.param, uniTask.progress, uniTask, uniTask.getUniInterface(), null);
     }
 
-
-    /*************************************************** 실행 관련 *********************************************/
+    /*************************************************** excute 관련 *********************************************/
     public void post(){
         if(uniTask==null){
             UniTask task = new UniTask();
@@ -130,20 +129,8 @@ public class UniLayout extends FrameLayout implements UniInterface{
         }
 
     }
-//    protected String excute(UniAsyncTask uniAsyncTask){
-//        return this.excute(uniAsyncTask, null);
-//    }
 
-
-//    protected String excute(UniAsyncTask uniAsyncTask, UniLoadFail uniLoadFail){
-//        if(uniTask==null){
-//            UniTask task = new UniTask();
-//            task.init(this, progress, this, this, null);
-//        }
-//        return uniTask.excute(uniAsyncTask, uniLoadFail);
-//    }
-
-
+    /*************************************************** CancelObserver Interface 관련 *********************************************/
     public void cancel(String id) {
         uniTask.cancel(id);
     }
@@ -152,6 +139,12 @@ public class UniLayout extends FrameLayout implements UniInterface{
         uniTask.cancelAll();
     }
 
+    public void setTaskAutoCanceled(boolean autoCanceled) {
+        uniTask.setTaskAutoCanceled(autoCanceled);
+    }
+
+
+    /*************************************************** UniTask Interface 관련 *********************************************/
     @Override
     public void onBind() {
 

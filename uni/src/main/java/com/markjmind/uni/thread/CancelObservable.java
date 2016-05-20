@@ -17,6 +17,7 @@ import com.markjmind.uni.common.StoreObservable;
  * @since 2016-01-28
  */
 public class CancelObservable extends StoreObservable<UniMainThread> implements CancelObserver {
+    private boolean taskAutoCanceled = true;
     private boolean isAttached;
 
     public CancelObservable(){
@@ -71,5 +72,13 @@ public class CancelObservable extends StoreObservable<UniMainThread> implements 
 
     public CancelAdapter getCancelAdapter(String taskId){
         return new CancelAdapter(taskId, this);
+    }
+
+    public boolean isTaskAutoCanceled() {
+        return taskAutoCanceled;
+    }
+
+    public void setTaskAutoCanceled(boolean taskAutoCanceled) {
+        this.taskAutoCanceled = taskAutoCanceled;
     }
 }

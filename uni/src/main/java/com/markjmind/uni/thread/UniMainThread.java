@@ -17,7 +17,6 @@ public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements S
     private CancelObservable observable;
     private CancelAdapter cancelAdapter;
     private ProcessObservable taskObservable = new ProcessObservable();
-
     private Exception doInBackException;
 
     public UniMainThread(CancelObservable observable){
@@ -85,7 +84,9 @@ public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements S
     public synchronized void cancel() {
         if (!isCancel){
             this.isCancel = true;
-            super.cancel(true);
+            if(observable.isTaskAutoCanceled()) {
+                super.cancel(true);
+            }
         }
     }
     public boolean isCancel(){
