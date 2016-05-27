@@ -16,7 +16,7 @@ public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements S
     private boolean isCancel;
     private CancelObservable observable;
     private CancelAdapter cancelAdapter;
-    private ProcessObservable taskObservable = new ProcessObservable();
+    private ThreadProcessObservable taskObservable = new ThreadProcessObservable();
     private Exception doInBackException;
 
     public UniMainThread(CancelObservable observable){
@@ -119,7 +119,7 @@ public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements S
         return taskId;
     }
 
-    public UniMainThread addTaskObserver(ProcessObserver observer){
+    public UniMainThread addTaskObserver(ThreadProcessObserver observer){
         taskObservable.add(observer);
         return this;
     }

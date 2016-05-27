@@ -18,8 +18,9 @@ import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.CancelObservable;
 import com.markjmind.uni.thread.LoadEvent;
-import com.markjmind.uni.thread.ProcessAdapter;
+import com.markjmind.uni.thread.ThreadProcessAdapter;
 import com.markjmind.uni.thread.UniMainThread;
+import com.markjmind.uni.thread.aop.UniAop;
 
 /**
  * <br>捲土重來<br>
@@ -161,10 +162,18 @@ public class UniTask implements UniInterface{
     }
 
 
-
     protected String excute(ProgressBuilder progress){
         if(isAsync) {
-            return this.excute(progress, uniInterface, null);
+            return this.excute(progress, uniInterface, null, null);
+        }else{
+            onPost();
+            return null;
+        }
+    }
+
+    protected String excute(ProgressBuilder progress, UniAop uniAop){
+        if(isAsync) {
+            return this.excute(progress, uniInterface, null, uniAop);
         }else{
             onPost();
             return null;
@@ -172,10 +181,14 @@ public class UniTask implements UniInterface{
     }
 
     protected String excute(ProgressBuilder progress, UniInterface uniInterface){
-        return this.excute(progress, uniInterface, null);
+        return this.excute(progress, uniInterface, null, null);
     }
 
-    private String excute(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail){
+    protected String excute(ProgressBuilder progress, UniInterface uniInterface, UniAop uniAop){
+        return this.excute(progress, uniInterface, null, uniAop);
+    }
+
+    private String excute(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail, UniAop uniAop){
         if(progress!=null) {
             if (progress.get() == null) {
                 mapper.addAdapter(new ProgressAdapter(progress));
@@ -191,15 +204,15 @@ public class UniTask implements UniInterface{
             isMapping = true;
         }
 
-        return run(progress, uniInterface, uniLoadFail);
+        return run(progress, uniInterface, uniLoadFail, null);
     }
 
-    String run(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail){
+    String run(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail, UniAop uniAop){
         UniMainThread task = new UniMainThread(cancelObservable);
         if(progress.isAble()) {
             task.addTaskObserver(progress);
         }
-        task.addTaskObserver(new ProcessAdapter(uniInterface, uniLoadFail));
+        task.addTaskObserver(new ThreadProcessAdapter(uniInterface, uniLoadFail).setUniAop(uniAop));
         cancelObservable.add(task);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

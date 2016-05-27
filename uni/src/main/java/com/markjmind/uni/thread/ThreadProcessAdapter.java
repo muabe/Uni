@@ -10,11 +10,11 @@ import com.markjmind.uni.UniLoadFail;
  * @email markjmind@gmail.com
  * @since 2016-03-11
  */
-public class ProcessAdapter implements ProcessObserver {
+public class ThreadProcessAdapter extends ThreadProcessObserver {
     private UniInterface uniInterface;
     private UniLoadFail uniLoadFail;
 
-    public ProcessAdapter(UniInterface uniInterface, UniLoadFail uniLoadFail) {
+    public ThreadProcessAdapter(UniInterface uniInterface, UniLoadFail uniLoadFail) {
         this.uniInterface = uniInterface;
         this.uniLoadFail = uniLoadFail;
     }

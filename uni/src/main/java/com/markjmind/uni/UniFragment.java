@@ -11,6 +11,8 @@ import com.markjmind.uni.mapper.Mapper;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
+import com.markjmind.uni.thread.aop.CancelAop;
+import com.markjmind.uni.thread.aop.UniAop;
 
 
 /**
@@ -26,6 +28,7 @@ public class UniFragment extends Fragment implements UniInterface{
     public Mapper mapper;
     public Store<?> param;
     public ProgressBuilder progress;
+    private UniAop aop;
 
     private boolean isPopStack;
 
@@ -85,16 +88,29 @@ public class UniFragment extends Fragment implements UniInterface{
     }
 
     /*************************************************** 실행 관련 *********************************************/
+    public void setCancelAop(CancelAop cancelAop){
+        aop.setCancelAop(cancelAop);
+    }
+
+    public UniAop getAop(){
+        return aop;
+    }
+
     public void post(){
         uniTask.post();
     }
 
     public String excute(){
-        return uniTask.excute(progress);
+        return uniTask.excute(progress, getAop());
     }
 
-    public void excute(boolean isAsync){
-        uniTask.post();
+    public String excute(boolean isAsync){
+        if(isAsync) {
+            return uniTask.excute(progress, getAop());
+        }else{
+            uniTask.post();
+            return null;
+        }
     }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/

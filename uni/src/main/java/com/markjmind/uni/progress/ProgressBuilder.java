@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
-import com.markjmind.uni.thread.ProcessObserver;
+import com.markjmind.uni.thread.ThreadProcessObserver;
 
 /**
  * <br>捲土重來<br>
@@ -16,7 +16,7 @@ import com.markjmind.uni.thread.ProcessObserver;
  * @email markjmind@gmail.com
  * @since 2016-02-16
  */
-public class ProgressBuilder implements ProcessObserver {
+public class ProgressBuilder extends ThreadProcessObserver {
     public Store<?> param;
 
     private ViewGroup parents;

@@ -16,60 +16,67 @@ import java.util.ArrayList;
  * @email markjmind@gmail.com
  * @since 2016-02-17
  */
-public class ProcessObservable implements ProcessObserver {
+public class ThreadProcessObservable extends ThreadProcessObserver {
 
-    private ArrayList<ProcessObserver> observers = new ArrayList<>();
+    private ArrayList<ThreadProcessObserver> observers = new ArrayList<>();
 
     @Override
     public void onPreExecute(CancelAdapter cancelAdapter) {
-        for(ProcessObserver observer : observers){
+        for(ThreadProcessObserver observer : observers){
             observer.onPreExecute(cancelAdapter);
         }
     }
 
     @Override
     public void doInBackground(LoadEvent event, CancelAdapter cancelAdapter) throws Exception{
-        for(ProcessObserver observer : observers){
+        for(ThreadProcessObserver observer : observers){
             observer.doInBackground(event, cancelAdapter);
         }
     }
 
     @Override
     public void onProgressUpdate(Object value, CancelAdapter cancelAdapter) {
-        for(ProcessObserver observer : observers){
+        for(ThreadProcessObserver observer : observers){
             observer.onProgressUpdate(value, cancelAdapter);
         }
     }
 
     @Override
     public void onPostExecute() {
-        for(ProcessObserver observer : observers){
+        for(ThreadProcessObserver observer : observers){
             observer.onPostExecute();
         }
     }
 
     @Override
     public void onFailedExecute(String message, Object arg) {
-        for(ProcessObserver observer : observers){
+        for(ThreadProcessObserver observer : observers){
             observer.onFailedExecute(message, arg);
         }
     }
 
     @Override
     public void onExceptionExecute(Exception e) {
-        for(ProcessObserver observer : observers){
+        for(ThreadProcessObserver observer : observers){
             observer.onExceptionExecute(e);
         }
     }
 
     @Override
     public void onCancelled(boolean attached) {
-        for(ProcessObserver observer : observers){
-            observer.onCancelled(attached);
+        for(ThreadProcessObserver observer : observers){
+            if(observer.getCancelAop()!=null){
+                observer.getCancelAop().beforeOnCancel(attached);
+                observer.onCancelled(attached);
+                observer.getCancelAop().afterOnCancel(attached);
+            }else{
+                observer.onCancelled(attached);
+            }
+
         }
     }
 
-    public void add(ProcessObserver processObserver){
-        observers.add(processObserver);
+    public void add(ThreadProcessObserver threadProcessObserver){
+        observers.add(threadProcessObserver);
     }
 }

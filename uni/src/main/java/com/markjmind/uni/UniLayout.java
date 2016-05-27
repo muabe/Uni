@@ -12,6 +12,8 @@ import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
+import com.markjmind.uni.thread.aop.CancelAop;
+import com.markjmind.uni.thread.aop.UniAop;
 
 /**
  * <br>捲土重來<br>
@@ -27,8 +29,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     public Mapper mapper;
     public Store<?> param;
     public ProgressBuilder progress = new ProgressBuilder();
-
-
+    private UniAop aop = new UniAop();
 
     public UniLayout(Context context) {
         super(context);
@@ -104,6 +105,14 @@ public class UniLayout extends FrameLayout implements UniInterface{
     }
 
     /*************************************************** excute 관련 *********************************************/
+    public void setCancelAop(CancelAop cancelAop){
+        aop.setCancelAop(cancelAop);
+    }
+
+    public UniAop getAop(){
+        return aop;
+    }
+
     public void post(){
         if(uniTask==null){
             UniTask task = new UniTask();
@@ -117,7 +126,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
             UniTask task = new UniTask();
             task.syncUniLayout(this, param, progress, this, this, null);
         }
-        return uniTask.excute(progress);
+        return uniTask.excute(progress, getAop());
     }
 
     public String excute(boolean isAsync){
@@ -127,7 +136,6 @@ public class UniLayout extends FrameLayout implements UniInterface{
             post();
             return null;
         }
-
     }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/

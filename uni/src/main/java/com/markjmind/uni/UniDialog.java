@@ -19,6 +19,8 @@ import com.markjmind.uni.mapper.Mapper;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
+import com.markjmind.uni.thread.aop.CancelAop;
+import com.markjmind.uni.thread.aop.UniAop;
 
 /**
  * <br>捲土重來<br>
@@ -33,6 +35,7 @@ public class UniDialog extends Dialog implements UniInterface{
     public Mapper mapper;
     public Store<?> param;
     public ProgressBuilder progress = new ProgressBuilder();
+    private UniAop aop;
 
     private OnDismissResult onDismissResult;
 
@@ -74,14 +77,30 @@ public class UniDialog extends Dialog implements UniInterface{
     }
 
     /*************************************************** 실행 관련 *********************************************/
+    public void setCancelAop(CancelAop cancelAop){
+        aop.setCancelAop(cancelAop);
+    }
+
+    public UniAop getAop(){
+        return aop;
+    }
+
     public void post(){
-        uniLayout.post();
+        uniTask.post();
     }
 
     public String excute(){
-        return uniLayout.excute();
+        return uniTask.excute(progress, getAop());
     }
 
+    public String excute(boolean isAsync){
+        if(isAsync){
+            return excute();
+        }else{
+            post();
+            return null;
+        }
+    }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/
 
