@@ -8,10 +8,11 @@
 
 package com.markjmind.uni.progress;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 
 /**
  * <br>捲土重來<br>
@@ -46,26 +47,37 @@ class ProgressView implements ProgressBuilder.ProgressInterface {
             if(view!=null) {
                 progressLayout.addView(view);
             }
-            AlphaAnimation alphaAnimation = new AlphaAnimation(0f,1f);
-            alphaAnimation.setDuration(300);
-            alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
+            parents.addView(progressLayout);
+            ObjectAnimator alpha = ObjectAnimator.ofFloat(progressLayout, View.ALPHA, 0f, 1f);
+            alpha.setDuration(300);
+            AnimatorSet set = new AnimatorSet();
+            set.play(alpha);
+            alpha.addListener(new Animator.AnimatorListener() {
                 @Override
-                public void onAnimationStart(Animation animation) {
+                public void onAnimationStart(Animator animation) {
 
                 }
 
                 @Override
-                public void onAnimationEnd(Animation animation) {
-                    progressLayout.clearAnimation();
+                public void onAnimationEnd(Animator animation) {
+                    if(progressLayout!=null){
+                        progressLayout.setAlpha(1f);
+                    }
                 }
 
                 @Override
-                public void onAnimationRepeat(Animation animation) {
+                public void onAnimationCancel(Animator animation) {
+                    if(progressLayout!=null){
+                        progressLayout.setAlpha(1f);
+                    }
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
 
                 }
             });
-            progressLayout.setAnimation(alphaAnimation);
-            parents.addView(progressLayout);
+            set.start();
         }
     }
 
@@ -73,31 +85,34 @@ class ProgressView implements ProgressBuilder.ProgressInterface {
     public synchronized void dismiss() {
         if(isShowing) {
             if(progressLayout !=null) {
-                AlphaAnimation alphaAnimation = new AlphaAnimation(1f,0f);
-                alphaAnimation.setDuration(300);
-                alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
+                ObjectAnimator alpha = ObjectAnimator.ofFloat(progressLayout, View.ALPHA, 1f, 0f);
+                alpha.setDuration(300);
+                AnimatorSet set = new AnimatorSet();
+                set.play(alpha);
+                alpha.addListener(new Animator.AnimatorListener() {
                     @Override
-                    public void onAnimationStart(Animation animation) {
+                    public void onAnimationStart(Animator animation) {
 
                     }
 
                     @Override
-                    public void onAnimationEnd(Animation animation) {
-                        progressLayout.clearAnimation();
+                    public void onAnimationEnd(Animator animation) {
+                        progressLayout.removeAllViews();
+                        parents.removeView(progressLayout);
                     }
 
                     @Override
-                    public void onAnimationRepeat(Animation animation) {
+                    public void onAnimationCancel(Animator animation) {
+                        progressLayout.removeAllViews();
+                        parents.removeView(progressLayout);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
 
                     }
                 });
-                if(progressLayout.getChildCount() > 0){
-                    progressLayout.getChildAt(0).clearAnimation();
-                    progressLayout.getChildAt(0).setAnimation(alphaAnimation);
-                }
-                progressLayout.setAnimation(alphaAnimation);
-                progressLayout.removeAllViews();
-                parents.removeView(progressLayout);
+                set.start();
             }
             isShowing = false;
         }

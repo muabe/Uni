@@ -59,7 +59,7 @@ public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements S
 
     @Override
     protected void onPostExecute(Boolean result) {
-        if(!isCancel){
+        if((observable.isTaskAutoCanceled() && !isCancel()) || (!observable.isTaskAutoCanceled() && observable.isAttached())){
             if(result) { //성공
                 taskObservable.onPostExecute();
             }else{ // 실패
@@ -69,7 +69,6 @@ public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements S
                 }else{
                     taskObservable.onExceptionExecute(doInBackException);
                 }
-
             }
             observable.remove(this);
         }

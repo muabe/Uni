@@ -158,7 +158,7 @@ public class UniTask implements UniInterface{
             mapper.injectWithout(LayoutAdapter.class, ProgressAdapter.class);
             isMapping = true;
         }
-        onPost();
+        uniInterface.onPost();
     }
 
 
@@ -166,7 +166,7 @@ public class UniTask implements UniInterface{
         if(isAsync) {
             return this.excute(progress, uniInterface, null, null);
         }else{
-            onPost();
+            uniInterface.onPost();
             return null;
         }
     }
@@ -175,7 +175,7 @@ public class UniTask implements UniInterface{
         if(isAsync) {
             return this.excute(progress, uniInterface, null, uniAop);
         }else{
-            onPost();
+            uniInterface.onPost();
             return null;
         }
     }
