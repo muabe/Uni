@@ -16,6 +16,7 @@ public abstract class UniAsyncTask implements UniInterface{
     private UniTask uniTask;
     public Store<?> param;
     public ProgressBuilder progress;
+    private UniInterface uniInterface;
 
     public UniAsyncTask(){
         param = new Store<>();
@@ -23,7 +24,7 @@ public abstract class UniAsyncTask implements UniInterface{
     }
 
     public UniAsyncTask(UniLayout uniLayout){
-        setUniTask(uniLayout.getUniTask());
+        inheritFault(uniLayout.getUniTask().getUniInterface());
         progress = uniLayout.progress;
         param = uniLayout.param;
     }
@@ -36,8 +37,8 @@ public abstract class UniAsyncTask implements UniInterface{
         this(uniDialog.getUniLayout());
     }
 
-    void setUniTask(UniTask uniTask){
-        this.uniTask = uniTask;
+    void inheritFault(UniInterface uniInterface){
+        this.uniInterface = uniInterface;
     }
 
     @Override
@@ -67,12 +68,16 @@ public abstract class UniAsyncTask implements UniInterface{
 
     @Override
     public void onException(Exception e) {
-
+        if(uniInterface!=null){
+            uniInterface.onException(e);
+        }
     }
 
     @Override
     public void onCancelled(boolean attached) {
-
+        if(uniInterface!=null){
+            uniInterface.onCancelled(attached);
+        }
     }
 
     /*************************************************** 실행 관련 *********************************************/
