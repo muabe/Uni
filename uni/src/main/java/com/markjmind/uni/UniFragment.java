@@ -56,12 +56,14 @@ public class UniFragment extends Fragment implements UniInterface{
         if(uniLayout == null || isPopStack) {
             uniLayout = new UniLayout(getActivity());
             uniTask.syncUniLayout(uniLayout, param, progress, this, this, container);
-//            setRefreshBackStack(false);
+            setRefreshBackStack(false);
             if(uniTask.isAsync()) {
                 uniTask.excute(progress);
             }else{
                 uniTask.post();
             }
+        }else{
+            onPostCache();
         }
         return uniLayout;
     }
@@ -161,7 +163,7 @@ public class UniFragment extends Fragment implements UniInterface{
     public void onCancelled(boolean attach) {
     }
 
+    public void onPostCache(){
 
-
-
+    }
 }
