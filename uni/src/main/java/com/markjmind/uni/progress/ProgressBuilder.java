@@ -1,5 +1,6 @@
 package com.markjmind.uni.progress;
 
+import android.animation.AnimatorSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,7 +109,9 @@ public class ProgressBuilder extends ThreadProcessObserver {
                         ((ProgressView) progressInterface).reset(progressLayout, parents);
                     }
                 }
-
+                if(progressInterface!=null) {
+                    this.uniProgress.setProgressInterface(progressInterface);
+                }
                 layout = uniProgress.mapperInit(progressLayout, param);
                 if(listener != null){
                     listener.onStart(layout, cancelAdapter);
@@ -196,6 +199,8 @@ public class ProgressBuilder extends ThreadProcessObserver {
         void show(View view);
         void dismiss();
         int getMode();
+        void setInAnimation(AnimatorSet inAnimation);
+        void setOutAnimation(AnimatorSet outAnimation);
     }
 
 }

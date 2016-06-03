@@ -1,5 +1,8 @@
 package com.markjmind.uni.progress;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +34,7 @@ public class UniProgress implements OnProgressListener{
     private int layoutId;
     protected View layout;
     boolean hasListener;
+    private ProgressBuilder.ProgressInterface progressInterface;
 
     protected UniProgress(){
         this.layoutId = -1;
@@ -40,6 +44,10 @@ public class UniProgress implements OnProgressListener{
 
     public UniProgress(int layoutId){
         this.layoutId = layoutId;
+    }
+
+    void setProgressInterface(ProgressBuilder.ProgressInterface progressInterface){
+        this.progressInterface = progressInterface;
     }
 
     public int getLayoutId() {
@@ -106,5 +114,50 @@ public class UniProgress implements OnProgressListener{
     @Override
     public void onDestroy(View layout, boolean attach) {
 
+    }
+
+
+
+
+
+    public void setInAnimation(AnimatorSet inAnimation){
+        progressInterface.setInAnimation(inAnimation);
+    }
+
+    public void setInAnimation(ValueAnimator inAnimation){
+        if(inAnimation==null){
+            progressInterface.setInAnimation(null);
+        }else {
+            AnimatorSet set = new AnimatorSet();
+            set.play(inAnimation);
+            this.setInAnimation(set);
+            progressInterface.setInAnimation(set);
+        }
+    }
+
+    public void setOutAnimation(AnimatorSet outAnimation){
+        progressInterface.setOutAnimation(outAnimation);
+    }
+
+    public void setOutAnimation(ValueAnimator outAnimation){
+        if(outAnimation==null){
+            progressInterface.setOutAnimation(null);
+        }else {
+            AnimatorSet set = new AnimatorSet();
+            set.play(outAnimation);
+            progressInterface.setOutAnimation(set);
+        }
+    }
+
+    private ValueAnimator defaultInAnimation(){
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(layout, View.ALPHA, 0f, 1f);
+        alpha.setDuration(250);
+        return alpha;
+    }
+
+    private ValueAnimator defaultOutAnimation(){
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(layout, View.ALPHA, 1f, 0f);
+        alpha.setDuration(250);
+        return alpha;
     }
 }

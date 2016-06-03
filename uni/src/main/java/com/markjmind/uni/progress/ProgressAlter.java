@@ -8,6 +8,7 @@
 
 package com.markjmind.uni.progress;
 
+import android.animation.AnimatorSet;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -80,6 +81,16 @@ class ProgressAlter extends AlertDialog implements ProgressBuilder.ProgressInter
     @Override
     public int getMode() {
         return UniProgress.DIALOG;
+    }
+
+    @Override
+    public void setInAnimation(AnimatorSet inAnimation) {
+
+    }
+
+    @Override
+    public void setOutAnimation(AnimatorSet outAnimation) {
+
     }
 
 }

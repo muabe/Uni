@@ -11,6 +11,7 @@ package com.markjmind.uni.progress;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -25,9 +26,18 @@ class ProgressView implements ProgressBuilder.ProgressInterface {
     private ViewGroup progressLayout;
     private boolean isShowing;
     private ViewGroup parents;
+    private AnimatorSet inAnimation;
+    private AnimatorSet outAnimation;
 
     public ProgressView(ViewGroup layout, ViewGroup parents){
         reset(layout, parents);
+        AnimatorSet setIn = new AnimatorSet();
+        setIn.play(defaultInAnimation());
+        this.setInAnimation(setIn);
+        AnimatorSet setOut = new AnimatorSet();
+        setOut.play(defaultOutAnimation());
+        this.setInAnimation(setIn);
+        this.setOutAnimation(setOut);
     }
 
     void reset(ViewGroup layout, ViewGroup parents){
@@ -48,11 +58,43 @@ class ProgressView implements ProgressBuilder.ProgressInterface {
                 progressLayout.addView(view);
             }
             parents.addView(progressLayout);
-            ObjectAnimator alpha = ObjectAnimator.ofFloat(progressLayout, View.ALPHA, 0f, 1f);
-            alpha.setDuration(300);
-            AnimatorSet set = new AnimatorSet();
-            set.play(alpha);
-            alpha.addListener(new Animator.AnimatorListener() {
+            if(inAnimation!=null) {
+                inAnimation.start();
+            }else{
+                if(progressLayout!=null){
+                    progressLayout.setAlpha(1f);
+                }
+            }
+        }
+    }
+
+    @Override
+    public synchronized void dismiss() {
+        if(isShowing) {
+            if(progressLayout !=null) {
+                if(outAnimation!=null){
+                    outAnimation.start();
+                }else{
+                    progressLayout.removeAllViews();
+                    parents.removeView(progressLayout);
+                }
+
+            }
+            isShowing = false;
+        }
+    }
+
+    @Override
+    public int getMode() {
+        return UniProgress.VIEW;
+    }
+
+    public void setInAnimation(AnimatorSet inAnimation){
+        if(inAnimation==null){
+            this.inAnimation = null;
+        }else {
+            this.inAnimation = inAnimation;
+            this.inAnimation.addListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
 
@@ -77,49 +119,71 @@ class ProgressView implements ProgressBuilder.ProgressInterface {
 
                 }
             });
-            set.start();
         }
     }
 
-    @Override
-    public synchronized void dismiss() {
-        if(isShowing) {
-            if(progressLayout !=null) {
-                ObjectAnimator alpha = ObjectAnimator.ofFloat(progressLayout, View.ALPHA, 1f, 0f);
-                alpha.setDuration(300);
-                AnimatorSet set = new AnimatorSet();
-                set.play(alpha);
-                alpha.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
+//    public void setInAnimation(ValueAnimator inAnimation){
+//        if(inAnimation==null){
+//            this.inAnimation = null;
+//        }else {
+//            AnimatorSet set = new AnimatorSet();
+//            set.play(inAnimation);
+//            this.setInAnimation(set);
+//        }
+//    }
 
-                    }
+    public void setOutAnimation(AnimatorSet outAnimation){
+        if(outAnimation==null){
+            this.outAnimation = null;
+        }else {
+            this.outAnimation = outAnimation;
+            this.outAnimation.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
 
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        progressLayout.removeAllViews();
-                        parents.removeView(progressLayout);
-                    }
+                }
 
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                        progressLayout.removeAllViews();
-                        parents.removeView(progressLayout);
-                    }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    progressLayout.removeAllViews();
+                    parents.removeView(progressLayout);
+                }
 
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    progressLayout.removeAllViews();
+                    parents.removeView(progressLayout);
+                }
 
-                    }
-                });
-                set.start();
-            }
-            isShowing = false;
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
         }
     }
 
-    @Override
-    public int getMode() {
-        return UniProgress.VIEW;
+//    public void setOutAnimation(ValueAnimator outAnimation){
+//        if(outAnimation==null){
+//            this.outAnimation = null;
+//        }else {
+//            AnimatorSet set = new AnimatorSet();
+//            set.play(outAnimation);
+//            this.setOutAnimation(set);
+//        }
+//    }
+
+    private ValueAnimator defaultInAnimation(){
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(progressLayout, View.ALPHA, 0f, 1f);
+        alpha.setDuration(250);
+        return alpha;
     }
+
+    private ValueAnimator defaultOutAnimation(){
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(progressLayout, View.ALPHA, 1f, 0f);
+        alpha.setDuration(250);
+        return alpha;
+    }
+
+
 }
