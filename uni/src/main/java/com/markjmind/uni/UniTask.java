@@ -54,16 +54,15 @@ public class UniTask implements UniInterface{
         progress = new ProgressBuilder();
     }
 
-    void injectLayout(ViewGroup container){
+    void injectLayout(LayoutInflater inflater, ViewGroup container){
         mapper.inject(LayoutAdapter.class);
         int layoutId = mapper.getAdapter(LayoutAdapter.class).getLayoutId();
         if(layoutId>0) {
-            LayoutInflater inflater = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
             uniLayout.setFrameLayout(inflater.inflate(layoutId, container, false));
         }
     }
 
-    void syncUniLayout(UniLayout uniLayout, Store<?> param, ProgressBuilder progress, Object mappingObj, UniInterface uniInterface, ViewGroup container){
+    void syncUniLayout(LayoutInflater inflater, UniLayout uniLayout, Store<?> param, ProgressBuilder progress, Object mappingObj, UniInterface uniInterface, ViewGroup container){
         isMapping = false;
         this.uniLayout = uniLayout;
         this.context = uniLayout.getContext();
@@ -73,12 +72,20 @@ public class UniTask implements UniInterface{
         this.progress = this.uniLayout.progress;
         this.param = this.uniLayout.param;
         uniInterface.onBind();
+        if(inflater==null) {
+            inflater = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
+        }
         if (container == null) {
-            injectLayout(uniLayout);
+            injectLayout(inflater, uniLayout);
         } else {
-            injectLayout(container);
+            injectLayout(inflater, container);
         }
     }
+
+    void syncUniLayout(UniLayout uniLayout, Store<?> param, ProgressBuilder progress, Object mappingObj, UniInterface uniInterface, ViewGroup container){
+        this.syncUniLayout(null, uniLayout, param, progress, mappingObj, uniInterface, container);
+    }
+
 
     void init(Object mappingObj, UniInterface uniInterface){
         this.uniInterface = uniInterface;
@@ -154,6 +161,15 @@ public class UniTask implements UniInterface{
     /*************************************************** excute 관련 *********************************************/
     public void post(){
         uniInterface.onBind();
+        if(progress!=null) {
+            if (progress.get() == null) {
+                mapper.addAdapter(new ProgressAdapter(progress));
+                mapper.inject(ProgressAdapter.class);
+            }
+            if (progress.get() != null) {
+                progress.get().onBind();
+            }
+        }
         if(!isMapping) {
             mapper.injectWithout(LayoutAdapter.class, ProgressAdapter.class);
             isMapping = true;

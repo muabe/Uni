@@ -1,6 +1,8 @@
 package com.markjmind.uni;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +57,7 @@ public class UniFragment extends Fragment implements UniInterface{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(uniLayout == null || isPopStack) {
             uniLayout = new UniLayout(getActivity());
-            uniTask.syncUniLayout(uniLayout, param, progress, this, this, container);
+            uniTask.syncUniLayout(inflater, uniLayout, param, progress, this, this, container);
             setRefreshBackStack(false);
             if(uniTask.isAsync()) {
                 uniTask.excute(progress);
@@ -66,6 +68,18 @@ public class UniFragment extends Fragment implements UniInterface{
             onPostCache();
         }
         return uniLayout;
+    }
+
+    public Context getContext(boolean isFragment) {
+        if(!isFragment){
+            return uniLayout.getContext();
+        }else{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return super.getContext();
+            }else{
+                return null;
+            }
+        }
     }
 
     public View findViewById(int id){
