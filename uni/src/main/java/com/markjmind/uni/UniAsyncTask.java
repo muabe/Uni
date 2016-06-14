@@ -131,7 +131,7 @@ public abstract class UniAsyncTask implements UniInterface{
         if(uniTask==null){
             uniTask = new UniTask();
             uniTask.init(this, this);
-            return uniTask.run(progress, this, null, uniAop);
+            return uniTask.run(progress, this, null, true, uniAop);
         }else{
             return uniTask.excute(progress);
         }
@@ -145,7 +145,7 @@ public abstract class UniAsyncTask implements UniInterface{
         if(uniTask==null){
             uniTask = new UniTask();
             uniTask.init(this, this);
-            return uniTask.run(progress, this, null, uniAop);
+            return uniTask.run(progress, this, null, true, uniAop);
         }else{
             return uniTask.excute(progress);
         }

@@ -13,15 +13,19 @@ import com.markjmind.uni.UniLoadFail;
 public class ThreadProcessAdapter extends ThreadProcessObserver {
     private UniInterface uniInterface;
     private UniLoadFail uniLoadFail;
+    private boolean enableOnPre;
 
-    public ThreadProcessAdapter(UniInterface uniInterface, UniLoadFail uniLoadFail) {
+    public ThreadProcessAdapter(UniInterface uniInterface, UniLoadFail uniLoadFail, boolean enableOnPre) {
         this.uniInterface = uniInterface;
         this.uniLoadFail = uniLoadFail;
+        this.enableOnPre = enableOnPre;
     }
 
     @Override
     public void onPreExecute(CancelAdapter cancelAdapter) {
-        this.uniInterface.onPre();
+        if(enableOnPre) {
+            this.uniInterface.onPre();
+        }
     }
 
     @Override

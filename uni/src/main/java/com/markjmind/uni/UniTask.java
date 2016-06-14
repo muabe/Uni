@@ -236,24 +236,24 @@ public class UniTask implements UniInterface{
             isMapping = true;
         }
 
-        return run(progress, uniInterface, uniLoadFail, null);
+        return run(progress, uniInterface, uniLoadFail, true, null);
     }
 
     protected String refresh(boolean isAsync, UniAop uniAop){
         if(isAsync) {
-            return run(progress, uniInterface, null, uniAop);
+            return run(progress, uniInterface, null, false, uniAop);
         }else{
             uniInterface.onPost();
             return null;
         }
     }
 
-    String run(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail, UniAop uniAop){
+    String run(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail, boolean eanbleOnPre, UniAop uniAop){
         UniMainThread task = new UniMainThread(cancelObservable);
         if(progress.isAble()) {
             task.addTaskObserver(progress);
         }
-        task.addTaskObserver(new ThreadProcessAdapter(uniInterface, uniLoadFail).setUniAop(uniAop));
+        task.addTaskObserver(new ThreadProcessAdapter(uniInterface, uniLoadFail, eanbleOnPre).setUniAop(uniAop));
         cancelObservable.add(task);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
