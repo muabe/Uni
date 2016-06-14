@@ -83,14 +83,10 @@ public class UniFragment extends Fragment implements UniInterface{
     }
 
     public Context getContext() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return super.getContext();
-        }else{
-            if(uniLayout==null){
+        if(uniLayout==null){
                 return null;
-            }else{
-                return uniLayout.getContext();
-            }
+        }else{
+            return uniLayout.getContext();
         }
     }
 
