@@ -141,6 +141,14 @@ public class UniFragment extends Fragment implements UniInterface{
         }
     }
 
+    public String refresh(){
+        return uniTask.refresh(isAsync(), getAop());
+    }
+
+    public String refresh(boolean isAsync){
+        return uniTask.refresh(isAsync, getAop());
+    }
+
     /*************************************************** CancelObserver Interface 관련 *********************************************/
     public void cancel(String id) {
         uniTask.cancel(id);

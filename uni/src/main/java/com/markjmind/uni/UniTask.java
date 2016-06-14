@@ -223,6 +223,15 @@ public class UniTask implements UniInterface{
         return run(progress, uniInterface, uniLoadFail, null);
     }
 
+    protected String refresh(boolean isAsync, UniAop uniAop){
+        if(isAsync) {
+            return run(progress, uniInterface, null, uniAop);
+        }else{
+            uniInterface.onPost();
+            return null;
+        }
+    }
+
     String run(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail, UniAop uniAop){
         UniMainThread task = new UniMainThread(cancelObservable);
         if(progress.isAble()) {
@@ -237,6 +246,8 @@ public class UniTask implements UniInterface{
         }
         return task.getId();
     }
+
+
 
     /*************************************************** UniTask Interface 관련 *********************************************/
     @Override

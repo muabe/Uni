@@ -82,6 +82,14 @@ public class UniLayout extends FrameLayout implements UniInterface{
         });
     }
 
+    public void setAsync(boolean isAsync){
+        this.uniTask.setAsync(isAsync);
+    }
+
+    public boolean isAsync(){
+        return this.uniTask.isAsync();
+    }
+
     void setUniTask(UniTask uniTask){
         this.uniTask = uniTask;
         mapper = uniTask.mapper;
@@ -136,6 +144,14 @@ public class UniLayout extends FrameLayout implements UniInterface{
             post();
             return null;
         }
+    }
+
+    public String refresh(){
+        return uniTask.refresh(isAsync(), getAop());
+    }
+
+    public String refresh(boolean isAsync){
+        return uniTask.refresh(isAsync, getAop());
     }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/

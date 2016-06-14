@@ -71,6 +71,14 @@ public class UniDialog extends Dialog implements UniInterface{
         });
     }
 
+    public void setAsync(boolean isAsync){
+        this.uniTask.setAsync(isAsync);
+    }
+
+    public boolean isAsync(){
+        return this.uniTask.isAsync();
+    }
+
     /*************************************************** 필수 항목 *********************************************/
     public UniLayout getUniLayout(){
         return uniLayout;
@@ -100,6 +108,14 @@ public class UniDialog extends Dialog implements UniInterface{
             post();
             return null;
         }
+    }
+
+    public String refresh(){
+        return uniTask.refresh(isAsync(), getAop());
+    }
+
+    public String refresh(boolean isAsync){
+        return uniTask.refresh(isAsync, getAop());
     }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/
