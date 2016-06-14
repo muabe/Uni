@@ -157,6 +157,22 @@ public class UniTask implements UniInterface{
         cancelObservable.setTaskAutoCanceled(autoCanceled);
     }
 
+    public boolean isRunning(String task){
+        if(cancelObservable.getStatus(task)!=null && cancelObservable.getStatus(task).equals(AsyncTask.Status.RUNNING)){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public boolean isFinished(String task){
+        if(cancelObservable.getStatus(task)!=null && cancelObservable.getStatus(task).equals(AsyncTask.Status.FINISHED)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 
     /*************************************************** excute 관련 *********************************************/
     public void post(){

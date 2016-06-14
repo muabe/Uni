@@ -8,6 +8,8 @@
 
 package com.markjmind.uni.thread;
 
+import android.os.AsyncTask;
+
 import com.markjmind.uni.common.StoreObservable;
 
 /**
@@ -60,6 +62,14 @@ public class CancelObservable extends StoreObservable<UniMainThread> implements 
                 cancel(key);
             }
         }
+    }
+
+    public AsyncTask.Status getStatus(String id){
+        UniMainThread observer = get(id);
+        if(observer==null){
+            return null;
+        }
+        return observer.getStatus();
     }
 
     public boolean isAttached() {

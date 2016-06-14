@@ -80,6 +80,40 @@ public abstract class UniAsyncTask implements UniInterface{
         }
     }
 
+    /*************************************************** CancelObserver Interface 관련 *********************************************/
+    public void cancel(String id) {
+        if(uniTask!=null) {
+            uniTask.cancel(id);
+        }
+    }
+
+    public void cancelAll() {
+        if(uniTask!=null) {
+            uniTask.cancelAll();
+        }
+    }
+
+    public void setTaskAutoCanceled(boolean autoCanceled) {
+        if(uniTask!=null) {
+            uniTask.setTaskAutoCanceled(autoCanceled);
+        }
+    }
+
+    public boolean isFinished(String task){
+        if(uniTask==null) {
+            return false;
+        }
+        return uniTask.isFinished(task);
+    }
+
+    public boolean isRunning(String task){
+        if(uniTask==null) {
+            return false;
+        }
+        return uniTask.isRunning(task);
+    }
+
+
     /*************************************************** 실행 관련 *********************************************/
     public void post(){
         if(uniTask==null){

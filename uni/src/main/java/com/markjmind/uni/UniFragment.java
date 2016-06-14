@@ -25,6 +25,7 @@ import com.markjmind.uni.thread.aop.UniAop;
  */
 
 public class UniFragment extends Fragment implements UniInterface{
+    private String task;
     private UniTask uniTask;
     private UniLayout uniLayout;
     public Mapper mapper;
@@ -125,12 +126,14 @@ public class UniFragment extends Fragment implements UniInterface{
     }
 
     public String excute(){
-        return uniTask.excute(progress, getAop());
+        task = uniTask.excute(progress, getAop());
+        return task;
     }
 
     public String excute(boolean isAsync){
         if(isAsync) {
-            return uniTask.excute(progress, getAop());
+            task = uniTask.excute(progress, getAop());
+            return task;
         }else{
             uniTask.post();
             return null;
@@ -138,11 +141,17 @@ public class UniFragment extends Fragment implements UniInterface{
     }
 
     public String refresh(){
-        return uniTask.refresh(isAsync(), getAop());
+        task = uniTask.refresh(isAsync(), getAop());
+        return task;
     }
 
     public String refresh(boolean isAsync){
-        return uniTask.refresh(isAsync, getAop());
+        task = uniTask.refresh(isAsync, getAop());
+        return task;
+    }
+
+    public String getTask(){
+        return task;
     }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/
@@ -156,6 +165,14 @@ public class UniFragment extends Fragment implements UniInterface{
 
     public void setTaskAutoCanceled(boolean autoCanceled) {
         uniTask.setTaskAutoCanceled(autoCanceled);
+    }
+
+    public boolean isFinished(String task){
+        return uniTask.isFinished(task);
+    }
+
+    public boolean isRunning(String task){
+        return uniTask.isRunning(task);
     }
 
     /*************************************************** 인터페이스 관련 *********************************************/

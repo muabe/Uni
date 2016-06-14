@@ -167,6 +167,13 @@ public class UniLayout extends FrameLayout implements UniInterface{
         uniTask.setTaskAutoCanceled(autoCanceled);
     }
 
+    public boolean isFinished(String task){
+        return uniTask.isFinished(task);
+    }
+
+    public boolean isRunning(String task){
+        return uniTask.isRunning(task);
+    }
 
     /*************************************************** UniTask Interface 관련 *********************************************/
     @Override

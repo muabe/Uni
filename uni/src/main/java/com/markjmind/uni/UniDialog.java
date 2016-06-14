@@ -132,6 +132,14 @@ public class UniDialog extends Dialog implements UniInterface{
         uniLayout.setTaskAutoCanceled(autoCanceled);
     }
 
+    public boolean isFinished(String task){
+        return uniTask.isFinished(task);
+    }
+
+    public boolean isRunning(String task){
+        return uniTask.isRunning(task);
+    }
+
     /*************************************************** 인터페이스 관련 *********************************************/
 
     @Override
