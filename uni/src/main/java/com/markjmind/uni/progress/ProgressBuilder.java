@@ -1,6 +1,7 @@
 package com.markjmind.uni.progress;
 
 import android.animation.AnimatorSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,10 +40,12 @@ public class ProgressBuilder extends ThreadProcessObserver {
 
     public void setParents(ViewGroup parents){
         this.parents = parents;
-        this.progressLayout = new LinearLayout(parents.getContext());
-        this.progressLayout.setGravity(Gravity.CENTER);
-        this.progressLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        this.progressLayout.setClickable(true);
+        progressLayout = new LinearLayout(parents.getContext());
+        progressLayout.setOrientation(LinearLayout.VERTICAL);
+        progressLayout.setGravity(Gravity.CENTER);
+        progressLayout.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        progressLayout.setClickable(true);
     }
 
     @Override
@@ -114,11 +117,32 @@ public class ProgressBuilder extends ThreadProcessObserver {
                 }
                 layout = uniProgress.mapperInit(progressLayout, param);
                 if(listener != null){
+                    if(cancelAdapter==null){
+                        layout.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                            @Override
+                            public void onViewAttachedToWindow(View v) {
+
+                            }
+
+                            @Override
+                            public void onViewDetachedFromWindow(View v) {
+                                Log.e("ㅇㄴㅇ","디테치:"+isShowing());
+                                if(isShowing() && autoCancel) {
+                                    dismiss();
+                                }
+                            }
+                        });
+                        listener.onStart(layout, null);
+                    }
                     listener.onStart(layout, cancelAdapter);
                 }
                 progressInterface.show(layout);
             }
         }
+    }
+
+    public synchronized void show(){
+        this.show(null);
     }
 
     public boolean isShowing(){

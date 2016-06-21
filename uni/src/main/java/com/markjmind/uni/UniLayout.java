@@ -34,7 +34,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     public UniLayout(Context context) {
         super(context);
         frameLayout = new FrameLayout(context);
-        this.addView(frameLayout);
+        super.addView(frameLayout);
         this.progress.setParents(this);
         param = new Store<>();
     }
@@ -42,7 +42,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     public UniLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         frameLayout = new FrameLayout(context);
-        this.addView(frameLayout);
+        super.addView(frameLayout);
         this.progress.setParents(this);
         param = new Store<>();
     }
@@ -50,7 +50,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     public UniLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         frameLayout = new FrameLayout(context);
-        this.addView(frameLayout);
+        super.addView(frameLayout);
         this.progress.setParents(this);
         param = new Store<>();
     }
@@ -62,7 +62,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
         }
         if(pro!=null) {
             this.progress = pro;
-            this.progress.setParents(this);
+            pro.setParents(this);
         }
 
         uniTask.mapper.addAdapter(new ParamAdapter(param));
@@ -103,7 +103,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
         this.removeAllViews();
         this.view = view;
         if(this.view !=null) {
-            this.addView(this.view);
+            super.addView(this.view);
             this.setLayoutParams(this.view.getLayoutParams());
         }
     }

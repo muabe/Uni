@@ -84,7 +84,8 @@ public class Store<Value> extends LinkedHashMap<Object, Object> implements Compa
 		}
 		return result;
 	}
-	
+
+
 	public int getInt(String key){
 		Object result = this.get(key);
 		if(result instanceof java.lang.String){
@@ -123,8 +124,20 @@ public class Store<Value> extends LinkedHashMap<Object, Object> implements Compa
 		return ((Long)result).longValue();
 	}
 
-	public boolean getBool(String key){
+	public boolean getBoolean(String key){
 		Object result = this.get(key);
+		if(result instanceof java.lang.String){
+			return Boolean.parseBoolean((String)result);
+		}
+		return ((Boolean)result).booleanValue();
+	}
+
+
+	public boolean optBoolean(String key, boolean defaultValue){
+		Object result = this.get(key);
+		if(result == null){
+			return defaultValue;
+		}
 		if(result instanceof java.lang.String){
 			return Boolean.parseBoolean((String)result);
 		}

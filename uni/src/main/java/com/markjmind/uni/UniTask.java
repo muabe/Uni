@@ -240,6 +240,7 @@ public class UniTask implements UniInterface{
     }
 
     protected String refresh(boolean isAsync, UniAop uniAop){
+        cancelAll();
         if(isAsync) {
             return run(progress, uniInterface, null, false, uniAop);
         }else{

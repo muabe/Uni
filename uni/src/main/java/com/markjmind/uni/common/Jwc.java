@@ -80,4 +80,18 @@ public class Jwc extends JwViewController {
 		return result;
 	}
 
+	public static void setVisible(View target, boolean isVisible, int falseVisible){
+		if(isVisible){
+			target.setVisibility(View.VISIBLE);
+		}else{
+			target.setVisibility(falseVisible);
+		}
+	}
+
+	public static void setVisible(View target, boolean isVisible){
+		Jwc.setVisible(target,isVisible, View.GONE);
+	}
+
+
+
 }
