@@ -44,6 +44,7 @@ public class UniFragment extends Fragment implements UniInterface{
         uniLayout = null;
         uniTask = new UniTask();
         mapper = uniTask.mapper;
+        mapper.setInjectParents(UniFragment.class);
         param = new Store<>();
         progress = new ProgressBuilder();
         isPopStack = false;

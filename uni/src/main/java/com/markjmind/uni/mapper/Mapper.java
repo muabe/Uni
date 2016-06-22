@@ -25,9 +25,9 @@ public class Mapper {
 	protected Class<?> targetClass;
 	protected HashMap<Integer, View> viewHash = new HashMap<>();
 
-	private Method[] methods;
-	private Field[] fields;
-	private HashMap<Class<?>, MapperAdapter> adapterMap = new HashMap<>();
+	protected Method[] methods;
+	protected Field[] fields;
+	protected HashMap<Class<?>, MapperAdapter> adapterMap = new HashMap<>();
 
 	protected Mapper(){
 
@@ -84,7 +84,7 @@ public class Mapper {
 		viewHash.clear();
 	}
 
-	private void setAdapterList(AccessibleObject[] abs, ArrayList<MapperAdapter<?, ?>> adapterList){
+	protected void setAdapterList(AccessibleObject[] abs, ArrayList<MapperAdapter<?, ?>> adapterList){
 		if(abs!=null) {
 			for (AccessibleObject ab : abs) {
 				Annotation[] annotations = ab.getDeclaredAnnotations();
@@ -100,14 +100,16 @@ public class Mapper {
 			}
 		}
 	}
-	private void setClassAdapter(ArrayList<MapperAdapter<?, ?>> classList){
-		if(classList!=null) {
-			Annotation[] annotations = targetClass.getDeclaredAnnotations();
-			if (annotations != null && annotations.length > 0) {
-				for (Annotation annotation : annotations) {
-					for (MapperAdapter adapter : classList) {
-						if (annotation.annotationType().equals(adapter.getAnnotationClass())) {
-							adapter.inject(targetClass.getAnnotation(adapter.getAnnotationClass()), targetClass, classList);
+	protected void setClassAdapter(ArrayList<Class<?>> classArrayList, ArrayList<MapperAdapter<?, ?>> adapterList){
+		if(adapterList!=null) {
+			for (Class<?> ab : classArrayList) {
+				Annotation[] annotations = ab.getDeclaredAnnotations();
+				if (annotations != null && annotations.length > 0) {
+					for (Annotation annotation : annotations) {
+						for (MapperAdapter adapter : adapterList) {
+							if (annotation.annotationType().equals(adapter.getAnnotationClass())) {
+								adapter.inject(ab.getAnnotation(adapter.getAnnotationClass()), targetClass, adapterList);
+							}
 						}
 					}
 				}
@@ -139,13 +141,13 @@ public class Mapper {
 					methodList.add(adapter);
 				}
 			}
-			setClassAdapter(clzList);
+			setClassAdapter(getClasses(targetClass), clzList);
 			if (methods == null) {
-				methods = targetClass.getDeclaredMethods();
+				methods = getMethods(targetClass);
 			}
 			setAdapterList(methods, methodList);
 			if (fields == null) {
-				fields = targetClass.getDeclaredFields();
+				fields = getFields(targetClass);
 			}
 			setAdapterList(fields, fieldList);
 		}
@@ -180,5 +182,56 @@ public class Mapper {
 
 	public View findViewById(int id){
 		return finder.findViewById(id);
+	}
+
+	Class<?> parentsClass;
+	public void setInjectParents(Class<?> parentsClass){
+		this.parentsClass = parentsClass;
+	}
+
+	private ArrayList<Class<?>> getClasses(Class<?> targetClass){
+		ArrayList<Class<?>> classesList = new ArrayList();
+		if(parentsClass!=null){
+			Class<?> tempClass = targetClass;
+			Class<?> superClass = tempClass.getSuperclass();
+			while(parentsClass.equals(superClass) || !Object.class.equals(superClass)){
+				classesList.add(0, superClass);
+				tempClass = superClass;
+				superClass = tempClass.getSuperclass();
+			}
+
+		}
+		classesList.add(targetClass);
+		return classesList;
+	}
+
+	private Method[] getMethods(Class<?> targetClass){
+		if(parentsClass!=null){
+			Class<?> superClass = targetClass.getSuperclass();
+			if(!parentsClass.equals(superClass) || Object.class.equals(superClass)){
+				Method[] superMethods = getMethods(superClass);
+				Method[] targetMethods = targetClass.getDeclaredMethods();
+				Method[] allArray = new Method[targetMethods.length+superMethods.length];
+				System.arraycopy(targetMethods, 0, allArray, 0, targetMethods.length);
+				System.arraycopy(superMethods, 0, allArray, targetMethods.length, superMethods.length);
+				return allArray;
+			}
+		}
+		return targetClass.getDeclaredMethods();
+	}
+
+	private Field[] getFields(Class<?> targetClass){
+		if(parentsClass!=null){
+			Class<?> superClass = targetClass.getSuperclass();
+			if(!superClass.equals(parentsClass) || Object.class.equals(superClass)) {
+				Field[] superMethods = getFields(superClass);
+				Field[] targetMethods = targetClass.getDeclaredFields();
+				Field[] allArray = new Field[targetMethods.length + superMethods.length];
+				System.arraycopy(targetMethods, 0, allArray, 0, targetMethods.length);
+				System.arraycopy(superMethods, 0, allArray, targetMethods.length, superMethods.length);
+				return allArray;
+			}
+		}
+		return targetClass.getDeclaredFields();
 	}
 }

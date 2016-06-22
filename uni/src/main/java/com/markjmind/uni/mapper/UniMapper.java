@@ -86,15 +86,4 @@ public class UniMapper extends Mapper{
     public Object getTarget(){
         return targetObject;
     }
-
-
-    //	public String[] injectBox(){
-//		if(targetClass.isAnnotationPresent(Box.class)){
-//			Box par = targetClass.getAnnotation(Box.class);
-//			return par.value();
-//		}else{
-//			throw new UinMapperException(ErrorMessage.Runtime.box(targetClass),null);
-//		}
-//	}
-
 }

@@ -44,6 +44,7 @@ public class UniDialog extends Dialog implements UniInterface{
         uniLayout = null;
         uniTask = new UniTask();
         mapper = uniTask.mapper;
+        mapper.setInjectParents(UniDialog.class);
         param = new Store<>();
     }
 

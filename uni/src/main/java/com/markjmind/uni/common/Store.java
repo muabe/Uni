@@ -72,17 +72,19 @@ public class Store<Value> extends LinkedHashMap<Object, Object> implements Compa
 	 * key값에 대응하는 String 객체를 가져온다
 	 */
 	public String getString(String key){
-		String result = (String)this.get(key);
-		if(result == null) result = "";
-		return result;
+		Object result = this.get(key);
+		if(result == null){
+			return null;
+		}
+		return (String)result;
 	}
 	
 	public String optString(String key, String defaultValue){
-		String result = (String)this.get(key);
+		Object result = this.get(key);
 		if(result == null){
 			return defaultValue;
 		}
-		return result;
+		return (String)result;
 	}
 
 

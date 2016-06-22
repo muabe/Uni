@@ -56,7 +56,8 @@ public class UniLayout extends FrameLayout implements UniInterface{
     }
 
     void init(UniTask task, Store<?> par, ProgressBuilder pro){
-        setUniTask(task);
+        this.uniTask = task;
+        mapper = uniTask.mapper;
         if(par!=null){
             this.param = par;
         }
@@ -90,11 +91,6 @@ public class UniLayout extends FrameLayout implements UniInterface{
         return this.uniTask.isAsync();
     }
 
-    void setUniTask(UniTask uniTask){
-        this.uniTask = uniTask;
-        mapper = uniTask.mapper;
-    }
-
     UniTask getUniTask(){
         return uniTask;
     }
@@ -109,6 +105,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     }
 
     public void bind(UniTask uniTask){
+        uniTask.mapper.setInjectParents(UniTask.class);
         uniTask.syncUniLayout(this, uniTask.param, uniTask.progress, uniTask, uniTask.getUniInterface(), null);
     }
 
@@ -124,6 +121,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     public void post(){
         if(uniTask==null){
             UniTask task = new UniTask();
+            task.mapper.setInjectParents(UniLayout.class);
             task.syncUniLayout(this, param, progress, this, this, null);
         }
         uniTask.post();
@@ -132,6 +130,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     public String excute(){
         if(uniTask==null){
             UniTask task = new UniTask();
+            task.mapper.setInjectParents(UniLayout.class);
             task.syncUniLayout(this, param, progress, this, this, null);
         }
         return uniTask.excute(progress, getAop());
