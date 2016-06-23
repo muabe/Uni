@@ -54,7 +54,8 @@ public class UniTask implements UniInterface{
         progress = new ProgressBuilder();
     }
 
-    void injectLayout(LayoutInflater inflater, ViewGroup container){
+    private void injectLayout(LayoutInflater inflater, ViewGroup container){
+        uniInterface.onBind();
         mapper.inject(LayoutAdapter.class);
         int layoutId = mapper.getAdapter(LayoutAdapter.class).getLayoutId();
         if(layoutId>0) {
@@ -71,7 +72,6 @@ public class UniTask implements UniInterface{
         this.uniLayout.init(this, param, progress);
         this.progress = this.uniLayout.progress;
         this.param = this.uniLayout.param;
-        uniInterface.onBind();
         if(inflater==null) {
             inflater = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
         }
@@ -86,14 +86,12 @@ public class UniTask implements UniInterface{
         this.syncUniLayout(null, uniLayout, param, progress, mappingObj, uniInterface, container);
     }
 
-
-    void init(Object mappingObj, UniInterface uniInterface){
-        this.uniInterface = uniInterface;
-        uniInterface.onBind();
-    }
-
     CancelObservable getCancelObservable(){
         return cancelObservable;
+    }
+
+    public void setUniInterface(UniInterface uniInterface){
+        this.uniInterface = uniInterface;
     }
 
     public UniInterface getUniInterface() {
@@ -101,9 +99,6 @@ public class UniTask implements UniInterface{
     }
 
     /*************************************************** Uni 외부지원 함수 관련 *********************************************/
-    public void setUniInterface(UniInterface uniInterface){
-        this.uniInterface = uniInterface;
-    }
 
     public View findViewById(int id){
         return uniLayout.findViewById(id);
@@ -176,13 +171,10 @@ public class UniTask implements UniInterface{
 
     /*************************************************** excute 관련 *********************************************/
     public void post(){
-        uniInterface.onBind();
-        if(progress!=null) {
+         if(progress!=null) {
             if (progress.get() == null) {
                 mapper.addAdapter(new ProgressAdapter(progress));
                 mapper.inject(ProgressAdapter.class);
-            }
-            if (progress.get() != null) {
                 progress.get().onBind();
             }
         }

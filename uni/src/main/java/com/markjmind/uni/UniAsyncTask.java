@@ -118,7 +118,7 @@ public abstract class UniAsyncTask implements UniInterface{
     public void post(){
         if(uniTask==null){
             uniTask = new UniTask();
-            uniTask.init(this, this);
+            uniTask.setUniInterface(this);
         }
         uniTask.post();
     }
@@ -130,7 +130,7 @@ public abstract class UniAsyncTask implements UniInterface{
     public String excute(UniAop uniAop){
         if(uniTask==null){
             uniTask = new UniTask();
-            uniTask.init(this, this);
+            uniTask.setUniInterface(this);
             return uniTask.run(progress, this, null, true, uniAop);
         }else{
             return uniTask.excute(progress);
@@ -144,7 +144,7 @@ public abstract class UniAsyncTask implements UniInterface{
     public String excute(boolean isAsync, UniAop uniAop){
         if(uniTask==null){
             uniTask = new UniTask();
-            uniTask.init(this, this);
+            uniTask.setUniInterface(this);
             return uniTask.run(progress, this, null, true, uniAop);
         }else{
             return uniTask.excute(progress);
