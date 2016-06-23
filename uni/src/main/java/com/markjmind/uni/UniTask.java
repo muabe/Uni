@@ -58,7 +58,7 @@ public class UniTask implements UniInterface{
         mapper.inject(LayoutAdapter.class);
         int layoutId = mapper.getAdapter(LayoutAdapter.class).getLayoutId();
         if(layoutId>0) {
-            uniLayout.setFrameLayout(inflater.inflate(layoutId, container, false));
+            uniLayout.setLayout(inflater.inflate(layoutId, container, false));
         }
     }
 

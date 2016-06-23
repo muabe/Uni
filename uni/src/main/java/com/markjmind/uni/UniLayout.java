@@ -95,7 +95,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
         return uniTask;
     }
 
-    protected void setFrameLayout(View view) {
+    protected void setLayout(View view) {
         this.removeAllViews();
         this.view = view;
         if(this.view !=null) {

@@ -1,7 +1,6 @@
 package com.markjmind.uni.progress;
 
 import android.animation.AnimatorSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -126,7 +125,6 @@ public class ProgressBuilder extends ThreadProcessObserver {
 
                             @Override
                             public void onViewDetachedFromWindow(View v) {
-                                Log.e("ㅇㄴㅇ","디테치:"+isShowing());
                                 if(isShowing() && autoCancel) {
                                     dismiss();
                                 }

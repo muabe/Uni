@@ -54,6 +54,8 @@ class ProgressView implements ProgressBuilder.ProgressInterface {
     public synchronized void show(View view) {
         if(!isShowing) {
             isShowing = true;
+            progressLayout.removeAllViews();
+            parents.removeView(progressLayout);
             if(view!=null) {
                 progressLayout.addView(view);
             }
@@ -74,11 +76,10 @@ class ProgressView implements ProgressBuilder.ProgressInterface {
             if(progressLayout !=null) {
                 if(outAnimation!=null){
                     outAnimation.start();
-                }else{
+                }else {
                     progressLayout.removeAllViews();
                     parents.removeView(progressLayout);
                 }
-
             }
             isShowing = false;
         }
