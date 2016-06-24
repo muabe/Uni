@@ -61,11 +61,9 @@ public class UniFragment extends Fragment implements UniInterface{
             uniLayout = new UniLayout(getActivity());
             uniTask.syncUniLayout(inflater, uniLayout, param, progress, this, this, container);
             setRefreshBackStack(false);
-            if(uniTask.isAsync()) {
-                uniTask.excute(progress);
-            }else{
-                uniTask.post();
-            }
+            uniTask.getBuilder()
+                    .setAsync(isAsync())
+                    .excute();
         }else{
             onPostCache();
         }
@@ -96,12 +94,14 @@ public class UniFragment extends Fragment implements UniInterface{
         return uniLayout.findViewById(id);
     }
 
+    boolean isAsync = true;
+
     public void setAsync(boolean isAsync){
-        this.uniTask.setAsync(isAsync);
+        this.isAsync = isAsync;
     }
 
     public boolean isAsync(){
-        return this.uniTask.isAsync();
+        return this.isAsync;
     }
 
     public void setRefreshBackStack(boolean isPopStack) {
@@ -122,32 +122,11 @@ public class UniFragment extends Fragment implements UniInterface{
         return aop;
     }
 
-    public void post(){
-        uniTask.post();
-    }
-
-    public String excute(){
-        task = uniTask.excute(progress, getAop());
-        return task;
-    }
-
-    public String excute(boolean isAsync){
-        if(isAsync) {
-            task = uniTask.excute(progress, getAop());
-            return task;
-        }else{
-            uniTask.post();
-            return null;
-        }
-    }
-
     public String refresh(){
-        task = uniTask.refresh(isAsync(), getAop());
-        return task;
-    }
-
-    public String refresh(boolean isAsync){
-        task = uniTask.refresh(isAsync, getAop());
+        task = uniTask.getBuilder()
+                .setAsync(isAsync)
+                .setUniAop(getAop())
+                .refresh();
         return task;
     }
 

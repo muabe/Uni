@@ -3,7 +3,6 @@ package com.markjmind.uni;
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
-import com.markjmind.uni.thread.aop.UniAop;
 
 /**
  * <br>捲土重來<br>
@@ -115,39 +114,15 @@ public abstract class UniAsyncTask implements UniInterface{
 
 
     /*************************************************** 실행 관련 *********************************************/
-    public void post(){
-        if(uniTask==null){
-            uniTask = new UniTask();
-            uniTask.setUniInterface(this);
-        }
-        uniTask.post();
-    }
 
     public String excute(){
-        return this.excute(null);
-    }
-
-    public String excute(UniAop uniAop){
         if(uniTask==null){
             uniTask = new UniTask();
             uniTask.setUniInterface(this);
-            return uniTask.run(progress, this, null, true, uniAop);
-        }else{
-            return uniTask.excute(progress);
         }
-    }
-
-    public String excute(boolean isAsync){
-        return this.excute(isAsync, null);
-    }
-
-    public String excute(boolean isAsync, UniAop uniAop){
-        if(uniTask==null){
-            uniTask = new UniTask();
-            uniTask.setUniInterface(this);
-            return uniTask.run(progress, this, null, true, uniAop);
-        }else{
-            return uniTask.excute(progress);
-        }
+        return uniTask.getBuilder()
+                .setProgress(progress)
+                .setAnnotationMapping(false)
+                .excute();
     }
 }

@@ -38,20 +38,21 @@ public class UniTask implements UniInterface{
 
     private Context context;
     private boolean isMapping;
-    private CancelObservable cancelObservable;
     private boolean isAsync;
 
     private UniInterface uniInterface;
+    private CancelObservable cancelObservable;
+
 
 
     public UniTask(){
         uniLayout = null;
         mapper = new UniMapper();
         uniInterface = this;
-        cancelObservable = new CancelObservable();
         isAsync = true;
         param = new Store<>();
         progress = new ProgressBuilder();
+        cancelObservable = new CancelObservable();
     }
 
     private void injectLayout(LayoutInflater inflater, ViewGroup container){
@@ -90,12 +91,24 @@ public class UniTask implements UniInterface{
         return cancelObservable;
     }
 
+    public ExcuteBuilder getBuilder(){
+        return new ExcuteBuilder(this);
+    }
+
     public void setUniInterface(UniInterface uniInterface){
         this.uniInterface = uniInterface;
     }
 
     public UniInterface getUniInterface() {
         return uniInterface;
+    }
+
+    void setMapping(boolean isMapping){
+        this.isMapping = isMapping;
+    }
+
+    boolean isMapping(){
+        return this.isMapping;
     }
 
     /*************************************************** Uni 외부지원 함수 관련 *********************************************/
@@ -170,49 +183,7 @@ public class UniTask implements UniInterface{
 
 
     /*************************************************** excute 관련 *********************************************/
-    public void post(){
-         if(progress!=null) {
-            if (progress.get() == null) {
-                mapper.addAdapter(new ProgressAdapter(progress));
-                mapper.inject(ProgressAdapter.class);
-                progress.get().onBind();
-            }
-        }
-        if(!isMapping) {
-            mapper.injectWithout(LayoutAdapter.class, ProgressAdapter.class);
-            isMapping = true;
-        }
-        uniInterface.onPost();
-    }
-
-
-    protected String excute(ProgressBuilder progress){
-        if(isAsync) {
-            return this.excute(progress, uniInterface, null, null);
-        }else{
-            uniInterface.onPost();
-            return null;
-        }
-    }
-
-    protected String excute(ProgressBuilder progress, UniAop uniAop){
-        if(isAsync) {
-            return this.excute(progress, uniInterface, null, uniAop);
-        }else{
-            uniInterface.onPost();
-            return null;
-        }
-    }
-
-    protected String excute(ProgressBuilder progress, UniInterface uniInterface){
-        return this.excute(progress, uniInterface, null, null);
-    }
-
-    protected String excute(ProgressBuilder progress, UniInterface uniInterface, UniAop uniAop){
-        return this.excute(progress, uniInterface, null, uniAop);
-    }
-
-    private String excute(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail, UniAop uniAop){
+    void memberMapping(){
         if(progress!=null) {
             if (progress.get() == null) {
                 mapper.addAdapter(new ProgressAdapter(progress));
@@ -227,26 +198,19 @@ public class UniTask implements UniInterface{
             mapper.injectWithout(LayoutAdapter.class, ProgressAdapter.class);
             isMapping = true;
         }
-
-        return run(progress, uniInterface, uniLoadFail, true, null);
     }
 
-    protected String refresh(boolean isAsync, UniAop uniAop){
+    String refresh(ProgressBuilder progress, UniLoadFail uniLoadFail, UniAop uniAop){
         cancelAll();
-        if(isAsync) {
-            return run(progress, uniInterface, null, false, uniAop);
-        }else{
-            uniInterface.onPost();
-            return null;
-        }
+        return run(progress, uniInterface, uniLoadFail, true, uniAop);
     }
 
-    String run(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail, boolean eanbleOnPre, UniAop uniAop){
+    String run(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail, boolean skipOnPre, UniAop uniAop){
         UniMainThread task = new UniMainThread(cancelObservable);
         if(progress.isAble()) {
             task.addTaskObserver(progress);
         }
-        task.addTaskObserver(new ThreadProcessAdapter(uniInterface, uniLoadFail, eanbleOnPre).setUniAop(uniAop));
+        task.addTaskObserver(new ThreadProcessAdapter(uniInterface, uniLoadFail, skipOnPre).setUniAop(uniAop));
         cancelObservable.add(task);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -255,8 +219,6 @@ public class UniTask implements UniInterface{
         }
         return task.getId();
     }
-
-
 
     /*************************************************** UniTask Interface 관련 *********************************************/
     @Override

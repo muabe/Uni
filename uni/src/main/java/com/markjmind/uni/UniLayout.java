@@ -118,39 +118,13 @@ public class UniLayout extends FrameLayout implements UniInterface{
         return aop;
     }
 
-    public void post(){
+    public ExcuteBuilder getBuilder(){
         if(uniTask==null){
-            UniTask task = new UniTask();
-            task.mapper.setInjectParents(UniLayout.class);
-            task.syncUniLayout(this, param, progress, this, this, null);
+            uniTask = new UniTask();
+            uniTask.mapper.setInjectParents(UniLayout.class);
+            uniTask.syncUniLayout(this, param, progress, this, this, null);
         }
-        uniTask.post();
-    }
-
-    public String excute(){
-        if(uniTask==null){
-            UniTask task = new UniTask();
-            task.mapper.setInjectParents(UniLayout.class);
-            task.syncUniLayout(this, param, progress, this, this, null);
-        }
-        return uniTask.excute(progress, getAop());
-    }
-
-    public String excute(boolean isAsync){
-        if(isAsync){
-            return excute();
-        }else{
-            post();
-            return null;
-        }
-    }
-
-    public String refresh(){
-        return uniTask.refresh(isAsync(), getAop());
-    }
-
-    public String refresh(boolean isAsync){
-        return uniTask.refresh(isAsync, getAop());
+        return uniTask.getBuilder();
     }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/

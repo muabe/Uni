@@ -64,10 +64,22 @@ public class UniDialog extends Dialog implements UniInterface{
         setContentView(uniLayout);
         uniTask.syncUniLayout(uniLayout, param, progress, this, this, null);
 
-        setOnShowListener(new OnShowListener() {
+        super.setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                uniTask.excute(progress);
+                uniTask.getBuilder().excute();
+            }
+        });
+    }
+
+    @Override
+    public void setOnShowListener(OnShowListener listener) {
+        final OnShowListener lis = listener;
+        super.setOnShowListener(new OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                uniTask.getBuilder().excute();
+                lis.onShow(dialog);
             }
         });
     }
@@ -92,31 +104,6 @@ public class UniDialog extends Dialog implements UniInterface{
 
     public UniAop getAop(){
         return aop;
-    }
-
-    public void post(){
-        uniTask.post();
-    }
-
-    public String excute(){
-        return uniTask.excute(progress, getAop());
-    }
-
-    public String excute(boolean isAsync){
-        if(isAsync){
-            return excute();
-        }else{
-            post();
-            return null;
-        }
-    }
-
-    public String refresh(){
-        return uniTask.refresh(isAsync(), getAop());
-    }
-
-    public String refresh(boolean isAsync){
-        return uniTask.refresh(isAsync, getAop());
     }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/
