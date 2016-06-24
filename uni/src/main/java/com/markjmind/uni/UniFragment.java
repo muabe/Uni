@@ -42,7 +42,7 @@ public class UniFragment extends Fragment implements UniInterface{
     public UniFragment() {
         super();
         uniLayout = null;
-        uniTask = new UniTask();
+        uniTask = new UniTask(true);
         mapper = uniTask.mapper;
         mapper.setInjectParents(UniFragment.class);
         param = new Store<>();
@@ -61,9 +61,7 @@ public class UniFragment extends Fragment implements UniInterface{
             uniLayout = new UniLayout(getActivity());
             uniTask.syncUniLayout(inflater, uniLayout, param, progress, this, this, container);
             setRefreshBackStack(false);
-            uniTask.getBuilder()
-                    .setAsync(isAsync())
-                    .excute();
+            getBuilder().setAsync(isAsync()).excute();
         }else{
             onPostCache();
         }
@@ -132,6 +130,10 @@ public class UniFragment extends Fragment implements UniInterface{
 
     public String getTask(){
         return task;
+    }
+
+    public ExcuteBuilder getBuilder(){
+        return uniTask.getBuilder();
     }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/

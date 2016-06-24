@@ -117,12 +117,13 @@ public abstract class UniAsyncTask implements UniInterface{
 
     public String excute(){
         if(uniTask==null){
-            uniTask = new UniTask();
+            uniTask = new UniTask(false);
             uniTask.setUniInterface(this);
         }
         return uniTask.getBuilder()
                 .setProgress(progress)
-                .setAnnotationMapping(false)
                 .excute();
     }
+
+
 }

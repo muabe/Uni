@@ -42,8 +42,7 @@ public class UniTask implements UniInterface{
 
     private UniInterface uniInterface;
     private CancelObservable cancelObservable;
-
-
+    private boolean isAnnotationMapping;
 
     public UniTask(){
         uniLayout = null;
@@ -53,6 +52,19 @@ public class UniTask implements UniInterface{
         param = new Store<>();
         progress = new ProgressBuilder();
         cancelObservable = new CancelObservable();
+        isAnnotationMapping = false;
+    }
+
+    UniTask(boolean isAnnotationMapping){
+        this.isAnnotationMapping = isAnnotationMapping;
+        uniLayout = null;
+        mapper = new UniMapper();
+        uniInterface = this;
+        isAsync = true;
+        param = new Store<>();
+        progress = new ProgressBuilder();
+        cancelObservable = new CancelObservable();
+        isAnnotationMapping = isAnnotationMapping;
     }
 
     private void injectLayout(LayoutInflater inflater, ViewGroup container){
@@ -87,12 +99,16 @@ public class UniTask implements UniInterface{
         this.syncUniLayout(null, uniLayout, param, progress, mappingObj, uniInterface, container);
     }
 
+    void setAnnotationMapping(boolean annotationMapping) {
+        isAnnotationMapping = annotationMapping;
+    }
+
     CancelObservable getCancelObservable(){
         return cancelObservable;
     }
 
     public ExcuteBuilder getBuilder(){
-        return new ExcuteBuilder(this);
+        return new ExcuteBuilder(this, isAnnotationMapping);
     }
 
     public void setUniInterface(UniInterface uniInterface){

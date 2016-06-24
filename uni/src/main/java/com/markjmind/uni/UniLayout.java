@@ -106,6 +106,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
 
     public void bind(UniTask uniTask){
         uniTask.mapper.setInjectParents(UniTask.class);
+        uniTask.setAnnotationMapping(true);
         uniTask.syncUniLayout(this, uniTask.param, uniTask.progress, uniTask, uniTask.getUniInterface(), null);
     }
 
@@ -120,7 +121,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
 
     public ExcuteBuilder getBuilder(){
         if(uniTask==null){
-            uniTask = new UniTask();
+            uniTask = new UniTask(true);
             uniTask.mapper.setInjectParents(UniLayout.class);
             uniTask.syncUniLayout(this, param, progress, this, this, null);
         }

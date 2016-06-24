@@ -19,12 +19,13 @@ public class ExcuteBuilder {
     private UniLoadFail uniLoadFail;
     private boolean skipOnPre = false;
     private UniAop uniAop;
-    private boolean isAnnotationMapping = true;
+    private boolean isAnnotationMapping = false;
 
-    public ExcuteBuilder(UniTask uniTask){
+    public ExcuteBuilder(UniTask uniTask, boolean isAnnotationMapping){
         this.uniTask = uniTask;
         this.setProgress(uniTask.progress);
         this.setUniInterface(uniTask.getUniInterface());
+        this.isAnnotationMapping = isAnnotationMapping;
     }
     public ExcuteBuilder setAsync(boolean async) {
         isAsync = async;
@@ -53,11 +54,6 @@ public class ExcuteBuilder {
 
     public ExcuteBuilder setUniAop(UniAop uniAop) {
         this.uniAop = uniAop;
-        return this;
-    }
-
-    public ExcuteBuilder setAnnotationMapping(boolean annotationMapping) {
-        isAnnotationMapping = annotationMapping;
         return this;
     }
 
