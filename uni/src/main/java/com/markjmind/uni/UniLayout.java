@@ -119,27 +119,16 @@ public class UniLayout extends FrameLayout implements UniInterface{
         return aop;
     }
 
-    public ExcuteBuilder getBuilder(){
+    public TaskController getTask(){
         if(uniTask==null){
             uniTask = new UniTask(true);
             uniTask.mapper.setInjectParents(UniLayout.class);
             uniTask.syncUniLayout(this, param, progress, this, this, null);
         }
-        return uniTask.getBuilder();
+        return uniTask.getTask();
     }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/
-    public void cancel(String id) {
-        uniTask.cancel(id);
-    }
-
-    public void cancelAll() {
-        uniTask.cancelAll();
-    }
-
-    public void setTaskAutoCanceled(boolean autoCanceled) {
-        uniTask.setTaskAutoCanceled(autoCanceled);
-    }
 
     public boolean isFinished(String task){
         return uniTask.isFinished(task);

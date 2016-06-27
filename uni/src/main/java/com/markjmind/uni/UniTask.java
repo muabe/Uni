@@ -107,8 +107,8 @@ public class UniTask implements UniInterface{
         return cancelObservable;
     }
 
-    public ExcuteBuilder getBuilder(){
-        return new ExcuteBuilder(this, isAnnotationMapping);
+    public TaskController getTask(){
+        return new TaskController(this, isAnnotationMapping);
     }
 
     public void setUniInterface(UniInterface uniInterface){
@@ -233,6 +233,8 @@ public class UniTask implements UniInterface{
         } else {
             task.execute();
         }
+
+
         return task.getId();
     }
 

@@ -61,7 +61,7 @@ public class UniFragment extends Fragment implements UniInterface{
             uniLayout = new UniLayout(getActivity());
             uniTask.syncUniLayout(inflater, uniLayout, param, progress, this, this, container);
             setRefreshBackStack(false);
-            getBuilder().setAsync(isAsync()).excute();
+            getTask().setAsync(isAsync()).excute();
         }else{
             onPostCache();
         }
@@ -121,7 +121,7 @@ public class UniFragment extends Fragment implements UniInterface{
     }
 
     public String refresh(){
-        taskId = uniTask.getBuilder()
+        taskId = uniTask.getTask()
                 .setAsync(isAsync)
                 .setUniAop(getAop())
                 .refresh();
@@ -132,22 +132,11 @@ public class UniFragment extends Fragment implements UniInterface{
         return taskId;
     }
 
-    public ExcuteBuilder getBuilder(){
-        return uniTask.getBuilder();
+    public TaskController getTask(){
+        return uniTask.getTask();
     }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/
-    public void cancel(String id) {
-        uniTask.cancel(id);
-    }
-
-    public void cancelAll() {
-        uniTask.cancelAll();
-    }
-
-    public void setTaskAutoCanceled(boolean autoCanceled) {
-        uniTask.setTaskAutoCanceled(autoCanceled);
-    }
 
     public boolean isFinished(String task){
         return uniTask.isFinished(task);

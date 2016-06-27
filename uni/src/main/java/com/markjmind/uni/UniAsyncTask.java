@@ -120,7 +120,7 @@ public abstract class UniAsyncTask implements UniInterface{
             uniTask = new UniTask(false);
             uniTask.setUniInterface(this);
         }
-        return uniTask.getBuilder()
+        return uniTask.getTask()
                 .setProgress(progress)
                 .excute();
     }

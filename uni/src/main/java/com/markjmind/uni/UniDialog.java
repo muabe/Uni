@@ -67,7 +67,7 @@ public class UniDialog extends Dialog implements UniInterface{
         super.setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                getBuilder().excute();
+                getTask().excute();
             }
         });
     }
@@ -78,7 +78,7 @@ public class UniDialog extends Dialog implements UniInterface{
         super.setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                getBuilder().excute();
+                getTask().excute();
                 lis.onShow(dialog);
             }
         });
@@ -106,23 +106,11 @@ public class UniDialog extends Dialog implements UniInterface{
         return aop;
     }
 
-    public ExcuteBuilder getBuilder(){
-        return uniTask.getBuilder();
+    public TaskController getTask(){
+        return uniTask.getTask();
     }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/
-
-    public void cancel(String id) {
-        uniLayout.cancel(id);
-    }
-
-    public void cancelAll() {
-        uniLayout.cancelAll();
-    }
-
-    public void setAutoTaskCanceled(boolean autoCanceled) {
-        uniLayout.setTaskAutoCanceled(autoCanceled);
-    }
 
     public boolean isFinished(String task){
         return uniTask.isFinished(task);

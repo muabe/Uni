@@ -10,7 +10,7 @@ import com.markjmind.uni.thread.aop.UniAop;
  * @email markjmind@gmail.com
  * @since 2016-06-23
  */
-public class ExcuteBuilder {
+public class TaskController {
     private UniTask uniTask;
 
     private boolean isAsync = true;
@@ -21,40 +21,48 @@ public class ExcuteBuilder {
     private UniAop uniAop;
     private boolean isAnnotationMapping = false;
 
-    public ExcuteBuilder(UniTask uniTask, boolean isAnnotationMapping){
+    public TaskController(UniTask uniTask, boolean isAnnotationMapping){
         this.uniTask = uniTask;
         this.setProgress(uniTask.progress);
         this.setUniInterface(uniTask.getUniInterface());
         this.isAnnotationMapping = isAnnotationMapping;
     }
-    public ExcuteBuilder setAsync(boolean async) {
+    public TaskController setAsync(boolean async) {
         isAsync = async;
         return this;
     }
 
-    public ExcuteBuilder setProgress(ProgressBuilder progress) {
+    public TaskController setProgress(ProgressBuilder progress) {
         this.progress = progress;
         return this;
     }
 
-    public ExcuteBuilder setUniInterface(UniInterface uniInterface) {
+    public TaskController setUniInterface(UniInterface uniInterface) {
         this.uniInterface = uniInterface;
         return this;
     }
 
-    public ExcuteBuilder setUniLoadFail(UniLoadFail uniLoadFail) {
+    public TaskController setUniLoadFail(UniLoadFail uniLoadFail) {
         this.uniLoadFail = uniLoadFail;
         return this;
     }
 
-    public ExcuteBuilder skipOnPre(boolean skipOnPre) {
+    public TaskController skipOnPre(boolean skipOnPre) {
         this.skipOnPre = skipOnPre;
         return this;
     }
 
-    public ExcuteBuilder setUniAop(UniAop uniAop) {
+    public TaskController setUniAop(UniAop uniAop) {
         this.uniAop = uniAop;
         return this;
+    }
+
+    public void cancel(String taskId){
+        uniTask.cancel(taskId);
+    }
+
+    public void cancelAll(){
+        uniTask.cancelAll();
     }
 
     public String excute(){
