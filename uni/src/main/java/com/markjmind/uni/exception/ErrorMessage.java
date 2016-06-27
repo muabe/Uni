@@ -1,5 +1,7 @@
 package com.markjmind.uni.exception;
 
+import java.lang.reflect.Field;
+
 /**
  * Created by markj on 2015-12-09.
  */
@@ -38,8 +40,23 @@ public class ErrorMessage {
 
         public static String injectField(Class<?> viewerClass, String fieldName){
             String msg =
-                        "@GetView를 지정하는 annotation의 value가 잘못되었습니다." +
-                                "\n"+fieldName+" 필드와 매핑할 R.id 를 확인하시기 바랍니다."+
+                    "@GetView를 지정하는 annotation의 value가 잘못되었습니다." +
+                            "\n"+fieldName+" 필드와 매핑할 R.id 를 확인하시기 바랍니다."+
+                            "\n"+javaFile(viewerClass);
+            return boxLine(msg);
+        }
+
+        public static String injectParam(Class<?> viewerClass, String fieldName){
+            String msg =
+                    "@Param를 지정하는 annotation의 value가 잘못되었습니다." +
+                            "\n"+fieldName+" 필드와 매핑할 R.id 를 확인하시기 바랍니다."+
+                            "\n"+javaFile(viewerClass);
+            return boxLine(msg);
+        }
+
+        public static String injectParamNull(Class<?> viewerClass, Field field){
+            String msg =
+                    "@Param으로 지정된 "+field.getType().getName()+" "+field.getName()+" 에는 null 값이 들어갈수 없는 field입니다." +
                             "\n"+javaFile(viewerClass);
             return boxLine(msg);
         }
