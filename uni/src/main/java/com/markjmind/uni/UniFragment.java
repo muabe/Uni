@@ -25,7 +25,7 @@ import com.markjmind.uni.thread.aop.UniAop;
  */
 
 public class UniFragment extends Fragment implements UniInterface{
-    private String task;
+    private String taskId;
     private UniTask uniTask;
     private UniLayout uniLayout;
     public Mapper mapper;
@@ -121,15 +121,15 @@ public class UniFragment extends Fragment implements UniInterface{
     }
 
     public String refresh(){
-        task = uniTask.getBuilder()
+        taskId = uniTask.getBuilder()
                 .setAsync(isAsync)
                 .setUniAop(getAop())
                 .refresh();
-        return task;
+        return taskId;
     }
 
-    public String getTask(){
-        return task;
+    public String getTaskId(){
+        return taskId;
     }
 
     public ExcuteBuilder getBuilder(){
