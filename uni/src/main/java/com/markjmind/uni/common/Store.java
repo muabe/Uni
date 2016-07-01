@@ -88,8 +88,11 @@ public class Store<Value> extends LinkedHashMap<Object, Object> implements Compa
 	}
 
 
-	public int getInt(String key){
+	public Integer getInt(String key){
 		Object result = this.get(key);
+		if(result == null){
+			return null;
+		}
 		if(result instanceof java.lang.String){
 			return Integer.parseInt((String)result); 
 		}
@@ -106,8 +109,19 @@ public class Store<Value> extends LinkedHashMap<Object, Object> implements Compa
 		}
 		return ((Integer)result).intValue();
 	}
-	
-	public float optFloat(String key, float defaultValue){
+
+	public Float getFloat(String key){
+		Object result = this.get(key);
+		if(result == null){
+			return null;
+		}
+		if(result instanceof java.lang.String){
+			return Float.parseFloat((String) result);
+		}
+		return ((Float)result).floatValue();
+	}
+
+	public Float optFloat(String key, float defaultValue){
 		Object result = this.get(key);
 		if(result == null){
 			return defaultValue;
@@ -118,16 +132,22 @@ public class Store<Value> extends LinkedHashMap<Object, Object> implements Compa
 		return ((Float)result).floatValue();
 	}
 	
-	public long getLong(String key){
+	public Long getLong(String key){
 		Object result = this.get(key);
+		if(result == null){
+			return null;
+		}
 		if(result instanceof java.lang.String){
-			return Integer.parseInt((String)result); 
+			return Long.parseLong((String)result);
 		}
 		return ((Long)result).longValue();
 	}
 
-	public boolean getBoolean(String key){
+	public Boolean getBoolean(String key){
 		Object result = this.get(key);
+		if(result == null){
+			return null;
+		}
 		if(result instanceof java.lang.String){
 			return Boolean.parseBoolean((String)result);
 		}
@@ -135,7 +155,7 @@ public class Store<Value> extends LinkedHashMap<Object, Object> implements Compa
 	}
 
 
-	public boolean optBoolean(String key, boolean defaultValue){
+	public Boolean optBoolean(String key, boolean defaultValue){
 		Object result = this.get(key);
 		if(result == null){
 			return defaultValue;
