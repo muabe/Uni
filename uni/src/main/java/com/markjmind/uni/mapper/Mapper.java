@@ -25,13 +25,20 @@ public class Mapper {
 	protected Class<?> targetClass;
 	protected HashMap<Integer, View> viewHash = new HashMap<>();
 
-	protected Method[] methods;
-	protected Field[] fields;
-	protected HashMap<Class<?>, MapperAdapter> adapterMap = new HashMap<>();
+//	private HashMap<Class<?>, InjectAdapter<? extends Annotation>> adapterHashMap = new HashMap<>();
+	private ArrayList<AccessibleInfo<Class<?>>> classAnnotations;
+	private ArrayList<AccessibleInfo<? extends AccessibleObject>> fieldAnnotations;
+	private ArrayList<AccessibleInfo<? extends AccessibleObject>> methodAnnotations;
+
+	private Method[] methods;
+	private Field[] fields;
+
+	private Class<?> parentsClass;
 
 	protected Mapper(){
 
 	}
+
 
 	public Mapper(View finder){
 		this(finder, finder);
@@ -62,8 +69,11 @@ public class Mapper {
 		this.targetObject = targetObject;
 		this.finder = new Finder(finder);
 		this.targetClass = targetObject.getClass();
-		adapterMap.clear();
+//		adapterHashMap.clear();
 		viewHash.clear();
+		classAnnotations = null;
+		fieldAnnotations = null;
+		methodAnnotations = null;
 	}
 
 	public void reset(Activity finder, Object targetObject){
@@ -71,8 +81,11 @@ public class Mapper {
 		this.targetObject = targetObject;
 		this.finder = new Finder(finder);
 		this.targetClass = targetObject.getClass();
-		adapterMap.clear();
+//		adapterHashMap.clear();
 		viewHash.clear();
+		classAnnotations = null;
+		fieldAnnotations = null;
+		methodAnnotations = null;
 	}
 
 	public void reset(Dialog finder, Object targetObject){
@@ -80,111 +93,151 @@ public class Mapper {
 		this.targetObject = targetObject;
 		this.finder = new Finder(finder);
 		this.targetClass = targetObject.getClass();
-		adapterMap.clear();
+//		adapterHashMap.clear();
 		viewHash.clear();
+		classAnnotations = null;
+		fieldAnnotations = null;
+		methodAnnotations = null;
 	}
 
-	protected void setAdapterList(AccessibleObject[] abs, ArrayList<MapperAdapter<?, ?>> adapterList){
-		if(abs!=null) {
-			for (AccessibleObject ab : abs) {
-				Annotation[] annotations = ab.getDeclaredAnnotations();
-				if (annotations != null && annotations.length > 0) {
-					for (Annotation annotation : annotations) {
-						for (MapperAdapter adapter : adapterList) {
-							if (annotation.annotationType().equals(adapter.getAnnotationClass())) {
-								adapter.inject(ab.getAnnotation(adapter.getAnnotationClass()), ab, adapterList);
-							}
-						}
-					}
-				}
-			}
+
+//	public void addAdapter(InjectAdapter<? extends Annotation> adapter) {
+//		adapterHashMap.put(adapter.getAnnotationType(), adapter);
+//	}
+//
+//	public <T extends Annotation>InjectAdapter<T> getAdapter(Class<T> annotationClass) {
+//		return (InjectAdapter<T>)adapterHashMap.get(annotationClass);
+//	}
+
+
+//	public void injectAll(){
+//		ArrayList<InjectListener<? extends Annotation, Class>> classList = new ArrayList<>();
+//		InjectAdapter<? extends Annotation>[] values = new InjectAdapter[adapterHashMap.size()];
+//		adapterHashMap.values().toArray(values);
+//		inject(values);
+//	}
+
+	class AccessibleInfo<T>{
+		T accessibleObject;
+		Annotation annotation;
+		public AccessibleInfo(T accessibleObject, Annotation annotation){
+			this.accessibleObject = accessibleObject;
+			this.annotation = annotation;
 		}
 	}
-	protected void setClassAdapter(ArrayList<Class<?>> classArrayList, ArrayList<MapperAdapter<?, ?>> adapterList){
-		if(adapterList!=null) {
+
+	public void inject(InjectAdapter<? extends Annotation>... adapter){
+		injectClass(adapter);
+		injectField(adapter);
+		injectMethod(adapter);
+	}
+
+	private void injectClass(InjectAdapter<? extends Annotation>... adapters){
+		ArrayList<InjectListener<? extends Annotation, Class>> injectListeners = new ArrayList<>();
+		for(InjectAdapter<? extends Annotation> adapter : adapters){
+			if(adapter!=null && adapter.getClassInjector()!=null) {
+				adapter.setMapper(this);
+				injectListeners.add(adapter.getClassInjector());
+			}
+		}
+		injectClass(injectListeners);
+	}
+
+	private void injectClass(ArrayList<InjectListener<? extends Annotation, Class>> injectListeners){
+		if(classAnnotations==null) {
+			classAnnotations = new ArrayList<>();
+			ArrayList<Class<?>> classArrayList = getClasses(targetClass);
 			for (Class<?> ab : classArrayList) {
 				Annotation[] annotations = ab.getDeclaredAnnotations();
-				if (annotations != null && annotations.length > 0) {
-					for (Annotation annotation : annotations) {
-						for (MapperAdapter adapter : adapterList) {
-							if (annotation.annotationType().equals(adapter.getAnnotationClass())) {
-								adapter.inject(ab.getAnnotation(adapter.getAnnotationClass()), targetClass, adapterList);
-							}
-						}
+				ArrayList<AccessibleInfo<Class<?>>> info = new ArrayList<>();
+				for(Annotation annotation : annotations){
+					info.add(new AccessibleInfo<Class<?>>(ab, annotation));
+				}
+				if(info.size()>0){
+					classAnnotations.addAll(info);
+				}
+			}
+		}
+		if (injectListeners!=null && classAnnotations.size() > 0) {
+			for (AccessibleInfo<Class<?>> info: classAnnotations) {
+				for (InjectListener listener : injectListeners) {
+					if (info.annotation.annotationType().equals(listener.getAnnotationType())) {
+						listener.inject(info.annotation, info.accessibleObject, targetObject);
 					}
 				}
 			}
 		}
 	}
 
-	public void clearAdapter(){
-		adapterMap.clear();
+	private void injectField(InjectAdapter<? extends Annotation>... adapters){
+		if (fields == null) {
+			fields = getFields(targetClass);
+		}
+
+		ArrayList<InjectListener<? extends Annotation, ? extends AccessibleObject>> injectListeners = new ArrayList<>();
+		for(InjectAdapter<? extends Annotation> adapter : adapters){
+			if(adapter!=null && adapter.getFieldInjector()!=null) {
+				adapter.setMapper(this);
+				injectListeners.add(adapter.getFieldInjector());
+			}
+		}
+		if(injectListeners.size()>0) {
+			fieldAnnotations = injectAdapter(fields, fieldAnnotations, injectListeners);
+		}
+
 	}
 
-	public void inject(Class<? extends MapperAdapter<? extends Annotation, ?>>... types){
-		if(adapterMap.size()>0) {
-			if(types==null || types.length == 0){
-				types = new Class[adapterMap.size()];
-				types = adapterMap.keySet().toArray(types);
+	private void injectMethod(InjectAdapter<? extends Annotation>... adapters){
+		if (methods == null) {
+			methods = getMethods(targetClass);
+		}
+		ArrayList<InjectListener<? extends Annotation, ? extends AccessibleObject>> injectListeners = new ArrayList<>();
+		for(InjectAdapter<? extends Annotation> adapter : adapters){
+			if(adapter!=null && adapter.getMethodInjector()!=null) {
+				adapter.setMapper(this);
+				injectListeners.add(adapter.getMethodInjector());
 			}
-			ArrayList<MapperAdapter<?, ?>> clzList = new ArrayList<>();
-			ArrayList<MapperAdapter<?, ?>> fieldList = new ArrayList<>();
-			ArrayList<MapperAdapter<?, ?>> methodList = new ArrayList<>();
-			for (Class type : types) {
-				MapperAdapter<?, ?> adapter = adapterMap.get(type);
-				Class<?> mapperType = adapter.getType();
-				if (mapperType.equals(Class.class)) {
-					clzList.add(adapter);
-				} else if (mapperType.equals(Field.class)) {
-					fieldList.add(adapter);
-				} else if (mapperType.equals(Method.class)) {
-					methodList.add(adapter);
+		}
+		if(injectListeners.size()>0) {
+			methodAnnotations = injectAdapter(methods, methodAnnotations, injectListeners);
+		}
+	}
+
+
+	private ArrayList<AccessibleInfo<? extends AccessibleObject>> injectAdapter(AccessibleObject[] abs, ArrayList<AccessibleInfo<? extends AccessibleObject>> outPut, ArrayList<InjectListener<? extends Annotation, ? extends AccessibleObject>> injectListeners){
+
+		if(outPut == null) {
+			outPut = new ArrayList<>();
+			if (abs != null) {
+				for (AccessibleObject ab : abs) {
+					Annotation[] annotations = ab.getDeclaredAnnotations();
+					ArrayList<AccessibleInfo<? extends AccessibleObject>> info = new ArrayList<>();
+					for(Annotation annotation : annotations){
+						info.add(new AccessibleInfo<>(ab, annotation));
+					}
+					if (info.size()>0) {
+						outPut.addAll(info);
+					}
 				}
 			}
-			setClassAdapter(getClasses(targetClass), clzList);
-			if (methods == null) {
-				methods = getMethods(targetClass);
-			}
-			setAdapterList(methods, methodList);
-			if (fields == null) {
-				fields = getFields(targetClass);
-			}
-			setAdapterList(fields, fieldList);
 		}
-	}
 
-	public void injectWithout(Class<? extends MapperAdapter<? extends Annotation, ?>>... types){
-		if(types==null){
-			inject();
-		}else{
-			HashMap<Class<?>, MapperAdapter> tempMap = new HashMap<>();
-			tempMap.putAll(adapterMap);
-			for(Class<? extends MapperAdapter<? extends Annotation, ?>> type : types){
-				tempMap.remove(type);
+		if (injectListeners!=null && outPut.size() > 0) {
+			for (AccessibleInfo info : outPut) {
+				for (InjectListener listener : injectListeners) {
+					if (info.annotation.annotationType().equals(listener.getAnnotationType())) {
+						listener.inject(info.annotation, info.accessibleObject, targetObject);
+					}
+				}
 			}
-			types = new Class[tempMap.size()];
-			types = tempMap.keySet().toArray(types);
-			inject(types);
 		}
-	}
-	public void addAdapter(MapperAdapter adapter){
-		adapter.setMapper(this);
-		adapterMap.put(adapter.getClass(), adapter);
-	}
-
-	public <T extends MapperAdapter<? extends Annotation, ?>>T getAdapter(Class<T> type){
-		return (T) adapterMap.get(type);
-	}
-
-	public <T extends MapperAdapter<? extends Annotation, ?>>void removeAdapter(Class<T> type){
-		adapterMap.remove(type);
+		return outPut;
 	}
 
 	public View findViewById(int id){
 		return finder.findViewById(id);
 	}
 
-	Class<?> parentsClass;
 	public void setInjectParents(Class<?> parentsClass){
 		this.parentsClass = parentsClass;
 	}

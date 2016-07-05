@@ -12,7 +12,7 @@ import android.view.View;
 
 import com.markjmind.uni.exception.ErrorMessage;
 import com.markjmind.uni.exception.UinMapperException;
-import com.markjmind.uni.mapper.FieldAdapter;
+import com.markjmind.uni.mapper.FieldInjectAdapter;
 import com.markjmind.uni.mapper.annotiation.GetView;
 
 import java.lang.reflect.Field;
@@ -23,15 +23,15 @@ import java.lang.reflect.Field;
  * @email markjmind@gmail.com
  * @since 2016-02-11
  */
-public class GetViewAdapter extends FieldAdapter<GetView> {
+public class GetViewAdapter extends FieldInjectAdapter<GetView> {
 
     @Override
-    public Class<GetView> getAnnotationClass() {
+    public Class<GetView> getAnnotationType() {
         return GetView.class;
     }
 
     @Override
-    public void inject(GetView annotation, Field field, Object targetObject) {
+    public void injectField(GetView annotation, Field field, Object targetObject) {
         int id = annotation.value();
         if(id==-1){
             id = getIdentifier(field.getName(), "id");

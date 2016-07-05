@@ -10,11 +10,11 @@ package com.markjmind.uni.mapper.annotiation.adapter;
 
 import android.view.View;
 
-import com.markjmind.uni.mapper.MethodAdapter;
+import com.markjmind.uni.common.OnClickListenerReceiver;
 import com.markjmind.uni.exception.ErrorMessage;
 import com.markjmind.uni.exception.UinMapperException;
+import com.markjmind.uni.mapper.MethodInjectAdapter;
 import com.markjmind.uni.mapper.annotiation.OnClick;
-import com.markjmind.uni.common.OnClickListenerReceiver;
 
 import java.lang.reflect.Method;
 
@@ -23,15 +23,15 @@ import java.lang.reflect.Method;
  * @email markjmind@gmail.com
  * @since 2016-02-11
  */
-public class OnClickAdapter extends MethodAdapter<OnClick> {
+public class OnClickAdapter extends MethodInjectAdapter<OnClick> {
 
     @Override
-    public Class<OnClick> getAnnotationClass() {
+    public Class<OnClick> getAnnotationType() {
         return OnClick.class;
     }
 
     @Override
-    public void inject(OnClick annotation, Method method, Object targetObject) {
+    public void injectMethod(OnClick annotation, Method method, Object targetObject) {
         int[] list = annotation.ids();
         if(list.length==0){
             int id = annotation.value();

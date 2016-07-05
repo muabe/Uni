@@ -62,19 +62,16 @@ public class UniProgress implements OnProgressListener{
         this.param = param;
         if(hasListener) {
             mapper = new Mapper(finder, this);
-            mapper.addAdapter(new LayoutAdapter());
-            mapper.inject(LayoutAdapter.class);
+            LayoutAdapter layoutAdapter = new LayoutAdapter();
+            mapper.inject(layoutAdapter);
             if(layoutId == -1) {
-                layoutId = mapper.getAdapter(LayoutAdapter.class).getLayoutId();
+                layoutId = layoutAdapter.getLayoutId();
             }
 
             LayoutInflater inflater = ((LayoutInflater) finder.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
             layout = inflater.inflate(layoutId, finder, false);
             mapper.reset(layout, this);
-            mapper.addAdapter(new GetViewAdapter());
-            mapper.addAdapter(new OnClickAdapter());
-            mapper.addAdapter(new ParamAdapter(param));
-            mapper.injectWithout(LayoutAdapter.class);
+            mapper.inject(new GetViewAdapter(), new OnClickAdapter(), new ParamAdapter(param));
         }else{
             if(layoutId == -1) {
 

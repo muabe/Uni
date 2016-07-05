@@ -8,7 +8,7 @@
 
 package com.markjmind.uni.mapper.annotiation.adapter;
 
-import com.markjmind.uni.mapper.ClassAdapter;
+import com.markjmind.uni.mapper.ClassInjectAdapter;
 import com.markjmind.uni.mapper.annotiation.Layout;
 
 /**
@@ -18,20 +18,20 @@ import com.markjmind.uni.mapper.annotiation.Layout;
  * @email markjmind@gmail.com
  * @since 2016-02-12
  */
-public class LayoutAdapter extends ClassAdapter<Layout>{
+public class LayoutAdapter extends ClassInjectAdapter<Layout> {
     int layoutId = 0;
 
+    public int getLayoutId(){
+        return layoutId;
+    }
+
     @Override
-    public Class<Layout> getAnnotationClass() {
+    public Class<Layout> getAnnotationType() {
         return Layout.class;
     }
 
     @Override
-    public void inject(Layout annotation, Class clz, Object targetObject) {
+    public void injectClass(Layout annotation, Class targetClass, Object targetObject) {
         layoutId = annotation.value();
-    }
-
-    public int getLayoutId(){
-        return layoutId;
     }
 }

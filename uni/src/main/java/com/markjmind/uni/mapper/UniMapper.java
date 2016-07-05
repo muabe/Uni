@@ -14,8 +14,11 @@ import android.content.Context;
 import android.view.View;
 
 import com.markjmind.uni.mapper.annotiation.adapter.GetViewAdapter;
-import com.markjmind.uni.mapper.annotiation.adapter.LayoutAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.OnClickAdapter;
+
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * <br>捲土重來<br>
@@ -24,6 +27,8 @@ import com.markjmind.uni.mapper.annotiation.adapter.OnClickAdapter;
  * @since 2016-02-15
  */
 public class UniMapper extends Mapper{
+    protected HashMap<Class<?>, InjectAdapter<? extends Annotation>> onInitMap = new HashMap<>();
+    protected HashMap<Class<?>, InjectAdapter<? extends Annotation>> onStartMap = new HashMap<>();
 
     public UniMapper(){
 
@@ -57,11 +62,17 @@ public class UniMapper extends Mapper{
     }
 
     private void initAdapter(){
-        addAdapter(new LayoutAdapter());
-        addAdapter(new GetViewAdapter());
-        addAdapter(new OnClickAdapter());
+        addSubscriptionOnStart(new GetViewAdapter());
+        addSubscriptionOnStart(new OnClickAdapter());
     }
 
+    public Context getContext(){
+        return context;
+    }
+
+    public Object getTarget(){
+        return targetObject;
+    }
 
     public void reset(View finder, Object targetObject){
         super.reset(finder, targetObject);
@@ -78,12 +89,41 @@ public class UniMapper extends Mapper{
         initAdapter();
     }
 
-
-    public Context getContext(){
-        return context;
+    public void injectSubscriptionOnInit(){
+        ArrayList<InjectListener<? extends Annotation, Class>> classList = new ArrayList<>();
+        InjectAdapter<? extends Annotation>[] values = new InjectAdapter[onInitMap.size()];
+        onInitMap.values().toArray(values);
+        inject(values);
     }
 
-    public Object getTarget(){
-        return targetObject;
+    public void injectSubscriptionOnStart(){
+        ArrayList<InjectListener<? extends Annotation, Class>> classList = new ArrayList<>();
+        InjectAdapter<? extends Annotation>[] values = new InjectAdapter[onStartMap.size()];
+        onStartMap.values().toArray(values);
+        inject(values);
+    }
+
+    public void addSubscriptionOnInit(InjectAdapter<? extends Annotation> adapter){
+        onInitMap.put(adapter.getClass(), adapter);
+    }
+
+    public void addSubscriptionOnStart(InjectAdapter<? extends Annotation> adapter){
+        onStartMap.put(adapter.getClass(), adapter);
+    }
+
+    public <T extends Annotation>InjectAdapter<T> getSubscriptionOnInit(Class<T> adapterClass){
+        return (InjectAdapter<T>)onInitMap.get(adapterClass);
+    }
+
+    public <T extends Annotation>InjectAdapter<T> getSubscriptionOnStart(Class<T> adapterClass){
+        return (InjectAdapter<T>)onStartMap.get(adapterClass);
+    }
+
+    public void removeSubscriptionOnInit(Class<?> adapterClass){
+        onInitMap.remove(adapterClass);
+    }
+
+    public void removeSubscriptionOnStart(Class<?> adapterClass){
+        onStartMap.remove(adapterClass);
     }
 }

@@ -15,7 +15,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.markjmind.uni.common.Store;
-import com.markjmind.uni.mapper.Mapper;
+import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
@@ -32,7 +32,7 @@ import com.markjmind.uni.thread.aop.UniAop;
 public class UniDialog extends Dialog implements UniInterface{
     private UniTask uniTask;
     private UniLayout uniLayout;
-    public Mapper mapper;
+    public UniMapper mapper;
     public Store<?> param;
     public ProgressBuilder progress = new ProgressBuilder();
     private UniAop aop;

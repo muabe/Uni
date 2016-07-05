@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.markjmind.uni.common.Store;
-import com.markjmind.uni.mapper.Mapper;
+import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
@@ -26,7 +26,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     private View view;
     private UniTask uniTask;
     private ViewGroup frameLayout;
-    public Mapper mapper;
+    public UniMapper mapper;
     public Store<?> param;
     public ProgressBuilder progress = new ProgressBuilder();
     private UniAop aop = new UniAop();
@@ -66,7 +66,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
             pro.setParents(this);
         }
 
-        uniTask.mapper.addAdapter(new ParamAdapter(param));
+        uniTask.mapper.addSubscriptionOnInit(new ParamAdapter(param));
         addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {

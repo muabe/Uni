@@ -10,9 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.markjmind.uni.common.Store;
-import com.markjmind.uni.mapper.Mapper;
 import com.markjmind.uni.mapper.UniMapper;
-import com.markjmind.uni.mapper.annotiation.adapter.LayoutAdapter;
+import com.markjmind.uni.mapper.annotiation.LayoutInjector;
 import com.markjmind.uni.mapper.annotiation.adapter.ProgressAdapter;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
@@ -31,7 +30,7 @@ import com.markjmind.uni.thread.aop.UniAop;
  */
 public class UniTask implements UniInterface{
     private UniLayout uniLayout;
-    public Mapper mapper;
+    public UniMapper mapper;
     public Store<?> param;
     public ProgressBuilder progress;
 
@@ -64,13 +63,14 @@ public class UniTask implements UniInterface{
         param = new Store<>();
         progress = new ProgressBuilder();
         cancelObservable = new CancelObservable();
-        isAnnotationMapping = isAnnotationMapping;
     }
 
     private void injectLayout(LayoutInflater inflater, ViewGroup container){
+        mapper.injectSubscriptionOnInit();
         uniInterface.onBind();
-        mapper.inject(LayoutAdapter.class);
-        int layoutId = mapper.getAdapter(LayoutAdapter.class).getLayoutId();
+        LayoutInjector layoutInjector = new LayoutInjector();
+        mapper.inject(layoutInjector);
+        int layoutId = layoutInjector.getLayoutId();
         if(layoutId>0) {
             uniLayout.setLayout(inflater.inflate(layoutId, container, false));
         }
@@ -202,8 +202,7 @@ public class UniTask implements UniInterface{
     void memberMapping(){
         if(progress!=null) {
             if (progress.get() == null) {
-                mapper.addAdapter(new ProgressAdapter(progress));
-                mapper.inject(ProgressAdapter.class);
+                mapper.inject(new ProgressAdapter(progress));
             }
             if (progress.get() != null) {
                 progress.get().onBind();
@@ -211,7 +210,7 @@ public class UniTask implements UniInterface{
         }
 
         if(!isMapping) {
-            mapper.injectWithout(LayoutAdapter.class, ProgressAdapter.class);
+            mapper.injectSubscriptionOnStart();
             isMapping = true;
         }
     }

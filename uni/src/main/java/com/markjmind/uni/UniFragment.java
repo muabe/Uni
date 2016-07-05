@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.markjmind.uni.common.Store;
-import com.markjmind.uni.mapper.Mapper;
+import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
@@ -28,7 +28,7 @@ public class UniFragment extends Fragment implements UniInterface{
     private String taskId;
     private UniTask uniTask;
     private UniLayout uniLayout;
-    public Mapper mapper;
+    public UniMapper mapper;
     public Store<?> param;
     public ProgressBuilder progress;
     private UniAop aop;

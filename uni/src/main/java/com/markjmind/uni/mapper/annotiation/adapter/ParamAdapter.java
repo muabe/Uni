@@ -13,7 +13,7 @@ import android.util.Log;
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.exception.ErrorMessage;
 import com.markjmind.uni.exception.UinMapperException;
-import com.markjmind.uni.mapper.FieldAdapter;
+import com.markjmind.uni.mapper.FieldInjectAdapter;
 import com.markjmind.uni.mapper.annotiation.Param;
 
 import java.lang.reflect.Field;
@@ -25,7 +25,7 @@ import java.lang.reflect.Field;
  * @email markjmind@gmail.com
  * @since 2016-02-15
  */
-public class ParamAdapter extends FieldAdapter<Param> {
+public class ParamAdapter extends FieldInjectAdapter<Param> {
     private Store<?> param;
 
     public ParamAdapter(Store param){
@@ -33,12 +33,12 @@ public class ParamAdapter extends FieldAdapter<Param> {
     }
 
     @Override
-    public Class<Param> getAnnotationClass() {
+    public Class<Param> getAnnotationType() {
         return Param.class;
     }
 
     @Override
-    public void inject(Param annotation, Field field, Object targetObject) {
+    public void injectField(Param annotation, Field field, Object targetObject) {
         String key = annotation.value();
         if(key.trim().length()==0){
             key = field.getName();

@@ -1,15 +1,6 @@
-/*
- * Copyright (c) 2016. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
-
-package com.markjmind.uni.mapper.annotiation.adapter;
+package com.markjmind.uni.mapper.annotiation;
 
 import com.markjmind.uni.mapper.ClassInjectAdapter;
-import com.markjmind.uni.mapper.annotiation.Progress;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.progress.UniProgress;
 
@@ -18,13 +9,13 @@ import com.markjmind.uni.progress.UniProgress;
  *
  * @author 오재웅(JaeWoong-Oh)
  * @email markjmind@gmail.com
- * @since 2016-02-26
+ * @since 2016-07-05
  */
-public class ProgressAdapter extends ClassInjectAdapter<Progress> {
+public class ProgressInjector extends ClassInjectAdapter<Progress> {
 
     private ProgressBuilder progress;
 
-    public ProgressAdapter(ProgressBuilder progress){
+    public ProgressInjector(ProgressBuilder progress){
         this.progress = progress;
     }
 
