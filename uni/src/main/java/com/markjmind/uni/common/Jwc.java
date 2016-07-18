@@ -1,6 +1,7 @@
 package com.markjmind.uni.common;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -8,6 +9,11 @@ import android.graphics.drawable.Drawable;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import java.util.List;
 
 /**
  * start : 2012.08.30<br>
@@ -93,5 +99,40 @@ public class Jwc extends JwViewController {
 	}
 
 
+	public static boolean isActivityRunning(Context context){
+		ActivityManager actMng = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+		List<ActivityManager.RunningAppProcessInfo> list = actMng.getRunningAppProcesses();
 
+		for(ActivityManager.RunningAppProcessInfo info : list){
+			if(info.processName.equals(context.getPackageName()))
+			{
+				return true;
+			}
+
+		}
+		return false;
+	}
+
+	public static void toast(Context context, String msg){
+		Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+	}
+
+	public static void hideKeyboard(Context context, EditText editText){
+		InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+	}
+
+	public static void hideKeyboard(Activity activity){
+		View view = activity.getCurrentFocus();
+		if ( view != null ) {
+			InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+		}
+	}
+
+	public static void showKeyboard(Context context, EditText editText){
+		InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.showSoftInput(editText, 0);
+
+	}
 }

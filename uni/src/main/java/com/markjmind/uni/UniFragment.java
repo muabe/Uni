@@ -1,5 +1,6 @@
 package com.markjmind.uni;
 
+import android.app.Application;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Build;
@@ -86,6 +87,10 @@ public class UniFragment extends Fragment implements UniInterface{
         }else{
             return uniLayout.getContext();
         }
+    }
+
+    public Application getApplication(){
+        return getActivity().getApplication();
     }
 
     public View findViewById(int id){
