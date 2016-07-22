@@ -58,13 +58,59 @@ public class UniFragment extends Fragment implements UniInterface{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(uniLayout == null || isPopStack) {
+        if(uniLayout == null) {
             uniLayout = new UniLayout(getActivity());
-            uniTask.syncUniLayout(inflater, uniLayout, param, progress, this, this, container);
             setRefreshBackStack(false);
+            uniTask.syncUniLayout(inflater, uniLayout, param, progress, this, new UniInterface() {
+                @Override
+                public void onBind() {
+                    UniFragment.this.onBind();
+                }
+
+                @Override
+                public void onPre() {
+                    UniFragment.this.onPre();
+                }
+
+                @Override
+                public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
+                    UniFragment.this.onLoad(event, cancelAdapter);
+                }
+
+                @Override
+                public void onUpdate(Object value, CancelAdapter cancelAdapter) {
+                    UniFragment.this.onUpdate(value, cancelAdapter);
+                }
+
+                @Override
+                public void onPost() {
+                    UniFragment.this.onPost();
+                }
+
+                @Override
+                public void onPostFail(String message, Object arg) {
+                    UniFragment.this.onPostFail(message, arg);
+                }
+
+                @Override
+                public void onException(Exception e) {
+                    UniFragment.this.onException(e);
+                }
+
+                @Override
+                public void onCancelled(boolean attached) {
+                    UniFragment.this.onCancelled(attached);
+                    isPopStack = true;
+                }
+            }, container);
+
             getTask().setAsync(isAsync()).excute();
         }else{
-            onPostCache();
+            if(isPopStack){
+                refresh();
+            }else {
+                onPostCache();
+            }
         }
         return uniLayout;
     }
