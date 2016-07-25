@@ -43,19 +43,23 @@ public class ParamAdapter extends FieldInjectAdapter<Param> {
         if(key.trim().length()==0){
             key = field.getName();
         }
-        Object value = param.get(key);
-        try {
-            setField(field, value);
-        }catch (Exception e){
-            Log.i("dsd",field.getType().getName());
-            if(value==null && ("int".equals(field.getType().getName())
-                    || "long".equals(field.getType().getName())
-                    || "float".equals(field.getType().getName())
-                    || "double".equals(field.getType().getName())
-                    )){
-                throw new UinMapperException(ErrorMessage.Runtime.injectParamNull(getObject().getClass(), field), e);
-            }else {
-                throw new UinMapperException(ErrorMessage.Runtime.injectParam(getObject().getClass(), field.getName()), e);
+        if(param.containsKey(key)) {
+            Object value = param.get(key);
+            try {
+                if(value!=null) {
+                    setField(field, value);
+                }
+            } catch (Exception e) {
+                Log.i("dsd", field.getType().getName());
+                if (value == null && ("int".equals(field.getType().getName())
+                        || "long".equals(field.getType().getName())
+                        || "float".equals(field.getType().getName())
+                        || "double".equals(field.getType().getName())
+                )) {
+                    throw new UinMapperException(ErrorMessage.Runtime.injectParamNull(getObject().getClass(), field), e);
+                } else {
+                    throw new UinMapperException(ErrorMessage.Runtime.injectParam(getObject().getClass(), field.getName()), e);
+                }
             }
         }
 
