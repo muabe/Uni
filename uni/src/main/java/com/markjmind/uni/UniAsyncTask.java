@@ -16,6 +16,7 @@ public abstract class UniAsyncTask implements UniInterface{
     public Store<?> param;
     public ProgressBuilder progress;
     private UniInterface uniInterface;
+    private UniUncaughtException uncaughtException;
 
     public UniAsyncTask(){
         param = new Store<>();
@@ -26,14 +27,17 @@ public abstract class UniAsyncTask implements UniInterface{
         inheritFault(uniLayout.getUniTask().getUniInterface());
         progress = uniLayout.progress;
         param = uniLayout.param;
+        this.uncaughtException = uniLayout.getTask().getUIuncaughtException();
     }
 
     public UniAsyncTask(UniFragment uniFragment){
         this(uniFragment.getUniLayout());
+        this.uncaughtException = uniFragment.getTask().getUIuncaughtException();
     }
 
     public UniAsyncTask(UniDialog uniDialog){
         this(uniDialog.getUniLayout());
+        this.uncaughtException = uniDialog.getTask().getUIuncaughtException();
     }
 
     void inheritFault(UniInterface uniInterface){
@@ -122,6 +126,7 @@ public abstract class UniAsyncTask implements UniInterface{
         }
         return uniTask.getTask()
                 .setProgress(progress)
+                .setUIuncaughtException(uncaughtException)
                 .excute();
     }
 

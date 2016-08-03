@@ -39,6 +39,7 @@ public class UniTask implements UniInterface{
     private boolean isMapping;
     private boolean isAsync;
 
+    private TaskController taskController;
     private UniInterface uniInterface;
     private CancelObservable cancelObservable;
     private boolean isAnnotationMapping;
@@ -108,7 +109,11 @@ public class UniTask implements UniInterface{
     }
 
     public TaskController getTask(){
-        return new TaskController(this, isAnnotationMapping);
+        if(taskController==null){
+            taskController = new TaskController();
+        }
+        taskController.init(this, isAnnotationMapping);
+        return taskController;
     }
 
     public void setUniInterface(UniInterface uniInterface){
@@ -215,17 +220,18 @@ public class UniTask implements UniInterface{
         }
     }
 
-    String refresh(ProgressBuilder progress, UniLoadFail uniLoadFail, UniAop uniAop){
+    String refresh(ProgressBuilder progress, UniLoadFail uniLoadFail, UniAop uniAop, UniUncaughtException uncaughtException){
         cancelAll();
-        return run(progress, uniInterface, uniLoadFail, true, uniAop);
+        return run(progress, uniInterface, uniLoadFail, true, uniAop, uncaughtException);
     }
 
-    String run(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail, boolean skipOnPre, UniAop uniAop){
+    String run(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail, boolean skipOnPre, UniAop uniAop, UniUncaughtException uncaughtException){
         UniMainThread task = new UniMainThread(cancelObservable);
         if(progress.isAble()) {
             task.addTaskObserver(progress);
         }
         task.addTaskObserver(new ThreadProcessAdapter(uniInterface, uniLoadFail, skipOnPre).setUniAop(uniAop));
+        task.setUIuncaughtException(uncaughtException);
         cancelObservable.add(task);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

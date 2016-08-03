@@ -2,6 +2,7 @@ package com.markjmind.uni.thread;
 
 import android.os.AsyncTask;
 
+import com.markjmind.uni.UniUncaughtException;
 import com.markjmind.uni.common.StoreObserver;
 import com.markjmind.uni.exception.UniLoadFailException;
 
@@ -18,6 +19,7 @@ public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements S
     private CancelAdapter cancelAdapter;
     private ThreadProcessObservable taskObservable = new ThreadProcessObservable();
     private Exception doInBackException;
+    private UniUncaughtException uncaughtException;
 
     public UniMainThread(CancelObservable observable){
         this.isCancel = false;
@@ -30,7 +32,18 @@ public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements S
 
     @Override
     protected void onPreExecute() {
-        taskObservable.onPreExecute(cancelAdapter);
+        try {
+            taskObservable.onPreExecute(cancelAdapter);
+        }catch (Exception e){
+            this.isCancel = true;
+            super.cancel(true);
+            observable.remove(this);
+            if(uncaughtException!=null){
+                uncaughtException.uncaughtException(e);
+            }else {
+                throw e;
+            }
+        }
     }
 
 
@@ -60,16 +73,27 @@ public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements S
     @Override
     protected void onPostExecute(Boolean result) {
         if((observable.isTaskAutoCanceled() && !isCancel()) || (!observable.isTaskAutoCanceled() && observable.isAttached())){
-            if(result) { //성공
-                taskObservable.onPostExecute();
-            }else{ // 실패
-                if(doInBackException instanceof UniLoadFailException){
-                    UniLoadFailException ulfe = (UniLoadFailException)doInBackException;
-                    taskObservable.onFailedExecute(ulfe.getMessage(), ulfe.getArg());
-                }else{
-                    taskObservable.onExceptionExecute(doInBackException);
+            try {
+                if(result) { //성공
+                    taskObservable.onPostExecute();
+                }else{ // 실패
+                    if(doInBackException instanceof UniLoadFailException){
+                        UniLoadFailException ulfe = (UniLoadFailException)doInBackException;
+                        taskObservable.onFailedExecute(ulfe.getMessage(), ulfe.getArg());
+                    }else{
+                        taskObservable.onExceptionExecute(doInBackException);
+                    }
+                }
+                observable.remove(this);
+            }catch (Exception e){
+                observable.remove(this);
+                if(uncaughtException!=null){
+                    uncaughtException.uncaughtException(e);
+                }else {
+                    throw e;
                 }
             }
+        }else{
             observable.remove(this);
         }
     }
@@ -121,6 +145,10 @@ public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements S
     public UniMainThread addTaskObserver(ThreadProcessObserver observer){
         taskObservable.add(observer);
         return this;
+    }
+
+    public void setUIuncaughtException(UniUncaughtException uncaughtException){
+        this.uncaughtException = uncaughtException;
     }
 
 }

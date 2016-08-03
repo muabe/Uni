@@ -69,7 +69,6 @@ public class Mapper {
 		this.targetObject = targetObject;
 		this.finder = new Finder(finder);
 		this.targetClass = targetObject.getClass();
-//		adapterHashMap.clear();
 		viewHash.clear();
 		classAnnotations = null;
 		fieldAnnotations = null;
@@ -81,7 +80,6 @@ public class Mapper {
 		this.targetObject = targetObject;
 		this.finder = new Finder(finder);
 		this.targetClass = targetObject.getClass();
-//		adapterHashMap.clear();
 		viewHash.clear();
 		classAnnotations = null;
 		fieldAnnotations = null;
@@ -93,29 +91,12 @@ public class Mapper {
 		this.targetObject = targetObject;
 		this.finder = new Finder(finder);
 		this.targetClass = targetObject.getClass();
-//		adapterHashMap.clear();
+
 		viewHash.clear();
 		classAnnotations = null;
 		fieldAnnotations = null;
 		methodAnnotations = null;
 	}
-
-
-//	public void addAdapter(InjectAdapter<? extends Annotation> adapter) {
-//		adapterHashMap.put(adapter.getAnnotationType(), adapter);
-//	}
-//
-//	public <T extends Annotation>InjectAdapter<T> getAdapter(Class<T> annotationClass) {
-//		return (InjectAdapter<T>)adapterHashMap.get(annotationClass);
-//	}
-
-
-//	public void injectAll(){
-//		ArrayList<InjectListener<? extends Annotation, Class>> classList = new ArrayList<>();
-//		InjectAdapter<? extends Annotation>[] values = new InjectAdapter[adapterHashMap.size()];
-//		adapterHashMap.values().toArray(values);
-//		inject(values);
-//	}
 
 	class AccessibleInfo<T>{
 		T accessibleObject;
