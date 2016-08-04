@@ -55,12 +55,12 @@ public class TaskController {
         return this;
     }
 
-    public TaskController setUIuncaughtException(UniUncaughtException uncaughtException){
+    public TaskController setUniUncaughtException(UniUncaughtException uncaughtException){
         this.uncaughtException = uncaughtException;
         return this;
     }
 
-    UniUncaughtException getUIuncaughtException(){
+    public UniUncaughtException getUniUncaughtException(){
         return uncaughtException;
     }
 
