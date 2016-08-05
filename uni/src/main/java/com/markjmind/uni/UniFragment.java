@@ -104,7 +104,7 @@ public class UniFragment extends Fragment implements UniInterface{
                 }
             }, container);
 
-            getTask().setAsync(isAsync()).excute();
+            getTask().setAsync(isAsync()).execute();
         }else{
             if(isPopStack){
                 refresh();

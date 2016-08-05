@@ -110,7 +110,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
         uniTask.syncUniLayout(this, uniTask.param, uniTask.progress, uniTask, uniTask.getUniInterface(), null);
     }
 
-    /*************************************************** excute 관련 *********************************************/
+    /*************************************************** execute 관련 *********************************************/
     public void setCancelAop(CancelAop cancelAop){
         aop.setCancelAop(cancelAop);
     }

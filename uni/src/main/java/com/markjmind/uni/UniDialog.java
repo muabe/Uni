@@ -67,7 +67,7 @@ public class UniDialog extends Dialog implements UniInterface{
         super.setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                getTask().excute();
+                getTask().execute();
             }
         });
     }
@@ -78,7 +78,7 @@ public class UniDialog extends Dialog implements UniInterface{
         super.setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                getTask().excute();
+                getTask().execute();
                 lis.onShow(dialog);
             }
         });

@@ -127,7 +127,7 @@ public abstract class UniAsyncTask implements UniInterface{
         return uniTask.getTask()
                 .setProgress(progress)
                 .setUniUncaughtException(uncaughtException)
-                .excute();
+                .execute();
     }
 
 
