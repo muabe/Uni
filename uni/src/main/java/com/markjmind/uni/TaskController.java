@@ -17,7 +17,6 @@ public class TaskController {
     private ProgressBuilder progress;
     private UniInterface uniInterface;
     private UniLoadFail uniLoadFail;
-    private boolean skipOnPre = false;
     private UniAop uniAop;
     private boolean isAnnotationMapping = false;
     private UniUncaughtException uncaughtException;
@@ -50,11 +49,6 @@ public class TaskController {
         return this;
     }
 
-//    public TaskController skipOnPre(boolean skipOnPre) {
-//        this.skipOnPre = skipOnPre;
-//        return this;
-//    }
-
     public TaskController setUniUncaughtException(UniUncaughtException uncaughtException){
         this.uncaughtException = uncaughtException;
         return this;
@@ -82,14 +76,19 @@ public class TaskController {
             uniTask.memberMapping();
         }
         if(isAsync) {
-            return uniTask.run(progress, uniInterface, uniLoadFail, skipOnPre, uniAop, uncaughtException);
+            return uniTask.run(progress, uniInterface, uniLoadFail, false, uniAop, uncaughtException);
         }else{
-//            if(!skipOnPre){
-//                uniInterface.onPre();
-//            }
             uniInterface.onPre();
             return null;
         }
+    }
+
+    public void notifyPre(){
+        uniInterface.onPre();
+    }
+
+    public void notifyPost(){
+        uniInterface.onPost();
     }
 
     public void post(){
@@ -97,6 +96,10 @@ public class TaskController {
             uniTask.memberMapping();
         }
         uniInterface.onPost();
+    }
+
+    public String reLoad(){
+        return uniTask.refresh(progress, uniLoadFail, uniAop, uncaughtException);
     }
 
     public String refresh(){
@@ -107,4 +110,6 @@ public class TaskController {
             return null;
         }
     }
+
+
 }
