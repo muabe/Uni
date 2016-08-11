@@ -35,22 +35,21 @@ public class UniTask implements UniInterface{
     private boolean isAsync;
 
     private TaskController taskController;
-    private UniInterface uniInterface;
     private CancelObservable cancelObservable;
 
     public UniTask(){
         uniLayout = null;
         mapper = new UniMapper();
-        uniInterface = this;
         isAsync = true;
         param = new Store<>();
         progress = new ProgressBuilder();
         cancelObservable = new CancelObservable();
+        taskController = new TaskController(this);
     }
 
     private void injectLayout(LayoutInflater inflater, ViewGroup container){
         mapper.injectSubscriptionOnInit();
-        uniInterface.onBind();
+        taskController.getUniInterface().onBind();
         LayoutInjector layoutInjector = new LayoutInjector();
         mapper.inject(layoutInjector);
         int layoutId = layoutInjector.getLayoutId();
@@ -64,10 +63,10 @@ public class UniTask implements UniInterface{
         this.uniLayout = uniLayout;
         this.context = uniLayout.getContext();
         mapper.reset(this.uniLayout, mappingObj);
-        this.uniInterface = uniInterface;
         this.uniLayout.init(this, param, progress);
         this.progress = this.uniLayout.progress;
         this.param = this.uniLayout.param;
+        setUniInterface(uniInterface);
         if(inflater==null) {
             inflater = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
         }
@@ -87,19 +86,16 @@ public class UniTask implements UniInterface{
     }
 
     public TaskController getTask(){
-        if(taskController==null){
-            taskController = new TaskController();
-        }
-        taskController.init(this, uniInterface);
+        taskController.init(this);
         return taskController;
     }
 
     public void setUniInterface(UniInterface uniInterface){
-        this.uniInterface = uniInterface;
+        taskController.setUniInterface(uniInterface);
     }
 
     public UniInterface getUniInterface() {
-        return uniInterface;
+        return taskController.getUniInterface();
     }
 
     void setMapping(boolean isMapping){

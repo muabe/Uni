@@ -23,7 +23,7 @@ public abstract class UniAsyncTask implements UniInterface{
     public UniAsyncTask(){
         param = new Store<>();
         progress = new ProgressBuilder();
-        taskController = new TaskController();
+        taskController = new TaskController(this);
     }
 
     public UniAsyncTask(UniLayout uniLayout){
@@ -31,19 +31,19 @@ public abstract class UniAsyncTask implements UniInterface{
         progress = uniLayout.progress;
         param = uniLayout.param;
         this.uncaughtException = uniLayout.getTask().getUniUncaughtException();
-        taskController = new TaskController();
+
     }
 
     public UniAsyncTask(UniFragment uniFragment){
         this(uniFragment.getUniLayout());
         this.uncaughtException = uniFragment.getTask().getUniUncaughtException();
-        taskController = new TaskController();
+        taskController = new TaskController(this);
     }
 
     public UniAsyncTask(UniDialog uniDialog){
         this(uniDialog.getUniLayout());
         this.uncaughtException = uniDialog.getTask().getUniUncaughtException();
-        taskController = new TaskController();
+        taskController = new TaskController(this);
     }
 
     void inheritFault(UniInterface uniInterface){
@@ -125,10 +125,7 @@ public abstract class UniAsyncTask implements UniInterface{
     }
 
     public TaskController getTask(){
-        if(taskController==null){
-            taskController = new TaskController();
-        }
-        taskController.init(null, this);
+        taskController.init(null);
         return taskController;
     }
 

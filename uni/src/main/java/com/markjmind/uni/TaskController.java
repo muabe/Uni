@@ -30,9 +30,13 @@ public class TaskController {
     private UniAop uniAop;
     private UniUncaughtException uncaughtException;
 
-    void init(UniTask uniTask, UniInterface uniInterface) {
+    public TaskController(UniInterface uniInterface){
+        this.uniInterface = uniInterface;
+    }
+
+
+    void init(UniTask uniTask) {
         this.uniTask = uniTask;
-        this.setUniInterface(uniInterface);
         task = new UniMainThread(cancelObservable);
         if(uniTask!=null) {
             this.setProgress(uniTask.progress);
@@ -55,9 +59,17 @@ public class TaskController {
         return this;
     }
 
+    public ProgressBuilder getProgress(){
+        return this.progress;
+    }
+
     public TaskController setUniInterface(UniInterface uniInterface) {
         this.uniInterface = uniInterface;
         return this;
+    }
+
+    public UniInterface getUniInterface(){
+        return this.uniInterface;
     }
 
     public TaskController setUniLoadFail(UniLoadFail uniLoadFail) {
