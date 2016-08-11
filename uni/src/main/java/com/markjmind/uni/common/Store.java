@@ -19,7 +19,7 @@ import java.util.Map;
 
 
 
-public class Store<Value> extends LinkedHashMap<Object, Object> implements Comparable{
+public class Store<Value> extends LinkedHashMap<String, Object> implements Comparable{
 
 	private String compareString = null;
 	private boolean ASC = true;
@@ -169,7 +169,7 @@ public class Store<Value> extends LinkedHashMap<Object, Object> implements Compa
 	/**
 	 * Store의 에 배열로 값을 셋팅한다.
 	 */
-	public void put(Object keys[], Object[] values){
+	public void put(String keys[], Object[] values){
 		if(keys.length!= values.length){
 			System.out.println("Store클래스 put(Object keys[], Object[] values) 함수에는\nkeys와 values의 배열의 길이가 같아야합니다.");
 		}
@@ -197,15 +197,9 @@ public class Store<Value> extends LinkedHashMap<Object, Object> implements Compa
 		{
 		    return new String[0];
 		}
-		Object[] obj = (this.keySet().toArray());
-		if(obj==null){
-		    return new String[0];
-		}
-		String[] keys= new String[obj.length];
-		for( int i=0;i<obj.length;i++){
-		    keys[i] = (String)obj[i];
-		}
-		
+
+		String[] keys = new String[this.size()];
+		this.keySet().toArray(keys);
 		return keys;
 	}
 	/**

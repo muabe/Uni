@@ -106,7 +106,6 @@ public class UniLayout extends FrameLayout implements UniInterface{
 
     public void bind(UniTask uniTask){
         uniTask.mapper.setInjectParents(UniTask.class);
-        uniTask.setAnnotationMapping(true);
         uniTask.syncUniLayout(this, uniTask.param, uniTask.progress, uniTask, uniTask.getUniInterface(), null);
     }
 
@@ -121,21 +120,11 @@ public class UniLayout extends FrameLayout implements UniInterface{
 
     public TaskController getTask(){
         if(uniTask==null){
-            uniTask = new UniTask(true);
+            uniTask = new UniTask();
             uniTask.mapper.setInjectParents(UniLayout.class);
             uniTask.syncUniLayout(this, param, progress, this, this, null);
         }
         return uniTask.getTask();
-    }
-
-    /*************************************************** CancelObserver Interface 관련 *********************************************/
-
-    public boolean isFinished(String task){
-        return uniTask.isFinished(task);
-    }
-
-    public boolean isRunning(String task){
-        return uniTask.isRunning(task);
     }
 
     /*************************************************** UniTask Interface 관련 *********************************************/

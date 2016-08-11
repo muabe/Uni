@@ -45,6 +45,29 @@ public class StoreObservable<T extends StoreObserver> {
         pool.remove(id);
     }
 
+    public synchronized void remove() {
+        String[] keys = pool.getKeys();
+        if(keys.length>0){
+            pool.remove(keys[keys.length-1]);
+        }
+    }
+
+    public String getLastKey(){
+        String[] keys = pool.getKeys();
+        if(keys.length>0){
+            return keys[keys.length-1];
+        }
+        return null;
+    }
+
+    public T getLastValue(){
+        String[] keys = pool.getKeys();
+        if(keys.length>0){
+            return pool.get(keys[keys.length-1]);
+        }
+        return null;
+    }
+
     public synchronized void remove(T observer) {
         this.remove(observer.getId());
     }

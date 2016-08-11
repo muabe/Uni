@@ -26,7 +26,7 @@ import com.markjmind.uni.thread.aop.UniAop;
  */
 
 public class UniFragment extends Fragment implements UniInterface{
-    private String taskId;
+//    private String taskId;
     private UniTask uniTask;
     private UniLayout uniLayout;
     public UniMapper mapper;
@@ -43,7 +43,7 @@ public class UniFragment extends Fragment implements UniInterface{
     public UniFragment() {
         super();
         uniLayout = null;
-        uniTask = new UniTask(true);
+        uniTask = new UniTask();
         mapper = uniTask.mapper;
         mapper.setInjectParents(UniFragment.class);
         param = new Store<>();
@@ -107,7 +107,7 @@ public class UniFragment extends Fragment implements UniInterface{
             getTask().setAsync(isAsync()).execute();
         }else{
             if(isPopStack){
-                refresh();
+                getTask().refresh();
             }else {
                 onPostCache();
             }
@@ -171,30 +171,20 @@ public class UniFragment extends Fragment implements UniInterface{
         return aop;
     }
 
-    public String refresh(){
-        taskId = uniTask.getTask()
-                .setAsync(isAsync)
-                .setUniAop(getAop())
-                .refresh();
-        return taskId;
-    }
-
-    public String getTaskId(){
-        return taskId;
-    }
+//    public String refresh(){
+//        taskId = uniTask.getTask()
+//                .setAsync(isAsync)
+//                .setUniAop(getAop())
+//                .refresh();
+//        return taskId;
+//    }
+//
+//    public String getTaskId(){
+//        return taskId;
+//    }
 
     public TaskController getTask(){
         return uniTask.getTask();
-    }
-
-    /*************************************************** CancelObserver Interface 관련 *********************************************/
-
-    public boolean isFinished(String task){
-        return uniTask.isFinished(task);
-    }
-
-    public boolean isRunning(String task){
-        return uniTask.isRunning(task);
     }
 
     /*************************************************** 인터페이스 관련 *********************************************/

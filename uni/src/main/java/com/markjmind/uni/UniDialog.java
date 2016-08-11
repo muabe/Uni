@@ -42,7 +42,7 @@ public class UniDialog extends Dialog implements UniInterface{
    public UniDialog(Context context) {
         super(context);
         uniLayout = null;
-        uniTask = new UniTask(true);
+        uniTask = new UniTask();
         mapper = uniTask.mapper;
         mapper.setInjectParents(UniDialog.class);
         param = new Store<>();
@@ -51,7 +51,7 @@ public class UniDialog extends Dialog implements UniInterface{
     public UniDialog(Context context, int themeResId) {
         super(context, themeResId);
         uniLayout = null;
-        uniTask = new UniTask(true);
+        uniTask = new UniTask();
         mapper = uniTask.mapper;
         param = new Store<>();
     }
@@ -108,16 +108,6 @@ public class UniDialog extends Dialog implements UniInterface{
 
     public TaskController getTask(){
         return uniTask.getTask();
-    }
-
-    /*************************************************** CancelObserver Interface 관련 *********************************************/
-
-    public boolean isFinished(String task){
-        return uniTask.isFinished(task);
-    }
-
-    public boolean isRunning(String task){
-        return uniTask.isRunning(task);
     }
 
     /*************************************************** 인터페이스 관련 *********************************************/

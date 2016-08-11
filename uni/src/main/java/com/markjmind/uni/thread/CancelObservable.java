@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2016. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
-
 package com.markjmind.uni.thread;
 
 import android.os.AsyncTask;
@@ -54,6 +46,10 @@ public class CancelObservable extends StoreObservable<UniMainThread> implements 
         }
     }
 
+    public synchronized void cancelRecent() {
+        this.cancel(getLastKey());
+    }
+
     @Override
     public synchronized void cancelAll(){
         synchronized (this) {
@@ -65,6 +61,9 @@ public class CancelObservable extends StoreObservable<UniMainThread> implements 
     }
 
     public AsyncTask.Status getStatus(String id){
+        if(id==null){
+            return null;
+        }
         UniMainThread observer = get(id);
         if(observer==null){
             return null;

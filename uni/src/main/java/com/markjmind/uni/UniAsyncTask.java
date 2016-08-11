@@ -17,10 +17,13 @@ public abstract class UniAsyncTask implements UniInterface{
     public ProgressBuilder progress;
     private UniInterface uniInterface;
     private UniUncaughtException uncaughtException;
+    private String taskId;
+    private TaskController taskController;
 
     public UniAsyncTask(){
         param = new Store<>();
         progress = new ProgressBuilder();
+        taskController = new TaskController();
     }
 
     public UniAsyncTask(UniLayout uniLayout){
@@ -28,16 +31,19 @@ public abstract class UniAsyncTask implements UniInterface{
         progress = uniLayout.progress;
         param = uniLayout.param;
         this.uncaughtException = uniLayout.getTask().getUniUncaughtException();
+        taskController = new TaskController();
     }
 
     public UniAsyncTask(UniFragment uniFragment){
         this(uniFragment.getUniLayout());
         this.uncaughtException = uniFragment.getTask().getUniUncaughtException();
+        taskController = new TaskController();
     }
 
     public UniAsyncTask(UniDialog uniDialog){
         this(uniDialog.getUniLayout());
         this.uncaughtException = uniDialog.getTask().getUniUncaughtException();
+        taskController = new TaskController();
     }
 
     void inheritFault(UniInterface uniInterface){
@@ -84,50 +90,46 @@ public abstract class UniAsyncTask implements UniInterface{
     }
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/
-    public void cancel(String id) {
+    public void cancel() {
         if(uniTask!=null) {
-            uniTask.cancel(id);
+            uniTask.getTask().cancel(taskId);
         }
     }
 
     public void cancelAll() {
         if(uniTask!=null) {
-            uniTask.cancelAll();
+            uniTask.getTask().cancelAll();
         }
     }
 
     public void setTaskAutoCanceled(boolean autoCanceled) {
         if(uniTask!=null) {
-            uniTask.setTaskAutoCanceled(autoCanceled);
+            uniTask.getTask().setTaskAutoCanceled(autoCanceled);
         }
     }
 
-    public boolean isFinished(String task){
+    public boolean isRunning(){
         if(uniTask==null) {
             return false;
         }
-        return uniTask.isFinished(task);
-    }
-
-    public boolean isRunning(String task){
-        if(uniTask==null) {
-            return false;
-        }
-        return uniTask.isRunning(task);
+        return uniTask.getTask().isRunning(taskId);
     }
 
 
     /*************************************************** 실행 관련 *********************************************/
 
     public String excute(){
-        if(uniTask==null){
-            uniTask = new UniTask(false);
-            uniTask.setUniInterface(this);
-        }
-        return uniTask.getTask()
-                .setProgress(progress)
+        return getTask().setProgress(progress)
                 .setUniUncaughtException(uncaughtException)
                 .execute();
+    }
+
+    public TaskController getTask(){
+        if(taskController==null){
+            taskController = new TaskController();
+        }
+        taskController.init(null, this);
+        return taskController;
     }
 
 

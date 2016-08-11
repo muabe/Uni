@@ -3,8 +3,6 @@ package com.markjmind.uni;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +15,6 @@ import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.CancelObservable;
 import com.markjmind.uni.thread.LoadEvent;
-import com.markjmind.uni.thread.ThreadProcessAdapter;
-import com.markjmind.uni.thread.UniMainThread;
-import com.markjmind.uni.thread.aop.UniAop;
 
 /**
  * <br>捲土重來<br>
@@ -42,21 +37,8 @@ public class UniTask implements UniInterface{
     private TaskController taskController;
     private UniInterface uniInterface;
     private CancelObservable cancelObservable;
-    private boolean isAnnotationMapping;
 
     public UniTask(){
-        uniLayout = null;
-        mapper = new UniMapper();
-        uniInterface = this;
-        isAsync = true;
-        param = new Store<>();
-        progress = new ProgressBuilder();
-        cancelObservable = new CancelObservable();
-        isAnnotationMapping = false;
-    }
-
-    UniTask(boolean isAnnotationMapping){
-        this.isAnnotationMapping = isAnnotationMapping;
         uniLayout = null;
         mapper = new UniMapper();
         uniInterface = this;
@@ -100,10 +82,6 @@ public class UniTask implements UniInterface{
         this.syncUniLayout(null, uniLayout, param, progress, mappingObj, uniInterface, container);
     }
 
-    void setAnnotationMapping(boolean annotationMapping) {
-        isAnnotationMapping = annotationMapping;
-    }
-
     CancelObservable getCancelObservable(){
         return cancelObservable;
     }
@@ -112,7 +90,7 @@ public class UniTask implements UniInterface{
         if(taskController==null){
             taskController = new TaskController();
         }
-        taskController.init(this, isAnnotationMapping);
+        taskController.init(this, uniInterface);
         return taskController;
     }
 
@@ -174,33 +152,33 @@ public class UniTask implements UniInterface{
 
 
     /*************************************************** CancelObserver Interface 관련 *********************************************/
-    public void cancel(String id){
-        cancelObservable.cancel(id);
-    }
-
-    public void cancelAll(){
-        cancelObservable.cancelAll();
-    }
-
-    public void setTaskAutoCanceled(boolean autoCanceled) {
-        cancelObservable.setTaskAutoCanceled(autoCanceled);
-    }
-
-    public boolean isRunning(String task){
-        if(cancelObservable.getStatus(task)!=null && cancelObservable.getStatus(task).equals(AsyncTask.Status.RUNNING)){
-            return true;
-        }else {
-            return false;
-        }
-    }
-
-    public boolean isFinished(String task){
-        if(cancelObservable.getStatus(task)!=null && cancelObservable.getStatus(task).equals(AsyncTask.Status.FINISHED)){
-            return true;
-        }else{
-            return false;
-        }
-    }
+//    public void cancel(String id){
+//        cancelObservable.cancel(id);
+//    }
+//
+//    public void cancelAll(){
+//        cancelObservable.cancelAll();
+//    }
+//
+//    public void setTaskAutoCanceled(boolean autoCanceled) {
+//        cancelObservable.setTaskAutoCanceled(autoCanceled);
+//    }
+//
+//    public boolean isRunning(String task){
+//        if(cancelObservable.getStatus(task)!=null && cancelObservable.getStatus(task).equals(AsyncTask.Status.RUNNING)){
+//            return true;
+//        }else {
+//            return false;
+//        }
+//    }
+//
+//    public boolean isFinished(String task){
+//        if(cancelObservable.getStatus(task)!=null && cancelObservable.getStatus(task).equals(AsyncTask.Status.FINISHED)){
+//            return true;
+//        }else{
+//            return false;
+//        }
+//    }
 
 
     /*************************************************** execute 관련 *********************************************/
@@ -220,28 +198,28 @@ public class UniTask implements UniInterface{
         }
     }
 
-    String refresh(ProgressBuilder progress, UniLoadFail uniLoadFail, UniAop uniAop, UniUncaughtException uncaughtException){
-        cancelAll();
-        return run(progress, uniInterface, uniLoadFail, true, uniAop, uncaughtException);
-    }
-
-    String run(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail, boolean skipOnPre, UniAop uniAop, UniUncaughtException uncaughtException){
-        UniMainThread task = new UniMainThread(cancelObservable);
-        if(progress.isAble()) {
-            task.addTaskObserver(progress);
-        }
-        task.addTaskObserver(new ThreadProcessAdapter(uniInterface, uniLoadFail, skipOnPre).setUniAop(uniAop));
-        task.setUIuncaughtException(uncaughtException);
-        cancelObservable.add(task);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        } else {
-            task.execute();
-        }
-
-
-        return task.getId();
-    }
+//    String refresh(ProgressBuilder progress, UniLoadFail uniLoadFail, UniAop uniAop, UniUncaughtException uncaughtException){
+//        cancelAll();
+//        return run(progress, uniInterface, uniLoadFail, true, uniAop, uncaughtException);
+//    }
+//
+//    String run(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail, boolean skipOnPre, UniAop uniAop, UniUncaughtException uncaughtException){
+//        UniMainThread task = new UniMainThread(cancelObservable);
+//        if(progress.isAble()) {
+//            task.addTaskObserver(progress);
+//        }
+//        task.addTaskObserver(new ThreadProcessAdapter(uniInterface, uniLoadFail, skipOnPre).setUniAop(uniAop));
+//        task.setUIuncaughtException(uncaughtException);
+//        cancelObservable.add(task);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+//            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//        } else {
+//            task.execute();
+//        }
+//
+//
+//        return task.getId();
+//    }
 
     /*************************************************** UniTask Interface 관련 *********************************************/
     @Override
