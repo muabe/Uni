@@ -133,7 +133,7 @@ public class TaskController {
             task = new UniMainThread(cancelObservable);
         }
 
-        if (progress.isAble()) {
+        if (progress!=null && progress.isAble()) {
             task.addTaskObserver(progress);
         }
         task.addTaskObserver(new ThreadProcessAdapter(uniInterface, uniLoadFail, skipOnPre).setUniAop(uniAop));

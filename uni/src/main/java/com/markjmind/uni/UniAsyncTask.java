@@ -1,8 +1,7 @@
 package com.markjmind.uni;
 
-import com.markjmind.uni.common.Store;
-import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
+import com.markjmind.uni.thread.CancelObservable;
 
 /**
  * <br>捲土重來<br>
@@ -12,42 +11,41 @@ import com.markjmind.uni.thread.CancelAdapter;
  * @since 2016-04-29
  */
 public abstract class UniAsyncTask implements UniInterface{
-//    private UniTask uniTask;
-    public Store<?> param;
-    public ProgressBuilder progress;
     private UniInterface uniInterface;
-    private UniUncaughtException uncaughtException;
-//    private String taskId;
     private TaskController taskController;
+    private CancelObservable cancelObservable;
 
     public UniAsyncTask(){
-        param = new Store<>();
-        progress = new ProgressBuilder();
         taskController = new TaskController(this);
+        taskController.init(null, cancelObservable);
     }
 
     public UniAsyncTask(UniLayout uniLayout){
-        inheritFault(uniLayout.getUniTask().getUniInterface());
-        progress = uniLayout.progress;
-        param = uniLayout.param;
-        this.uncaughtException = uniLayout.getTask().getUniUncaughtException();
+        inheritFault(uniLayout.getUniTask());
 
     }
 
     public UniAsyncTask(UniFragment uniFragment){
         this(uniFragment.getUniLayout());
-        this.uncaughtException = uniFragment.getTask().getUniUncaughtException();
-        taskController = new TaskController(this);
     }
 
     public UniAsyncTask(UniDialog uniDialog){
         this(uniDialog.getUniLayout());
-        this.uncaughtException = uniDialog.getTask().getUniUncaughtException();
-        taskController = new TaskController(this);
     }
 
-    void inheritFault(UniInterface uniInterface){
-        this.uniInterface = uniInterface;
+    public UniAsyncTask(UniTask uniTask){
+        inheritFault(uniTask);
+    }
+
+    void inheritFault(UniTask uniTask){
+        taskController = new TaskController(this);
+        this.uniInterface = uniTask.getUniInterface();
+        cancelObservable = uniTask.getCancelObservable();
+
+        taskController.init(null, cancelObservable);
+        taskController.setUniUncaughtException(uniTask.getTask().getUniUncaughtException());
+        taskController.setProgress(uniTask.progress);
+
     }
 
     @Override
@@ -89,43 +87,40 @@ public abstract class UniAsyncTask implements UniInterface{
         }
     }
 
-//    /*************************************************** CancelObserver Interface 관련 *********************************************/
+    /*************************************************** CancelObserver Interface 관련 *********************************************/
 //    public void cancel() {
-//        if(uniTask!=null) {
-//            uniTask.getTask().cancel(taskId);
+//        if(taskController!=null) {
+//            getTask().cancel();
 //        }
 //    }
 //
 //    public void cancelAll() {
-//        if(uniTask!=null) {
-//            uniTask.getTask().cancelAll();
+//        if(taskController!=null) {
+//            getTask().cancelAll();
 //        }
 //    }
 //
 //    public void setTaskAutoCanceled(boolean autoCanceled) {
-//        if(uniTask!=null) {
-//            uniTask.getTask().setTaskAutoCanceled(autoCanceled);
+//        if(taskController!=null) {
+//            getTask().setTaskAutoCanceled(autoCanceled);
 //        }
 //    }
 //
 //    public boolean isRunning(){
-//        if(uniTask==null) {
+//        if(taskController==null) {
 //            return false;
 //        }
-//        return uniTask.getTask().isRunning(taskId);
+//        return getTask().isRunning();
 //    }
 
 
     /*************************************************** 실행 관련 *********************************************/
 
     public String excute(){
-        return getTask().setProgress(progress)
-                .setUniUncaughtException(uncaughtException)
-                .execute();
+        return getTask().execute();
     }
 
     public TaskController getTask(){
-        taskController.init(null, null);
         return taskController;
     }
 
