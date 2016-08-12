@@ -36,9 +36,15 @@ public class UniTask implements UniInterface{
 
     private TaskController taskController;
     private CancelObservable cancelObservable;
+    private boolean enableMapping;
 
     public UniTask(){
+        this(false);
+    }
+
+    UniTask(boolean enableMapping){
         uniLayout = null;
+        this.enableMapping = enableMapping;
         mapper = new UniMapper();
         isAsync = true;
         param = new Store<>();
@@ -81,21 +87,20 @@ public class UniTask implements UniInterface{
         this.syncUniLayout(null, uniLayout, param, progress, mappingObj, uniInterface, container);
     }
 
+    public void bind(UniLayout uniLayout){
+        mapper.setInjectParents(UniTask.class);
+        setEnableMapping(true); //바인드가 되면 매핑을 한다.
+        isMapping = false;
+        this.uniLayout = uniLayout;
+        this.context = uniLayout.getContext();
+        mapper.reset(this.uniLayout, this);
+        this.uniLayout.init(this, param, progress);
+        LayoutInflater inflater = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
+        injectLayout(inflater, uniLayout);
+    }
+
     CancelObservable getCancelObservable(){
         return cancelObservable;
-    }
-
-    public TaskController getTask(){
-        taskController.init(this);
-        return taskController;
-    }
-
-    public void setUniInterface(UniInterface uniInterface){
-        taskController.setUniInterface(uniInterface);
-    }
-
-    public UniInterface getUniInterface() {
-        return taskController.getUniInterface();
     }
 
     void setMapping(boolean isMapping){
@@ -104,6 +109,10 @@ public class UniTask implements UniInterface{
 
     boolean isMapping(){
         return this.isMapping;
+    }
+
+    void setEnableMapping(boolean enable){
+        this.enableMapping = enable;
     }
 
     /*************************************************** Uni 외부지원 함수 관련 *********************************************/
@@ -178,19 +187,38 @@ public class UniTask implements UniInterface{
 
 
     /*************************************************** execute 관련 *********************************************/
-    void memberMapping(){
-        if(progress!=null) {
-            if (progress.get() == null) {
-                mapper.inject(new ProgressAdapter(progress));
-            }
-            if (progress.get() != null) {
-                progress.get().onBind();
-            }
+    public TaskController getTask(){
+        if(enableMapping){
+            taskController.init(this, cancelObservable);
+        }else{
+            taskController.init(null, cancelObservable);
         }
+        return taskController;
+    }
 
-        if(!isMapping) {
-            mapper.injectSubscriptionOnStart();
-            isMapping = true;
+    public void setUniInterface(UniInterface uniInterface){
+        taskController.setUniInterface(uniInterface);
+    }
+
+    public UniInterface getUniInterface() {
+        return taskController.getUniInterface();
+    }
+
+    void memberMapping(){
+        if(enableMapping) {
+            if (progress != null) {
+                if (progress.get() == null) {
+                    mapper.inject(new ProgressAdapter(progress));
+                }
+                if (progress.get() != null) {
+                    progress.get().onBind();
+                }
+            }
+
+            if (!isMapping) {
+                mapper.injectSubscriptionOnStart();
+                isMapping = true;
+            }
         }
     }
 

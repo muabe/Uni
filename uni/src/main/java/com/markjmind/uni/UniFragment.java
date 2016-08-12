@@ -43,7 +43,7 @@ public class UniFragment extends Fragment implements UniInterface{
     public UniFragment() {
         super();
         uniLayout = null;
-        uniTask = new UniTask();
+        uniTask = new UniTask(true);
         mapper = uniTask.mapper;
         mapper.setInjectParents(UniFragment.class);
         param = new Store<>();

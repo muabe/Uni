@@ -125,7 +125,7 @@ public abstract class UniAsyncTask implements UniInterface{
     }
 
     public TaskController getTask(){
-        taskController.init(null);
+        taskController.init(null, null);
         return taskController;
     }
 

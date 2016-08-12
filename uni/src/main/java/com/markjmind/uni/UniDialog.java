@@ -42,7 +42,7 @@ public class UniDialog extends Dialog implements UniInterface{
    public UniDialog(Context context) {
         super(context);
         uniLayout = null;
-        uniTask = new UniTask();
+        uniTask = new UniTask(true);
         mapper = uniTask.mapper;
         mapper.setInjectParents(UniDialog.class);
         param = new Store<>();
@@ -51,7 +51,7 @@ public class UniDialog extends Dialog implements UniInterface{
     public UniDialog(Context context, int themeResId) {
         super(context, themeResId);
         uniLayout = null;
-        uniTask = new UniTask();
+        uniTask = new UniTask(true);
         mapper = uniTask.mapper;
         param = new Store<>();
     }

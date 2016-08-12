@@ -20,8 +20,7 @@ public class TaskController {
     private UniTask uniTask;
     private boolean isAsync = true;
     private UniMainThread task;
-    private CancelObservable cancelObservable= new CancelObservable();
-
+    private CancelObservable cancelObservable;
 
     /** Option **/
     private ProgressBuilder progress;
@@ -35,13 +34,17 @@ public class TaskController {
     }
 
 
-    void init(UniTask uniTask) {
+    void init(UniTask uniTask, CancelObservable cancelObservable) {
         this.uniTask = uniTask;
-        task = new UniMainThread(cancelObservable);
+        this.cancelObservable = cancelObservable;
+        if(this.cancelObservable == null){
+            this.cancelObservable = new CancelObservable();
+        }
+        task = new UniMainThread(this.cancelObservable);
         if(uniTask!=null) {
             this.setProgress(uniTask.progress);
-            this.cancelObservable = uniTask.getCancelObservable();
         }
+
     }
 
 

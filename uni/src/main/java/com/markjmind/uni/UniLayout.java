@@ -104,10 +104,11 @@ public class UniLayout extends FrameLayout implements UniInterface{
         }
     }
 
-    public void bind(UniTask uniTask){
-        uniTask.mapper.setInjectParents(UniTask.class);
-        uniTask.syncUniLayout(this, uniTask.param, uniTask.progress, uniTask, uniTask.getUniInterface(), null);
-    }
+//    public void bind(UniTask uniTask){
+//        uniTask.mapper.setInjectParents(UniTask.class);
+//        uniTask.setEnableMapping(true);
+//        uniTask.syncUniLayout(this, uniTask.param, uniTask.progress, uniTask, uniTask.getUniInterface(), null);
+//    }
 
     /*************************************************** execute 관련 *********************************************/
     public void setCancelAop(CancelAop cancelAop){
@@ -120,7 +121,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
 
     public TaskController getTask(){
         if(uniTask==null){
-            uniTask = new UniTask();
+            uniTask = new UniTask(true);
             uniTask.mapper.setInjectParents(UniLayout.class);
             uniTask.syncUniLayout(this, param, progress, this, this, null);
         }
