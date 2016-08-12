@@ -12,12 +12,12 @@ import com.markjmind.uni.thread.CancelAdapter;
  * @since 2016-04-29
  */
 public abstract class UniAsyncTask implements UniInterface{
-    private UniTask uniTask;
+//    private UniTask uniTask;
     public Store<?> param;
     public ProgressBuilder progress;
     private UniInterface uniInterface;
     private UniUncaughtException uncaughtException;
-    private String taskId;
+//    private String taskId;
     private TaskController taskController;
 
     public UniAsyncTask(){
@@ -89,31 +89,31 @@ public abstract class UniAsyncTask implements UniInterface{
         }
     }
 
-    /*************************************************** CancelObserver Interface 관련 *********************************************/
-    public void cancel() {
-        if(uniTask!=null) {
-            uniTask.getTask().cancel(taskId);
-        }
-    }
-
-    public void cancelAll() {
-        if(uniTask!=null) {
-            uniTask.getTask().cancelAll();
-        }
-    }
-
-    public void setTaskAutoCanceled(boolean autoCanceled) {
-        if(uniTask!=null) {
-            uniTask.getTask().setTaskAutoCanceled(autoCanceled);
-        }
-    }
-
-    public boolean isRunning(){
-        if(uniTask==null) {
-            return false;
-        }
-        return uniTask.getTask().isRunning(taskId);
-    }
+//    /*************************************************** CancelObserver Interface 관련 *********************************************/
+//    public void cancel() {
+//        if(uniTask!=null) {
+//            uniTask.getTask().cancel(taskId);
+//        }
+//    }
+//
+//    public void cancelAll() {
+//        if(uniTask!=null) {
+//            uniTask.getTask().cancelAll();
+//        }
+//    }
+//
+//    public void setTaskAutoCanceled(boolean autoCanceled) {
+//        if(uniTask!=null) {
+//            uniTask.getTask().setTaskAutoCanceled(autoCanceled);
+//        }
+//    }
+//
+//    public boolean isRunning(){
+//        if(uniTask==null) {
+//            return false;
+//        }
+//        return uniTask.getTask().isRunning(taskId);
+//    }
 
 
     /*************************************************** 실행 관련 *********************************************/

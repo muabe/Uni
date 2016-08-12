@@ -67,6 +67,13 @@ public class Store<Value> extends LinkedHashMap<String, Object> implements Compa
 		}
 		return result;
 	}
+
+	/**
+	 * key값에 대응하는 Object 객체를 가져온다
+	 */
+	public Value get(Object key){
+		return this.get(String.valueOf(key));
+	}
 	
 	/**
 	 * key값에 대응하는 String 객체를 가져온다
