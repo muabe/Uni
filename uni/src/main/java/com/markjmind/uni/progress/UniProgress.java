@@ -35,6 +35,7 @@ public class UniProgress implements OnProgressListener{
     protected View layout;
     boolean hasListener;
     private ProgressBuilder.ProgressInterface progressInterface;
+    private ProgressBuilder builder;
 
     protected UniProgress(){
         this.layoutId = -1;
@@ -113,10 +114,6 @@ public class UniProgress implements OnProgressListener{
 
     }
 
-
-
-
-
     public void setInAnimation(AnimatorSet inAnimation){
         progressInterface.setInAnimation(inAnimation);
     }
@@ -156,5 +153,17 @@ public class UniProgress implements OnProgressListener{
         ObjectAnimator alpha = ObjectAnimator.ofFloat(layout, View.ALPHA, 1f, 0f);
         alpha.setDuration(250);
         return alpha;
+    }
+
+    public void show(){
+        if(builder!=null){
+            builder.show();
+        }
+    }
+
+    public void dismiss(){
+        if(builder!=null){
+            builder.dismiss();
+        }
     }
 }

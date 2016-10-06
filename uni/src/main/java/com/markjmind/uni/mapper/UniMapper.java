@@ -13,9 +13,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
 
-import com.markjmind.uni.mapper.annotiation.adapter.GetViewAdapter;
-import com.markjmind.uni.mapper.annotiation.adapter.OnClickAdapter;
-
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,8 +59,8 @@ public class UniMapper extends Mapper{
     }
 
     private void initAdapter(){
-        addSubscriptionOnStart(new GetViewAdapter());
-        addSubscriptionOnStart(new OnClickAdapter());
+//        addSubscriptionOnStart(new GetViewAdapter());
+//        addSubscriptionOnStart(new OnClickAdapter());
     }
 
     public Context getContext(){

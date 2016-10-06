@@ -30,6 +30,7 @@ public class ProgressBuilder extends ThreadProcessObserver {
     private boolean isShowing = false;
     private boolean autoCancel = true;
     private UniProgress uniProgress;
+    private Class<? extends UniProgress> type;
 
     public ProgressBuilder(){
         this.isEnable = true;
@@ -214,8 +215,6 @@ public class ProgressBuilder extends ThreadProcessObserver {
             return false;
         }
     }
-
-
     public interface ProgressInterface{
         boolean isShowing();
         void show(View view);

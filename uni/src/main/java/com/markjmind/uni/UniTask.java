@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.mapper.annotiation.LayoutInjector;
+import com.markjmind.uni.mapper.annotiation.adapter.GetViewAdapter;
+import com.markjmind.uni.mapper.annotiation.adapter.OnClickAdapter;
+import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ProgressAdapter;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
@@ -23,7 +26,7 @@ import com.markjmind.uni.thread.LoadEvent;
  * @email markjmind@gmail.com
  * @since 2016-03-04
  */
-public class UniTask implements UniInterface{
+public class UniTask implements UniInterface {
     private UniLayout uniLayout;
     public UniMapper mapper;
     public Store<?> param;
@@ -36,15 +39,20 @@ public class UniTask implements UniInterface{
 
     private TaskController taskController;
     private CancelObservable cancelObservable;
-    private boolean enableMapping;
+    private boolean enableMapping; //매필을 할수 있는지 여부(UniAsyncTask는 매핑을 안함)
 
-    public UniTask(){
+    public UniTask() {
         this(false);
     }
 
-    UniTask(boolean enableMapping){
+    /**
+     * Bind를 거치지 않고 내부적으로 UniTask를 생성해서 할 경우
+     * enbaleMapping true로 설정
+     * @param enableMapping
+     */
+    UniTask(boolean enableMapping) {
         uniLayout = null;
-        this.enableMapping = enableMapping;
+        setEnableMapping(enableMapping);
         mapper = new UniMapper();
         isAsync = true;
         param = new Store<>();
@@ -53,159 +61,35 @@ public class UniTask implements UniInterface{
         taskController = new TaskController(this);
     }
 
-    private void injectLayout(LayoutInflater inflater, ViewGroup container){
+
+
+    private void beforeOnBind(){
+        mapper.addSubscriptionOnInit(new ParamAdapter(param));
         mapper.injectSubscriptionOnInit();
-        taskController.getUniInterface().onBind();
-        LayoutInjector layoutInjector = new LayoutInjector();
-        mapper.inject(layoutInjector);
-        int layoutId = layoutInjector.getLayoutId();
-        if(layoutId>0) {
-            uniLayout.setLayout(inflater.inflate(layoutId, container, false));
-        }
     }
 
-    void syncUniLayout(LayoutInflater inflater, UniLayout uniLayout, Store<?> param, ProgressBuilder progress, Object mappingObj, UniInterface uniInterface, ViewGroup container){
-        isMapping = false;
-        this.uniLayout = uniLayout;
-        this.context = uniLayout.getContext();
-        mapper.reset(this.uniLayout, mappingObj);
-        this.uniLayout.init(this, param, progress);
-        this.progress = this.uniLayout.progress;
-        this.param = this.uniLayout.param;
-        setUniInterface(uniInterface);
-        if(inflater==null) {
-            inflater = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
-        }
-        if (container == null) {
-            injectLayout(inflater, uniLayout);
-        } else {
-            injectLayout(inflater, container);
-        }
-    }
-
-    void syncUniLayout(UniLayout uniLayout, Store<?> param, ProgressBuilder progress, Object mappingObj, UniInterface uniInterface, ViewGroup container){
-        this.syncUniLayout(null, uniLayout, param, progress, mappingObj, uniInterface, container);
-    }
-
-    public void bind(UniLayout uniLayout){
-        mapper.setInjectParents(UniTask.class);
-        setEnableMapping(true); //바인드가 되면 매핑을 한다.
-        isMapping = false;
-        this.uniLayout = uniLayout;
-        this.context = uniLayout.getContext();
-        mapper.reset(this.uniLayout, this);
-        this.uniLayout.init(this, param, progress);
-        LayoutInflater inflater = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
-        injectLayout(inflater, uniLayout);
-    }
-
-    CancelObservable getCancelObservable(){
-        return cancelObservable;
-    }
-
-    void setMapping(boolean isMapping){
-        this.isMapping = isMapping;
-    }
-
-    boolean isMapping(){
-        return this.isMapping;
-    }
-
-    void setEnableMapping(boolean enable){
-        this.enableMapping = enable;
-    }
-
-    /*************************************************** Uni 외부지원 함수 관련 *********************************************/
-
-    public View findViewById(int id){
-        return uniLayout.findViewById(id);
-    }
-
-    public View findViewWithTag(Object tag){
-        return uniLayout.findViewWithTag(tag);
-    }
-
-    public UniLayout getUniLayout(){
-        return uniLayout;
-    }
-
-    public void setAsync(boolean isAsync){
-        this.isAsync = isAsync;
-    }
-
-    public boolean isAsync(){
-        return this.isAsync;
-    }
-
-
-    /*************************************************** Context 함수 관련 *********************************************/
-    public Context getContext(){
-        return context;
-    }
-
-    public Resources getResource(){
-        return context.getResources();
-    }
-
-    public Context getApplicationContext(){
-        return context.getApplicationContext();
-    }
-
-    public PackageManager getPackageManager(){
-        return context.getPackageManager();
-    }
-
-
-    /*************************************************** CancelObserver Interface 관련 *********************************************/
-//    public void cancel(String id){
-//        cancelObservable.cancel(id);
-//    }
-//
-//    public void cancelAll(){
-//        cancelObservable.cancelAll();
-//    }
-//
-//    public void setTaskAutoCanceled(boolean autoCanceled) {
-//        cancelObservable.setTaskAutoCanceled(autoCanceled);
-//    }
-//
-//    public boolean isRunning(String task){
-//        if(cancelObservable.getStatus(task)!=null && cancelObservable.getStatus(task).equals(AsyncTask.Status.RUNNING)){
-//            return true;
-//        }else {
-//            return false;
-//        }
-//    }
-//
-//    public boolean isFinished(String task){
-//        if(cancelObservable.getStatus(task)!=null && cancelObservable.getStatus(task).equals(AsyncTask.Status.FINISHED)){
-//            return true;
-//        }else{
-//            return false;
-//        }
-//    }
-
-
-    /*************************************************** execute 관련 *********************************************/
-    public TaskController getTask(){
-        if(enableMapping){
-            taskController.init(this, cancelObservable);
-        }else{
-            taskController.init(null, cancelObservable);
-        }
-        return taskController;
-    }
-
-    public void setUniInterface(UniInterface uniInterface){
-        taskController.setUniInterface(uniInterface);
-    }
-
-    public UniInterface getUniInterface() {
-        return taskController.getUniInterface();
-    }
-
-    void memberMapping(){
+    private void afterOnBind(LayoutInflater inflater, ViewGroup container){
         if(enableMapping) {
+            mapper.addSubscriptionOnStart(new GetViewAdapter());
+            mapper.addSubscriptionOnStart(new OnClickAdapter());
+
+            LayoutInjector layoutInjector = new LayoutInjector();
+            mapper.inject(layoutInjector);
+            int layoutId = layoutInjector.getLayoutId();
+            if (layoutId > 0) {
+                uniLayout.setLayout(inflater.inflate(layoutId, container, false));
+            }
+        }
+    }
+
+    private void binding(LayoutInflater inflater, ViewGroup container){
+        beforeOnBind();
+        taskController.getUniInterface().onBind();
+        afterOnBind(inflater, container);
+    }
+
+    void beforeExecute() {
+        if (enableMapping) {
             if (progress != null) {
                 if (progress.get() == null) {
                     mapper.inject(new ProgressAdapter(progress));
@@ -222,30 +106,166 @@ public class UniTask implements UniInterface{
         }
     }
 
-//    String refresh(ProgressBuilder progress, UniLoadFail uniLoadFail, UniAop uniAop, UniUncaughtException uncaughtException){
-//        cancelAll();
-//        return run(progress, uniInterface, uniLoadFail, true, uniAop, uncaughtException);
-//    }
-//
-//    String run(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail, boolean skipOnPre, UniAop uniAop, UniUncaughtException uncaughtException){
-//        UniMainThread task = new UniMainThread(cancelObservable);
-//        if(progress.isAble()) {
-//            task.addTaskObserver(progress);
-//        }
-//        task.addTaskObserver(new ThreadProcessAdapter(uniInterface, uniLoadFail, skipOnPre).setUniAop(uniAop));
-//        task.setUIuncaughtException(uncaughtException);
-//        cancelObservable.add(task);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-//            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-//        } else {
-//            task.execute();
-//        }
-//
-//
-//        return task.getId();
-//    }
+    void beforeOnPre(){
 
-    /*************************************************** UniTask Interface 관련 *********************************************/
+    }
+    void afterOnPre(){
+
+    }
+    void beforeOnLoad(){
+
+    }
+    void afterOnLoad(){
+
+    }
+    void beforeOnPost(){
+
+    }
+    void afterOnPost(){
+
+    }
+    void beforeOnCancel(){
+
+    }
+    void afterOnCancel(){
+
+    }
+    void beforeOnException(){
+
+    }
+    void afterOnException(){
+
+    }
+
+    /**
+     * UniLayout의 내장 task를 사용하는 방법
+     * @param uniLayout
+     */
+    void syncUniLayout(LayoutInflater inflater, UniLayout uniLayout, Store<?> param, ProgressBuilder progress, Object mappingObj, UniInterface uniInterface, ViewGroup container) {
+        isMapping = false;
+        this.uniLayout = uniLayout;
+        this.context = uniLayout.getContext();
+        mapper.reset(this.uniLayout, mappingObj);
+        this.uniLayout.init(this, param, progress);
+        this.progress = this.uniLayout.progress;
+        this.param = this.uniLayout.param;
+        setUniInterface(uniInterface);
+        if (inflater == null) {
+            inflater = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
+        }
+        if(container==null){
+            container = uniLayout;
+        }
+
+        binding(inflater, container);
+
+    }
+
+    void syncUniLayout(UniLayout uniLayout, Store<?> param, ProgressBuilder progress, Object mappingObj, UniInterface uniInterface, ViewGroup container) {
+        this.syncUniLayout(null, uniLayout, param, progress, mappingObj, uniInterface, container);
+    }
+
+
+    /**
+     * UniLayout에다 task를 입히는 방법
+     * @param uniLayout
+     */
+    public void bind(UniLayout uniLayout) {
+        mapper.setInjectParents(UniTask.class);
+        setEnableMapping(true); //바인드가 되면 매핑을 할수있다.
+        isMapping = false;
+        this.uniLayout = uniLayout;
+        this.context = uniLayout.getContext();
+        mapper.reset(this.uniLayout, this);
+        this.uniLayout.init(this, param, progress);
+        LayoutInflater inflater = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
+
+        binding(inflater, uniLayout);
+    }
+
+    CancelObservable getCancelObservable() {
+        return cancelObservable;
+    }
+
+    void setMapping(boolean isMapping) {
+        this.isMapping = isMapping;
+    }
+
+    boolean isMapping() {
+        return this.isMapping;
+    }
+
+    void setEnableMapping(boolean enable) {
+        this.enableMapping = enable;
+    }
+
+    /***************************************************************************************************************
+     * Uni 외부지원 함수 관련
+     **************************************************************************************************************/
+
+    public View findViewById(int id) {
+        return uniLayout.findViewById(id);
+    }
+
+    public View findViewWithTag(Object tag) {
+        return uniLayout.findViewWithTag(tag);
+    }
+
+    public UniLayout getUniLayout() {
+        return uniLayout;
+    }
+
+    public void setAsync(boolean isAsync) {
+        this.isAsync = isAsync;
+    }
+
+    public boolean isAsync() {
+        return this.isAsync;
+    }
+
+
+    /***************************************************************************************************************
+     * Context 함수 관련
+     **************************************************************************************************************/
+    public Context getContext() {
+        return context;
+    }
+
+    public Resources getResource() {
+        return context.getResources();
+    }
+
+    public Context getApplicationContext() {
+        return context.getApplicationContext();
+    }
+
+    public PackageManager getPackageManager() {
+        return context.getPackageManager();
+    }
+
+    /***************************************************************************************************************
+     * execute 관련
+     **************************************************************************************************************/
+    public TaskController getTask() {
+        if (enableMapping) {
+            taskController.init(this, cancelObservable);
+        } else {
+            taskController.init(null, cancelObservable);
+        }
+        return taskController;
+    }
+
+    public void setUniInterface(UniInterface uniInterface) {
+        taskController.setUniInterface(uniInterface);
+    }
+
+    public UniInterface getUniInterface() {
+        return taskController.getUniInterface();
+    }
+
+    /***************************************************************************************************************
+     * UniTask Interface 관련
+     **************************************************************************************************************/
     @Override
     public void onBind() {
 
@@ -285,6 +305,7 @@ public class UniTask implements UniInterface{
     public void onCancelled(boolean attached) {
 
     }
+
 
 }
 

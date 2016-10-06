@@ -156,7 +156,7 @@ public class TaskController {
 
     public synchronized String execute() {
         if (uniTask!=null) {
-            uniTask.memberMapping();
+            uniTask.beforeExecute();
         }
         if (isAsync) {
             return run(progress, uniInterface, uniLoadFail, false, uniAop, uncaughtException);
@@ -176,7 +176,7 @@ public class TaskController {
 
     public void post() {
         if (uniTask!=null) {
-            uniTask.memberMapping();
+            uniTask.beforeExecute();
         }
         uniInterface.onPost();
     }
