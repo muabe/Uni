@@ -15,7 +15,7 @@ import android.view.View;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * <br>捲土重來<br>
@@ -24,8 +24,8 @@ import java.util.HashMap;
  * @since 2016-02-15
  */
 public class UniMapper extends Mapper{
-    protected HashMap<Class<?>, InjectAdapter<? extends Annotation>> onInitMap = new HashMap<>();
-    protected HashMap<Class<?>, InjectAdapter<? extends Annotation>> onStartMap = new HashMap<>();
+    protected LinkedHashMap<Class<?>, InjectAdapter<? extends Annotation>> onInitMap = new LinkedHashMap<>();
+    protected LinkedHashMap<Class<?>, InjectAdapter<? extends Annotation>> onStartMap = new LinkedHashMap<>();
 
     public UniMapper(){
 
@@ -45,22 +45,14 @@ public class UniMapper extends Mapper{
 
     public UniMapper(View finder, Object targetObject){
         super(finder, targetObject);
-        initAdapter();
     }
 
     public UniMapper(Activity finder, Object targetObject){
         super(finder, targetObject);
-        initAdapter();
     }
 
     public UniMapper(Dialog finder, Object targetObject){
         super(finder, targetObject);
-        initAdapter();
-    }
-
-    private void initAdapter(){
-//        addSubscriptionOnStart(new GetViewAdapter());
-//        addSubscriptionOnStart(new OnClickAdapter());
     }
 
     public Context getContext(){
@@ -73,17 +65,14 @@ public class UniMapper extends Mapper{
 
     public void reset(View finder, Object targetObject){
         super.reset(finder, targetObject);
-        initAdapter();
     }
 
     public void reset(Activity finder, Object targetObject){
         super.reset(finder, targetObject);
-        initAdapter();
     }
 
     public void reset(Dialog finder, Object targetObject){
         super.reset(finder, targetObject);
-        initAdapter();
     }
 
     public void injectSubscriptionOnInit(){
@@ -112,8 +101,8 @@ public class UniMapper extends Mapper{
         return (InjectAdapter<T>)onInitMap.get(adapterClass);
     }
 
-    public <T extends Annotation>InjectAdapter<T> getSubscriptionOnStart(Class<T> adapterClass){
-        return (InjectAdapter<T>)onStartMap.get(adapterClass);
+    public <T extends InjectAdapter>T getSubscriptionOnStart(Class<T> adapterClass){
+        return (T)onStartMap.get(adapterClass);
     }
 
     public void removeSubscriptionOnInit(Class<?> adapterClass){

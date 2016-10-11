@@ -1,6 +1,10 @@
 package com.markjmind.uni.mapper.annotiation;
 
 
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import com.markjmind.uni.UniLayout;
 import com.markjmind.uni.mapper.ClassInjectAdapter;
 
 /**
@@ -11,10 +15,14 @@ import com.markjmind.uni.mapper.ClassInjectAdapter;
  * @since 2016-07-04
  */
 public class LayoutInjector extends ClassInjectAdapter<Layout> {
-    int layoutId = 0;
+    LayoutInflater inflater;
+    UniLayout uniLayout;
+    ViewGroup container;
 
-    public int getLayoutId(){
-        return layoutId;
+    public LayoutInjector(LayoutInflater inflater, UniLayout uniLayout, ViewGroup container){
+        this.inflater = inflater;
+        this.uniLayout = uniLayout;
+        this.container = container;
     }
 
     @Override
@@ -24,6 +32,11 @@ public class LayoutInjector extends ClassInjectAdapter<Layout> {
 
     @Override
     public void injectClass(Layout annotation, Class targetClass, Object targetObject) {
-        layoutId = annotation.value();
+        int layoutId = annotation.value();
+        if (layoutId > 0) {
+            uniLayout.setLayout(inflater.inflate(layoutId, container, false));
+        }
+
     }
+
 }

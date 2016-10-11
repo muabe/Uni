@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.markjmind.uni.common.Store;
-import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
@@ -29,7 +28,6 @@ public class UniFragment extends Fragment implements UniInterface{
 //    private String taskId;
     private UniTask uniTask;
     private UniLayout uniLayout;
-    public UniMapper mapper;
     public Store<?> param;
     public ProgressBuilder progress;
     private UniAop aop;
@@ -43,11 +41,8 @@ public class UniFragment extends Fragment implements UniInterface{
     public UniFragment() {
         super();
         uniLayout = null;
-        uniTask = new UniTask(true);
-        mapper = uniTask.mapper;
-        mapper.setInjectParents(UniFragment.class);
-        param = new Store<>();
-        progress = new ProgressBuilder();
+        setUniTask(new UniTask(true));
+        uniTask.bindFragment(this);
         isPopStack = false;
     }
 
@@ -56,53 +51,59 @@ public class UniFragment extends Fragment implements UniInterface{
         super.onCreate(savedInstanceState);
     }
 
+    void setUniTask(UniTask uniTask){
+        this.uniTask = uniTask;
+        uniTask.setUniInterface(new UniInterface() {
+            @Override
+            public void onBind() {
+                UniFragment.this.onBind();
+            }
+
+            @Override
+            public void onPre() {
+                UniFragment.this.onPre();
+            }
+
+            @Override
+            public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
+                UniFragment.this.onLoad(event, cancelAdapter);
+            }
+
+            @Override
+            public void onUpdate(Object value, CancelAdapter cancelAdapter) {
+                UniFragment.this.onUpdate(value, cancelAdapter);
+            }
+
+            @Override
+            public void onPost() {
+                UniFragment.this.onPost();
+            }
+
+            @Override
+            public void onPostFail(String message, Object arg) {
+                UniFragment.this.onPostFail(message, arg);
+            }
+
+            @Override
+            public void onException(Exception e) {
+                UniFragment.this.onException(e);
+            }
+
+            @Override
+            public void onCancelled(boolean attached) {
+                UniFragment.this.onCancelled(attached);
+                isPopStack = true;
+            }
+        });
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(uniLayout == null) {
-            uniLayout = new UniLayout(getActivity());
             setRefreshBackStack(false);
-            uniTask.syncUniLayout(inflater, uniLayout, param, progress, this, new UniInterface() {
-                @Override
-                public void onBind() {
-                    UniFragment.this.onBind();
-                }
-
-                @Override
-                public void onPre() {
-                    UniFragment.this.onPre();
-                }
-
-                @Override
-                public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
-                    UniFragment.this.onLoad(event, cancelAdapter);
-                }
-
-                @Override
-                public void onUpdate(Object value, CancelAdapter cancelAdapter) {
-                    UniFragment.this.onUpdate(value, cancelAdapter);
-                }
-
-                @Override
-                public void onPost() {
-                    UniFragment.this.onPost();
-                }
-
-                @Override
-                public void onPostFail(String message, Object arg) {
-                    UniFragment.this.onPostFail(message, arg);
-                }
-
-                @Override
-                public void onException(Exception e) {
-                    UniFragment.this.onException(e);
-                }
-
-                @Override
-                public void onCancelled(boolean attached) {
-                    UniFragment.this.onCancelled(attached);
-                    isPopStack = true;
-                }
-            }, container);
+            uniLayout = new UniLayout(getActivity());
+            uniLayout.syncAttribute(param, progress);
+            uniTask.bind(this,uniLayout,inflater,container);
 
             getTask().setAsync(isAsync()).execute();
         }else{

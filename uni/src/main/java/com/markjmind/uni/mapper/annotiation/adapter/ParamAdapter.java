@@ -62,7 +62,6 @@ public class ParamAdapter extends FieldInjectAdapter<Param> {
                 }
             }
         }
-
     }
 
 

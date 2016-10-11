@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.markjmind.uni.common.Store;
-import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
@@ -29,41 +28,38 @@ import com.markjmind.uni.thread.aop.UniAop;
  * @email markjmind@gmail.com
  * @since 2016-02-26
  */
-public class UniDialog extends Dialog implements UniInterface{
+public class UniDialog extends Dialog implements UniInterface {
     private UniTask uniTask;
     private UniLayout uniLayout;
-    public UniMapper mapper;
     public Store<?> param;
-    public ProgressBuilder progress = new ProgressBuilder();
+    public ProgressBuilder progress;
     private UniAop aop;
 
     private OnDismissResult onDismissResult;
 
-   public UniDialog(Context context) {
+    public UniDialog(Context context) {
         super(context);
         uniLayout = null;
-        uniTask = new UniTask(true);
-        mapper = uniTask.mapper;
-        mapper.setInjectParents(UniDialog.class);
-        param = new Store<>();
+        new UniTask(true).bindDialog(this);
     }
 
     public UniDialog(Context context, int themeResId) {
         super(context, themeResId);
         uniLayout = null;
-        uniTask = new UniTask(true);
-        mapper = uniTask.mapper;
-        param = new Store<>();
+        new UniTask(true).bindDialog(this);
     }
 
+    void setUniTask(UniTask uniTask) {
+        this.uniTask = uniTask;
+        uniTask.setUniInterface(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         uniLayout = new UniLayout(getContext());
         setContentView(uniLayout);
-        uniTask.syncUniLayout(uniLayout, param, progress, this, this, null);
-
+        uniTask.bind(this, uniLayout, null, null);
         super.setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
@@ -74,43 +70,49 @@ public class UniDialog extends Dialog implements UniInterface{
 
     @Override
     public void setOnShowListener(OnShowListener listener) {
-        final OnShowListener lis = listener;
+        final OnShowListener lisner = listener;
         super.setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
                 getTask().execute();
-                lis.onShow(dialog);
+                lisner.onShow(dialog);
             }
         });
     }
 
-    public void setAsync(boolean isAsync){
+    public void setAsync(boolean isAsync) {
         this.uniTask.setAsync(isAsync);
     }
 
-    public boolean isAsync(){
+    public boolean isAsync() {
         return this.uniTask.isAsync();
     }
 
-    /*************************************************** 필수 항목 *********************************************/
-    public UniLayout getUniLayout(){
+    /***************************************************
+     * 필수 항목
+     *********************************************/
+    public UniLayout getUniLayout() {
         return uniLayout;
     }
 
-    /*************************************************** 실행 관련 *********************************************/
-    public void setCancelAop(CancelAop cancelAop){
+    /***************************************************
+     * 실행 관련
+     *********************************************/
+    public void setCancelAop(CancelAop cancelAop) {
         aop.setCancelAop(cancelAop);
     }
 
-    public UniAop getAop(){
+    public UniAop getAop() {
         return aop;
     }
 
-    public TaskController getTask(){
+    public TaskController getTask() {
         return uniTask.getTask();
     }
 
-    /*************************************************** 인터페이스 관련 *********************************************/
+    /***************************************************
+     * 인터페이스 관련
+     *********************************************/
 
     @Override
     public void onBind() {
@@ -145,9 +147,11 @@ public class UniDialog extends Dialog implements UniInterface{
     public void onCancelled(boolean attach) {
     }
 
-    /*************************************************** 추가 리스너 관련 *********************************************/
+    /***************************************************
+     * 추가 리스너 관련
+     *********************************************/
 
-    public void setClickViewListener(int id, ClickViewListener onClickView){
+    public void setClickViewListener(int id, ClickViewListener onClickView) {
         final ClickViewListener finalTemp = onClickView;
         findViewById(id).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,16 +161,16 @@ public class UniDialog extends Dialog implements UniInterface{
         });
     }
 
-    public void dismiss(Object arg){
-        if(onDismissResult!=null){
+    public void dismiss(Object arg) {
+        if (onDismissResult != null) {
             onDismissResult.setArg(arg);
         }
     }
 
     public void setDismissResultLstener(DismissResultLstener dismissResultLstener) {
-        if(dismissResultLstener ==null){
+        if (dismissResultLstener == null) {
             setOnDismissListener(null);
-        }else {
+        } else {
             onDismissResult = new OnDismissResult(dismissResultLstener);
             setOnDismissListener(new Dialog.OnDismissListener() {
                 @Override
@@ -185,11 +189,11 @@ public class UniDialog extends Dialog implements UniInterface{
         public void onClick(UniDialog uniDialog, View view);
     }
 
-    private class OnDismissResult{
+    private class OnDismissResult {
         private Object arg;
         private DismissResultLstener dismissResultLstener;
 
-        public OnDismissResult(DismissResultLstener dismissResultLstener){
+        public OnDismissResult(DismissResultLstener dismissResultLstener) {
             this.dismissResultLstener = dismissResultLstener;
         }
 
@@ -197,7 +201,7 @@ public class UniDialog extends Dialog implements UniInterface{
             this.arg = arg;
         }
 
-        void onResult(){
+        void onResult() {
             dismissResultLstener.onDismiss(arg);
         }
     }

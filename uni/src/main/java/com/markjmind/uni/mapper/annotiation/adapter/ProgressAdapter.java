@@ -49,6 +49,10 @@ public class ProgressAdapter extends ClassInjectAdapter<Progress> {
                     progress.set(mode, res);
                 }
             }
+
+            if (progress.get() != null) {
+                progress.get().onBind();
+            }
         }
     }
 
