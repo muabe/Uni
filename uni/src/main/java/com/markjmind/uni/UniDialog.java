@@ -40,18 +40,19 @@ public class UniDialog extends Dialog implements UniInterface {
     public UniDialog(Context context) {
         super(context);
         uniLayout = null;
-        new UniTask(true).bindDialog(this);
+        uniTask = new UniTask(true);
+        uniTask.initAtrribute(this, this);
     }
 
     public UniDialog(Context context, int themeResId) {
         super(context, themeResId);
         uniLayout = null;
-        new UniTask(true).bindDialog(this);
+        uniTask = new UniTask(true);
+        uniTask.initAtrribute(this, this);
     }
 
     void setUniTask(UniTask uniTask) {
         this.uniTask = uniTask;
-        uniTask.setUniInterface(this);
     }
 
     @Override
@@ -59,7 +60,8 @@ public class UniDialog extends Dialog implements UniInterface {
         super.onCreate(savedInstanceState);
         uniLayout = new UniLayout(getContext());
         setContentView(uniLayout);
-        uniTask.bind(this, uniLayout, null, null);
+        uniTask.syncUniLayout(uniLayout);
+        uniTask.setBindInfo(this, uniLayout, null, null);
         super.setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {

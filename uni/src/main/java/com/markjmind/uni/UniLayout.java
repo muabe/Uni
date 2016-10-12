@@ -49,9 +49,28 @@ public class UniLayout extends FrameLayout implements UniInterface{
         super.addView(frameLayout);
         this.progress.setParents(this);
         param = new Store<>();
+
+        uniTask = new UniTask(true);
+        uniTask.initAtrribute(this, this);
+        uniTask.setBindInfo(this, this, null, null);
+
+        addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                uniTask.getCancelObservable().setAttached(true);
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+                param.clear();
+                progress.param.clear();
+                uniTask.getCancelObservable().setAttached(false);
+                uniTask.getCancelObservable().cancelAll();
+            }
+        });
     }
 
-//    void initTask(UniTask task, Store<?> par, ProgressBuilder pro){
+//    void setUniTask(UniTask task, Store<?> par, ProgressBuilder pro){
 //        this.uniTask = task;
 //        this.param = par;
 //        this.progress = pro;
@@ -72,22 +91,8 @@ public class UniLayout extends FrameLayout implements UniInterface{
 //        });
 //    }
 
-    void initTask(UniTask task){
+    void setUniTask(UniTask task){
         this.uniTask = task;
-        addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
-            @Override
-            public void onViewAttachedToWindow(View v) {
-                uniTask.getCancelObservable().setAttached(true);
-            }
-
-            @Override
-            public void onViewDetachedFromWindow(View v) {
-                param.clear();
-                progress.param.clear();
-                uniTask.getCancelObservable().setAttached(false);
-                uniTask.getCancelObservable().cancelAll();
-            }
-        });
     }
 
     void syncAttribute(Store<?> par, ProgressBuilder pro){
@@ -130,12 +135,6 @@ public class UniLayout extends FrameLayout implements UniInterface{
     }
 
     public TaskController getTask(){
-        if(uniTask==null){
-            uniTask = new UniTask(true);
-            uniTask.mapper.setInjectParents(UniLayout.class);
-            uniTask.setUniInterface(this);
-            uniTask.reverseBind(this, this, param, progress);
-        }
         return uniTask.getTask();
     }
 

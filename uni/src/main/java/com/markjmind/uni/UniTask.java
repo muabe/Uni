@@ -77,17 +77,20 @@ public class UniTask implements UniInterface {
         }
     }
 
-    private void binding(LayoutInflater inflater, ViewGroup container){
-        beforeBind();
-        taskController.getUniInterface().onBind();
-        afterBind(inflater, container);
+    private void binding(){
+        if(!binded) {
+            beforeBind();
+            taskController.getUniInterface().onBind();
+            afterBind(inflater, container);
+            binded = true;
+        }
     }
 
     /**
      * Execute는 여러번 일어날수있다는것에 주의
      */
     void beforeExecute() {
-
+        binding();
     }
 
     void beforeOnPre(){
@@ -121,15 +124,16 @@ public class UniTask implements UniInterface {
 
     }
 
-    Object mappingObj;
-    LayoutInflater inflater; ViewGroup container;
 
+    boolean binded = false;
+    LayoutInflater inflater;
+    ViewGroup container;
 
-    void bind(Object mappingObj, UniLayout uniLayout, LayoutInflater inflater, ViewGroup container){
+    void setBindInfo(Object mappingObj, UniLayout uniLayout, LayoutInflater inflater, ViewGroup container){
         this.uniLayout = uniLayout;
         this.context = uniLayout.getContext();
         this.mapper.reset(this.uniLayout, mappingObj);
-        this.uniLayout.initTask(this);
+//        this.uniLayout.setUniTask(this);
         if (inflater == null) {
             inflater = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
         }
@@ -138,32 +142,50 @@ public class UniTask implements UniInterface {
         }
         this.progress.setParents(uniLayout);
 
-        binding(inflater, container);
+        this.inflater = inflater;
+        this.container = container;
     }
 
-    public void bindLayout(UniLayout uniLayout) {
-        setEnableMapping(true); //바인드가 되면 매핑을 할수있다.
-        uniLayout.param = this.param;
-        uniLayout.progress = this.progress;
+    void initAtrribute(UniLayout uniLayout, UniInterface uniInterface){
+        uniLayout.param = param;
+        uniLayout.progress = progress;
         mapper.setInjectParents(UniLayout.class);
-        this.bind(this, uniLayout, null, null);
+        setUniInterface(uniInterface);
     }
 
-    public void bindFragment(UniFragment uniFragment){
-        setEnableMapping(true); //바인드가 되면 매핑을 할수있다.
+    void initAtrribute(UniFragment uniFragment, UniInterface uniInterface){
         uniFragment.param = this.param;
         uniFragment.progress = this.progress;
         mapper.setInjectParents(UniFragment.class);
-        uniFragment.setUniTask(this);
+        setUniInterface(uniInterface);
     }
 
-    public void bindDialog(UniDialog uniDialog){
-        setEnableMapping(true); //바인드가 되면 매핑을 할수있다.
+    void initAtrribute(UniDialog uniDialog, UniInterface uniInterface){
         uniDialog.param = this.param;
         uniDialog.progress = this.progress;
         mapper.setInjectParents(UniDialog.class);
-        uniDialog.setUniTask(this);
+        setUniInterface(uniInterface);
     }
+
+    void syncUniLayout(UniLayout uniLayout){
+        uniLayout.param = param;
+        uniLayout.progress = progress;
+        uniLayout.setUniTask(this);
+    }
+
+
+
+//    public void bindFragment(UniFragment uniFragment) {
+//        setEnableMapping(true); //바인드가 되면 매핑을 할수있다.
+//        uniLayout.param = param;
+//        uniLayout.progress = progress;
+//        uniFragment.setUniTask(this);
+//        //UniFragment에서 새로감싼 uniInterface가 필요하다.
+//        setUniInterface(uniFragment.getUniInterface(this));
+//        mapper.setInjectParents(UniTask.class);
+//        //setBindInfo는 onCreateView에서 동적으로 호출
+//    }
+
 
     /**
      * UniLayout에다 task를 입히는 방법
@@ -171,17 +193,13 @@ public class UniTask implements UniInterface {
      */
     public void bind(UniLayout uniLayout) {
         setEnableMapping(true); //바인드가 되면 매핑을 할수있다.
-        mapper.setInjectParents(UniTask.class);
-
-        this.bind(this, uniLayout, null, null);
+        syncUniLayout(uniLayout); // property와 Unitask를 변경한다.
+        mapper.setInjectParents(UniTask.class); //Injection 클래스를 UniTask고정
+        this.setBindInfo(this, uniLayout, null, null);
+        binding();
     }
 
-    void reverseBind(Object mappingObj, UniLayout uniLayout, Store<?> param, ProgressBuilder progress){
-        this.param = param;
-        this.progress = progress;
-        this.progress.setParents(uniLayout);
-        bind(mappingObj, uniLayout, null, null);
-    }
+
 
     CancelObservable getCancelObservable() {
         return cancelObservable;

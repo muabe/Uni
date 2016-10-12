@@ -10,6 +10,7 @@ import com.markjmind.uni.thread.LoadEvent;
  * @since 2016-01-28
  */
 public interface UniInterface extends UniLoadFail{
+
     void onBind();
 
     void onPre();

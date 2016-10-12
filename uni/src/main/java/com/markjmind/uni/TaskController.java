@@ -127,6 +127,9 @@ public class TaskController {
      *********************************************************************************/
 
     private synchronized String run(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail, boolean skipOnPre, UniAop uniAop, UniUncaughtException uncaughtException) {
+        if (uniTask!=null) {
+            uniTask.beforeExecute();
+        }
         if(getStatus().equals(AsyncTask.Status.RUNNING)) {
             return null;
         }else if(getStatus().equals(AsyncTask.Status.FINISHED)){
@@ -148,22 +151,18 @@ public class TaskController {
         return task.getId();
     }
 
-    private synchronized String refresh(ProgressBuilder progress, UniLoadFail uniLoadFail, UniAop uniAop, UniUncaughtException uncaughtException) {
-        cancelAll();
-        return run(progress, uniInterface, uniLoadFail, true, uniAop, uncaughtException);
-    }
-
-
-    public synchronized String execute() {
+    public void pre(){
         if (uniTask!=null) {
             uniTask.beforeExecute();
         }
-        if (isAsync) {
-            return run(progress, uniInterface, uniLoadFail, false, uniAop, uncaughtException);
-        } else {
-            uniInterface.onPre();
-            return null;
+        uniInterface.onPre();
+    }
+
+    public void post() {
+        if (uniTask!=null) {
+            uniTask.beforeExecute();
         }
+        uniInterface.onPost();
     }
 
     public void notifyPre() {
@@ -174,12 +173,24 @@ public class TaskController {
         uniInterface.onPost();
     }
 
-    public void post() {
-        if (uniTask!=null) {
-            uniTask.beforeExecute();
-        }
-        uniInterface.onPost();
+    private synchronized String refresh(ProgressBuilder progress, UniLoadFail uniLoadFail, UniAop uniAop, UniUncaughtException uncaughtException) {
+        cancelAll();
+        return run(progress, uniInterface, uniLoadFail, true, uniAop, uncaughtException);
     }
+
+
+    public synchronized String execute() {
+        if (isAsync) {
+            return run(progress, uniInterface, uniLoadFail, false, uniAop, uncaughtException);
+        } else {
+            pre();
+            return null;
+        }
+    }
+
+
+
+
 
     public synchronized String reLoad() {
         return refresh(progress, uniLoadFail, uniAop, uncaughtException);
@@ -189,7 +200,7 @@ public class TaskController {
         if (isAsync) {
             return refresh(progress, uniLoadFail, uniAop, uncaughtException);
         } else {
-            uniInterface.onPre();
+            pre();
             return null;
         }
     }

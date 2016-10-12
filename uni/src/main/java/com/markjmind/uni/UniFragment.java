@@ -41,8 +41,8 @@ public class UniFragment extends Fragment implements UniInterface{
     public UniFragment() {
         super();
         uniLayout = null;
-        setUniTask(new UniTask(true));
-        uniTask.bindFragment(this);
+        uniTask = new UniTask(true);
+        uniTask.initAtrribute(this, getUniInterface());
         isPopStack = false;
     }
 
@@ -51,9 +51,8 @@ public class UniFragment extends Fragment implements UniInterface{
         super.onCreate(savedInstanceState);
     }
 
-    void setUniTask(UniTask uniTask){
-        this.uniTask = uniTask;
-        uniTask.setUniInterface(new UniInterface() {
+    UniInterface getUniInterface(){
+        return new UniInterface() {
             @Override
             public void onBind() {
                 UniFragment.this.onBind();
@@ -94,7 +93,11 @@ public class UniFragment extends Fragment implements UniInterface{
                 UniFragment.this.onCancelled(attached);
                 isPopStack = true;
             }
-        });
+        };
+    }
+
+    void setUniTask(UniTask uniTask){
+        this.uniTask = uniTask;
     }
 
     @Override
@@ -102,9 +105,8 @@ public class UniFragment extends Fragment implements UniInterface{
         if(uniLayout == null) {
             setRefreshBackStack(false);
             uniLayout = new UniLayout(getActivity());
-            uniLayout.syncAttribute(param, progress);
-            uniTask.bind(this,uniLayout,inflater,container);
-
+            uniTask.syncUniLayout(uniLayout);
+            uniTask.setBindInfo(this,uniLayout,inflater,container);
             getTask().setAsync(isAsync()).execute();
         }else{
             if(isPopStack){
