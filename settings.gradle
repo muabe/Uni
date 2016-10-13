@@ -1,1 +1,1 @@
-include ':uni', ':fragmenttest'
+include ':uni'
