@@ -112,13 +112,20 @@ public class UniLayout extends FrameLayout implements UniInterface{
         return uniTask;
     }
 
-    public void setLayout(View view) {
+    public void setView(View view) {
         this.removeAllViews();
         this.view = view;
-        super.addView(this.view);
-        this.setLayoutParams(this.view.getLayoutParams());
+        if(view!=null) {
+            super.addView(this.view);
+            if(this.getLayoutParams()==null) {
+                this.setLayoutParams(this.view.getLayoutParams());
+            }
+        }
     }
 
+    public View getView(){
+        return this.view;
+    }
 //    public void bind(UniTask uniTask){
 //        uniTask.mapper.setInjectParents(UniTask.class);
 //        uniTask.setEnableMapping(true);

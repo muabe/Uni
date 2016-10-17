@@ -40,6 +40,10 @@ public class UniTask implements UniInterface {
     private CancelObservable cancelObservable;
     private boolean enableMapping; //매필을 할수 있는지 여부(UniAsyncTask는 매핑을 안함)
 
+    private boolean binded = false;
+    private LayoutInflater inflater;
+    private ViewGroup container;
+
     public UniTask() {
         this(false);
     }
@@ -64,24 +68,22 @@ public class UniTask implements UniInterface {
         mapper.addSubscriptionOnInit(new ParamAdapter(param));
         if(enableMapping) {
             mapper.addSubscriptionOnInit(new ProgressAdapter(progress));
+            mapper.addSubscriptionOnInit(new LayoutInjector(inflater, uniLayout, container));
         }
         mapper.injectSubscriptionOnInit();
     }
 
-    private void afterBind(LayoutInflater inflater, ViewGroup container){
-        if (enableMapping) {
-            mapper.addSubscriptionOnStart(new LayoutInjector(inflater, uniLayout, container));
-            mapper.addSubscriptionOnStart(new GetViewAdapter());
-            mapper.addSubscriptionOnStart(new OnClickAdapter());
-            mapper.injectSubscriptionOnStart();
-        }
+    private void afterBind(){
+        mapper.addSubscriptionOnStart(new GetViewAdapter());
+        mapper.addSubscriptionOnStart(new OnClickAdapter());
+        mapper.injectSubscriptionOnStart();
     }
 
     private void binding(){
         if(!binded) {
             beforeBind();
             taskController.getUniInterface().onBind();
-            afterBind(inflater, container);
+            afterBind();
             binded = true;
         }
     }
@@ -123,11 +125,6 @@ public class UniTask implements UniInterface {
     void afterOnException(){
 
     }
-
-
-    boolean binded = false;
-    LayoutInflater inflater;
-    ViewGroup container;
 
     void setBindInfo(Object mappingObj, UniLayout uniLayout, LayoutInflater inflater, ViewGroup container){
         this.uniLayout = uniLayout;
