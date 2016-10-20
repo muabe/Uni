@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/activity_main"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.muabe.sample.MainActivity"
+>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="10dp">
+            <TextView
+                android:text="Standard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:background="#5a5a5a" android:padding="5dp" android:textColor="#ffffff" android:textSize="18sp"/>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:layout_marginTop="5dp" android:gravity="center">
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="10dp">
+            <TextView
+                android:text="Bind"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:background="#5a5a5a" android:padding="5dp" android:textColor="#ffffff" android:textSize="18sp"/>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:layout_marginTop="5dp" android:gravity="center">
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="10dp">
+        <TextView
+            android:text="Bind-XML"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:background="#5a5a5a" android:padding="5dp" android:textColor="#ffffff" android:textSize="18sp"/>
+
+            <com.markjmind.uni.UniLayout android:id="@+id/layout_xml_bind" android:layout_width="match_parent" android:layout_height="match_parent" >
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" android:layout_marginTop="5dp" android:gravity="center">
+                    <TextView
+                        android:text="Ready"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:textSize="18sp" android:id="@+id/txt_xml_bind"/>
+                </LinearLayout>
+            </com.markjmind.uni.UniLayout>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

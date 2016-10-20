@@ -3,6 +3,8 @@ package com.muabe.sample;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.muabe.sample.unilayout.LayoutTestFragment;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -12,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
         getFragmentManager()
                 .beginTransaction()
-                .replace(R.id.main_container, new MainFragment())
+                .replace(R.id.main_container, new LayoutTestFragment())
                 .commit();
     }
 }
