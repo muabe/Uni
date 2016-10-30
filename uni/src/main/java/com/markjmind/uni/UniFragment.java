@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.markjmind.uni.boot.UniBoot;
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
@@ -31,6 +32,7 @@ public class UniFragment extends Fragment implements UniInterface{
     public Store<?> param;
     public ProgressBuilder progress;
     private UniAop aop;
+    private UniBoot uniBoot;
 
     private boolean isPopStack;
 
@@ -49,6 +51,153 @@ public class UniFragment extends Fragment implements UniInterface{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if(uniLayout == null) {
+            setRefreshBackStack(false);
+            uniLayout = new UniLayout(getActivity());
+            uniTask.syncUniLayout(uniLayout);
+            uniTask.setBindInfo(this,uniLayout,inflater,container);
+            getTask().setAsync(isAsync()).execute();
+        }else{
+            if(isPopStack){
+                getTask().refresh();
+            }else {
+                onPostCache();
+            }
+        }
+        return uniLayout;
+    }
+
+    /*************************************************** BootStrap Builder관련 *********************************************/
+    public void setUniBoot(UniBoot uniBoot){
+        this.uniBoot = uniBoot;
+    }
+
+    public <T extends UniBoot>T getBoot(Class<T> boot){
+        return (T)uniBoot;
+    }
+
+    /*************************************************** 지원함수 관련 *********************************************/
+
+    public Context getContext(boolean isFragment) {
+        if(!isFragment){
+            return uniLayout.getContext();
+        }else{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return super.getContext();
+            }else{
+                return null;
+            }
+        }
+    }
+
+    public Context getContext() {
+        if(uniLayout==null){
+                return null;
+        }else{
+            return uniLayout.getContext();
+        }
+    }
+
+    public Application getApplication(){
+        return getActivity().getApplication();
+    }
+
+    public View findViewById(int id){
+        return uniLayout.findViewById(id);
+    }
+
+    boolean isAsync = true;
+
+    public void setAsync(boolean isAsync){
+        this.isAsync = isAsync;
+    }
+
+    public boolean isAsync(){
+        return this.isAsync;
+    }
+
+    public void setRefreshBackStack(boolean isPopStack) {
+        this.isPopStack = isPopStack;
+    }
+
+    /*************************************************** 필수 항목 *********************************************/
+
+    public UniLayout getUniLayout(){
+        return uniLayout;
+    }
+
+
+    /*************************************************** 실행 관련 *********************************************/
+
+    public void setCancelAop(CancelAop cancelAop){
+        aop.setCancelAop(cancelAop);
+    }
+
+    public UniAop getAop(){
+        return aop;
+    }
+
+//    public String refresh(){
+//        taskId = uniTask.getTask()
+//                .setAsync(isAsync)
+//                .setUniAop(getAop())
+//                .refresh();
+//        return taskId;
+//    }
+//
+//    public String getTaskId(){
+//        return taskId;
+//    }
+
+    void setUniTask(UniTask uniTask){
+        this.uniTask = uniTask;
+    }
+
+    public TaskController getTask(){
+        return uniTask.getTask();
+    }
+
+    /*************************************************** 인터페이스 관련 *********************************************/
+
+    @Override
+    public void onBind() {
+    }
+
+    @Override
+    public void onPre() {
+    }
+
+    @Override
+    public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
+    }
+
+    @Override
+    public void onUpdate(Object value, CancelAdapter cancelAdapter) {
+
+    }
+
+    @Override
+    public void onPost() {
+    }
+
+    @Override
+    public void onPostFail(String message, Object arg) {
+    }
+
+    @Override
+    public void onException(Exception e) {
+    }
+
+    @Override
+    public void onCancelled(boolean attach) {
+    }
+
+    public void onPostCache(){
+
     }
 
     UniInterface getUniInterface(){
@@ -94,138 +243,5 @@ public class UniFragment extends Fragment implements UniInterface{
                 isPopStack = true;
             }
         };
-    }
-
-    void setUniTask(UniTask uniTask){
-        this.uniTask = uniTask;
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(uniLayout == null) {
-            setRefreshBackStack(false);
-            uniLayout = new UniLayout(getActivity());
-            uniTask.syncUniLayout(uniLayout);
-            uniTask.setBindInfo(this,uniLayout,inflater,container);
-            getTask().setAsync(isAsync()).execute();
-        }else{
-            if(isPopStack){
-                getTask().refresh();
-            }else {
-                onPostCache();
-            }
-        }
-        return uniLayout;
-    }
-
-    public Context getContext(boolean isFragment) {
-        if(!isFragment){
-            return uniLayout.getContext();
-        }else{
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                return super.getContext();
-            }else{
-                return null;
-            }
-        }
-    }
-
-    public Context getContext() {
-        if(uniLayout==null){
-                return null;
-        }else{
-            return uniLayout.getContext();
-        }
-    }
-
-    public Application getApplication(){
-        return getActivity().getApplication();
-    }
-
-    public View findViewById(int id){
-        return uniLayout.findViewById(id);
-    }
-
-    boolean isAsync = true;
-
-    public void setAsync(boolean isAsync){
-        this.isAsync = isAsync;
-    }
-
-    public boolean isAsync(){
-        return this.isAsync;
-    }
-
-    public void setRefreshBackStack(boolean isPopStack) {
-        this.isPopStack = isPopStack;
-    }
-
-    /*************************************************** 필수 항목 *********************************************/
-    public UniLayout getUniLayout(){
-        return uniLayout;
-    }
-
-    /*************************************************** 실행 관련 *********************************************/
-    public void setCancelAop(CancelAop cancelAop){
-        aop.setCancelAop(cancelAop);
-    }
-
-    public UniAop getAop(){
-        return aop;
-    }
-
-//    public String refresh(){
-//        taskId = uniTask.getTask()
-//                .setAsync(isAsync)
-//                .setUniAop(getAop())
-//                .refresh();
-//        return taskId;
-//    }
-//
-//    public String getTaskId(){
-//        return taskId;
-//    }
-
-    public TaskController getTask(){
-        return uniTask.getTask();
-    }
-
-    /*************************************************** 인터페이스 관련 *********************************************/
-
-    @Override
-    public void onBind() {
-    }
-
-    @Override
-    public void onPre() {
-    }
-
-    @Override
-    public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
-    }
-
-    @Override
-    public void onUpdate(Object value, CancelAdapter cancelAdapter) {
-
-    }
-
-    @Override
-    public void onPost() {
-    }
-
-    @Override
-    public void onPostFail(String message, Object arg) {
-    }
-
-    @Override
-    public void onException(Exception e) {
-    }
-
-    @Override
-    public void onCancelled(boolean attach) {
-    }
-
-    public void onPostCache(){
-
     }
 }

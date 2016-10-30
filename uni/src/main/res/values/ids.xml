@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="uni_boot_frame_root" type="id"/>
+    <item name="uni_boot_frame_top" type="id"/>
+    <item name="uni_boot_frame_home" type="id"/>
+    <item name="uni_boot_frame_bottom" type="id"/>
+    <item name="uni_boot_frame_custom" type="id"/>
+    <item name="uni_boot_frame_left" type="id"/>
+    <item name="uni_boot_frame_touch_area_left" type="id"/>
+    <item name="uni_boot_frame_right" type="id"/>
+    <item name="uni_boot_frame_touch_area_right" type="id"/>
+</resources>
