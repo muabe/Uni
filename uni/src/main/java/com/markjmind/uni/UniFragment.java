@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.markjmind.uni.boot.FragmentBuilder;
 import com.markjmind.uni.boot.UniBoot;
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.progress.ProgressBuilder;
@@ -78,6 +79,12 @@ public class UniFragment extends Fragment implements UniInterface{
 
     public <T extends UniBoot>T getBoot(Class<T> boot){
         return (T)uniBoot;
+    }
+
+    public FragmentBuilder getBuilder(int parentsID, UniFragment uniFragment){
+        FragmentBuilder builder = FragmentBuilder.getBuilder(getActivity(), parentsID, uniFragment);
+        uniFragment.setUniBoot(uniBoot);
+        return builder;
     }
 
     /*************************************************** 지원함수 관련 *********************************************/
