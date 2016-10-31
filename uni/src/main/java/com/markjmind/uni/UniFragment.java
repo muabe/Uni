@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.markjmind.uni.boot.FragmentBuilder;
 import com.markjmind.uni.boot.UniBoot;
 import com.markjmind.uni.common.Store;
+import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
@@ -162,6 +163,10 @@ public class UniFragment extends Fragment implements UniInterface{
 
     void setUniTask(UniTask uniTask){
         this.uniTask = uniTask;
+    }
+
+    public UniMapper getMapper(){
+        return this.uniTask.mapper;
     }
 
     public TaskController getTask(){
