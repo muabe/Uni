@@ -207,7 +207,7 @@ public class UniFragment extends Fragment implements UniInterface{
 
     }
 
-    UniInterface getUniInterface(){
+    protected UniInterface getUniInterface(){
         return new UniInterface() {
             @Override
             public void onBind() {
