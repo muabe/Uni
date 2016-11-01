@@ -25,19 +25,13 @@ public class FragmentBuilder {
     private boolean allowingStateLoss = false;
 
     private FragmentBuilder(Activity activity, int parentsId, UniFragment uniFragment){
+        this.activity = activity;
+        this.parentsId = parentsId;
         fragment = uniFragment;
-        this.activity = activity;
-        this.parentsId = parentsId;
-
+        fragment.setParentsViewID(parentsId);
     }
 
-    private FragmentBuilder(Activity activity, int parentsId, Class<? extends UniFragment> fragmentClass){
-        fragment = getFragmentInstance(fragmentClass);
-        this.activity = activity;
-        this.parentsId = parentsId;
-    }
-
-    private <T extends UniFragment>T getFragmentInstance(Class<T> fragmentClass){
+    private static <T extends UniFragment>T getFragmentInstance(Class<T> fragmentClass){
         T frag = null;
         try {
             frag = (T)fragmentClass.newInstance();
@@ -49,12 +43,16 @@ public class FragmentBuilder {
         return (T)frag;
     }
 
-    public static FragmentBuilder getBuilder(Activity activity, int parentsId, Class<? extends UniFragment> fragmentClass){
-        return new FragmentBuilder(activity, parentsId, fragmentClass);
+    public static FragmentBuilder getBuilder(UniFragment currFragment, UniFragment nextFragment){
+        return new FragmentBuilder(currFragment.getActivity(), currFragment.getParentsViewID(), nextFragment);
     }
 
-    public static FragmentBuilder getBuilder(Activity activity, int parentsId, UniFragment uniFragment){
-        return new FragmentBuilder(activity, parentsId, uniFragment);
+    public static FragmentBuilder getBuilder(UniFragment currFragment, int parentsId, UniFragment nextFragment){
+        return new FragmentBuilder(currFragment.getActivity(), parentsId, nextFragment);
+    }
+
+    public static FragmentBuilder getBuilder(Activity activity, int parentsId, UniFragment nextFragment){
+        return new FragmentBuilder(activity, parentsId, nextFragment);
     }
 
     public FragmentManager getFragmentManager(){
@@ -69,7 +67,7 @@ public class FragmentBuilder {
         return result;
     }
 
-    public void replace(boolean isHistory){
+    public FragmentBuilder replace(boolean isHistory){
         fragment.setRefreshBackStack(true);
         FragmentTransaction transaction = activity.getFragmentManager().beginTransaction()
                 .replace(parentsId, fragment, tag);
@@ -94,14 +92,15 @@ public class FragmentBuilder {
                 }
             }
         }
+        return this;
     }
 
     public UniFragment getFragment(){
         return fragment;
     }
 
-    public void replace(){
-        this.replace(true);
+    public FragmentBuilder replace(){
+        return this.replace(true);
     }
 
     public FragmentBuilder addParam(String key, Object value){
