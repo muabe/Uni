@@ -37,6 +37,7 @@ public class UniFragment extends Fragment implements UniInterface{
     private UniBoot uniBoot;
 
     private boolean isPopStack;
+    private int parentsViewID = -1;
 
 
     /**
@@ -86,6 +87,10 @@ public class UniFragment extends Fragment implements UniInterface{
         FragmentBuilder builder = FragmentBuilder.getBuilder(getActivity(), parentsID, uniFragment);
         uniFragment.setUniBoot(uniBoot);
         return builder;
+    }
+
+    public int getParentsViewID(){
+        return this.parentsViewID;
     }
 
     /*************************************************** 지원함수 관련 *********************************************/
