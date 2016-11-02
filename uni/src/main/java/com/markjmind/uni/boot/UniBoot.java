@@ -4,8 +4,10 @@ package com.markjmind.uni.boot;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -13,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.markjmind.uni.R;
-import com.markjmind.uni.UniFragment;
+import com.markjmind.uni.util.ReflectionUtil;
 
 /**
  * Created by MarkJ on 2016-10-29.
@@ -48,17 +50,39 @@ public abstract class UniBoot {
 
     }
 
-    public static <T>T attachContentView(Activity activity, Class<T> boot){
-        try {
-            return (T)(((UniBoot)boot.newInstance()).initLayout(activity));
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+    /**
+     * Class<T>로 지정한 Type의 UniBoot 객체를 리턴한다.<br>
+     * UniBoot를 사용하지 않았다면 null을 리턴한다.
+     * @param boot UniBoot Type
+     * @param <T> UniBoot를 상속 받은 Class
+     * @return T Type의 UniBoot 객체
+     */
+    public static <T extends UniBoot>T getBoot(Activity activity, Class<T> boot){
+        View rootView = activity.findViewById(R.id.uni_boot_frame_root);
+        T bootStrap = null;
+        if(rootView!=null){
+            Log.e("FragmentBuilder", "기존 부트 사용~~~~");
+            bootStrap = (T)rootView.getTag();
+            if(bootStrap==null){
+                Log.e("FragmentBuilder", "기존 부트 새로만들었다~~~");
+                bootStrap = ReflectionUtil.getInstance(boot);
+                if(bootStrap!=null){
+                    bootStrap.initLayout(activity);
+                }
+            }
         }
+        return bootStrap;
     }
 
-    private UniBoot initLayout(Activity activity){
+    public void putContentView(){
+
+    }
+
+    public static <T extends UniBoot>T setContentView(Activity activity, Class<T> boot){
+         return (T)ReflectionUtil.getInstance(boot).initLayout(activity);
+    }
+
+    UniBoot initLayout(Activity activity){
         this.activity = activity;
         activity.setContentView(layoutID);
         rootView = (RelativeLayout)activity.findViewById(R.id.uni_boot_frame_root);
@@ -81,7 +105,7 @@ public abstract class UniBoot {
         view.right.setX(windowSize.x);
 
         onAttach(activity);
-
+        rootView.setTag(this);
         return this;
     }
 
@@ -93,11 +117,11 @@ public abstract class UniBoot {
         return this.rootView;
     }
 
-    public FragmentBuilder getBuiler(int parentsID, UniFragment uniFragment){
-        FragmentBuilder builder = FragmentBuilder.getBuilder(activity, parentsID, uniFragment);
-        uniFragment.setUniBoot(this);
-        return builder;
-    }
+//    public FragmentBuilder getBuiler(int parentsID, UniFragment uniFragment){
+//        FragmentBuilder builder = FragmentBuilder.getBuilder(activity, parentsID, uniFragment);
+//        uniFragment.setUniBoot(this);
+//        return builder;
+//    }
 
 
     /********************** layout 확장 *********************/

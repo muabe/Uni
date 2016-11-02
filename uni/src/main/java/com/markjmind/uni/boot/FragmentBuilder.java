@@ -6,8 +6,12 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Build;
 import android.os.PowerManager;
+import android.util.Log;
+import android.view.View;
 
+import com.markjmind.uni.R;
 import com.markjmind.uni.UniFragment;
+import com.markjmind.uni.util.ReflectionUtil;
 
 /**
  * <br>捲土重來<br>
@@ -19,59 +23,64 @@ import com.markjmind.uni.UniFragment;
 public class FragmentBuilder {
 
     private Activity activity;
-    private UniFragment fragment;
+//    private UniFragment fragment;
     private int parentsId;
     private String tag;
     private boolean allowingStateLoss = false;
 
-    private FragmentBuilder(Activity activity, int parentsId, UniFragment uniFragment){
+    private FragmentBuilder(Activity activity, int parentsId){
         this.activity = activity;
         this.parentsId = parentsId;
-        fragment = uniFragment;
-        fragment.setParentsViewID(parentsId);
     }
 
-    private static <T extends UniFragment>T getFragmentInstance(Class<T> fragmentClass){
-        T frag = null;
-        try {
-            frag = (T)fragmentClass.newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+
+    public static <T extends UniBoot>T setContentView(Activity activity, Class<T> boot){
+        return (T) ReflectionUtil.getInstance(boot).initLayout(activity);
+    }
+
+    /**
+     * Class<T>로 지정한 Type의 UniBoot 객체를 리턴한다.<br>
+     * UniBoot를 사용하지 않았다면 null을 리턴한다.
+     * @param boot UniBoot Type
+     * @param <T> UniBoot를 상속 받은 Class
+     * @return T Type의 UniBoot 객체
+     */
+    public static <T extends UniBoot>T getBoot(Activity activity, Class<T> boot){
+        View rootView = activity.findViewById(R.id.uni_boot_frame_root);
+        T bootStrap = null;
+        if(rootView!=null){
+            Log.e("FragmentBuilder", "기존 부트 사용~~~~");
+            bootStrap = (T)rootView.getTag();
+            if(bootStrap==null){
+                Log.e("FragmentBuilder", "기존 부트 새로만들었다~~~");
+                bootStrap = ReflectionUtil.getInstance(boot);
+                if(bootStrap!=null){
+                    bootStrap.initLayout(activity);
+                }
+            }
         }
-        return (T)frag;
+        return bootStrap;
     }
 
-    public static FragmentBuilder getBuilder(UniFragment currFragment, UniFragment nextFragment){
-        return new FragmentBuilder(currFragment.getActivity(), currFragment.getParentsViewID(), nextFragment);
+    public static FragmentBuilder getBuilder(Activity activity, int parentsViewID){
+        return new FragmentBuilder(activity, parentsViewID);
     }
 
-    public static FragmentBuilder getBuilder(UniFragment currFragment, int parentsId, UniFragment nextFragment){
-        return new FragmentBuilder(currFragment.getActivity(), parentsId, nextFragment);
+    public static FragmentBuilder getBuilder(UniFragment currFragment, int parentsViewID){
+        return new FragmentBuilder(currFragment.getActivity(), parentsViewID);
     }
 
-    public static FragmentBuilder getBuilder(Activity activity, int parentsId, UniFragment nextFragment){
-        return new FragmentBuilder(activity, parentsId, nextFragment);
+    public static FragmentBuilder getBuilder(UniFragment currFragment){
+        return FragmentBuilder.getBuilder(currFragment, currFragment.getParentsViewID());
     }
 
-    public FragmentManager getFragmentManager(){
-        return activity.getFragmentManager();
-    }
+    public void replace(UniFragment uniFragment, boolean isHistory){
+        uniFragment.setRefreshBackStack(true);
+        String stackName = uniFragment.getClass().getName();
+        uniFragment.setParentsViewID(parentsId);
 
-    private boolean isScreenOn() {
-        PowerManager powerManager = (PowerManager) activity.getSystemService(Context.POWER_SERVICE);
-        boolean result = false;
-        if ( Build.VERSION.SDK_INT >= 20 ) result = powerManager.isInteractive();
-        else if ( Build.VERSION.SDK_INT < 20 ) result = powerManager.isScreenOn();
-        return result;
-    }
-
-    public FragmentBuilder replace(boolean isHistory){
-        fragment.setRefreshBackStack(true);
         FragmentTransaction transaction = activity.getFragmentManager().beginTransaction()
-                .replace(parentsId, fragment, tag);
-        String stackName = fragment.getClass().getName();
+                .replace(parentsId, uniFragment, tag);
         if(isHistory){
             if ( allowingStateLoss ) {
                 transaction.addToBackStack(stackName).commitAllowingStateLoss();
@@ -92,20 +101,18 @@ public class FragmentBuilder {
                 }
             }
         }
-        return this;
     }
 
-    public UniFragment getFragment(){
-        return fragment;
+    public void replace(UniFragment uniFragment){
+        this.replace(uniFragment, true);
     }
 
-    public FragmentBuilder replace(){
-        return this.replace(true);
-    }
-
-    public FragmentBuilder addParam(String key, Object value){
-        fragment.param.add(key, value);
-        return this;
+    private boolean isScreenOn() {
+        PowerManager powerManager = (PowerManager) activity.getSystemService(Context.POWER_SERVICE);
+        boolean result = false;
+        if ( Build.VERSION.SDK_INT >= 20 ) result = powerManager.isInteractive();
+        else if ( Build.VERSION.SDK_INT < 20 ) result = powerManager.isScreenOn();
+        return result;
     }
 
     public FragmentBuilder addHistory(Class<? extends UniFragment>... fragmentClasses){
@@ -157,10 +164,10 @@ public class FragmentBuilder {
      * @param isSync
      * @return
      */
-    public FragmentBuilder setSync(boolean isSync){
-        fragment.setAsync(isSync);
-        return this;
-    }
+//    public FragmentBuilder setSync(boolean isSync){
+//        fragment.setAsync(isSync);
+//        return this;
+//    }
 
     /**
      * @param isAllowingStateLoss
@@ -170,5 +177,10 @@ public class FragmentBuilder {
         this.allowingStateLoss = isAllowingStateLoss;
         return this;
     }
+
+    public FragmentManager getFragmentManager(){
+        return activity.getFragmentManager();
+    }
+
 }
 

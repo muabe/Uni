@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.markjmind.uni.boot.FragmentBuilder;
 import com.markjmind.uni.boot.UniBoot;
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.UniMapper;
@@ -28,7 +27,6 @@ import com.markjmind.uni.thread.aop.UniAop;
  */
 
 public class UniFragment extends Fragment implements UniInterface{
-//    private String taskId;
     private UniTask uniTask;
     private UniLayout uniLayout;
     public Store<?> param;
@@ -81,18 +79,6 @@ public class UniFragment extends Fragment implements UniInterface{
 
     public <T extends UniBoot>T getBoot(Class<T> boot){
         return (T)uniBoot;
-    }
-
-    public FragmentBuilder getBuilder(int parentsID, UniFragment uniFragment){
-        FragmentBuilder builder = FragmentBuilder.getBuilder(getActivity(), parentsID, uniFragment);
-        uniFragment.setUniBoot(uniBoot);
-        return builder;
-    }
-
-    public FragmentBuilder getBuilder(UniFragment uniFragment){
-        FragmentBuilder builder = FragmentBuilder.getBuilder(getActivity(), getParentsViewID(), uniFragment);
-        uniFragment.setUniBoot(uniBoot);
-        return builder;
     }
 
     public int getParentsViewID(){
@@ -163,18 +149,6 @@ public class UniFragment extends Fragment implements UniInterface{
     public UniAop getAop(){
         return aop;
     }
-
-//    public String refresh(){
-//        taskId = uniTask.getTask()
-//                .setAsync(isAsync)
-//                .setUniAop(getAop())
-//                .refresh();
-//        return taskId;
-//    }
-//
-//    public String getTaskId(){
-//        return taskId;
-//    }
 
     void setUniTask(UniTask uniTask){
         this.uniTask = uniTask;
