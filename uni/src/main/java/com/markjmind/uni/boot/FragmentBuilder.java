@@ -11,7 +11,10 @@ import android.view.View;
 
 import com.markjmind.uni.R;
 import com.markjmind.uni.UniFragment;
+import com.markjmind.uni.common.Store;
 import com.markjmind.uni.util.ReflectionUtil;
+
+import static android.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 
 /**
  * <br>捲土重來<br>
@@ -24,15 +27,15 @@ public class FragmentBuilder {
 
     private Activity activity;
 //    private UniFragment fragment;
-    private int parentsId;
+    private FragmentTransaction transaction;
     private String tag;
     private boolean allowingStateLoss = false;
+    private boolean history = false;
+    private Store param;
 
-    private FragmentBuilder(Activity activity, int parentsId){
+    protected FragmentBuilder(Activity activity){
         this.activity = activity;
-        this.parentsId = parentsId;
     }
-
 
     public static <T extends UniBoot>T setContentView(Activity activity, Class<T> boot){
         return (T) ReflectionUtil.getInstance(boot).initLayout(activity);
@@ -62,26 +65,25 @@ public class FragmentBuilder {
         return bootStrap;
     }
 
-    public static FragmentBuilder getBuilder(Activity activity, int parentsViewID){
-        return new FragmentBuilder(activity, parentsViewID);
+    public static FragmentBuilder getBuilder(Activity activity){
+        return new FragmentBuilder(activity);
     }
 
-    public static FragmentBuilder getBuilder(UniFragment currFragment, int parentsViewID){
-        return new FragmentBuilder(currFragment.getActivity(), parentsViewID);
+    public static FragmentBuilder getBuilder(UniFragment uniFragment){
+        return new FragmentBuilder(uniFragment.getActivity());
     }
 
-    public static FragmentBuilder getBuilder(UniFragment currFragment){
-        return FragmentBuilder.getBuilder(currFragment, currFragment.getParentsViewID());
-    }
-
-    public void replace(UniFragment uniFragment, boolean isHistory){
+    public void replace(int parentsID, UniFragment uniFragment, String tag){
         uniFragment.setRefreshBackStack(true);
         String stackName = uniFragment.getClass().getName();
-        uniFragment.setParentsViewID(parentsId);
+        uniFragment.setParentsViewID(parentsID);
+        if(param!=null){
+            uniFragment.param.putAll(param);
+        }
 
-        FragmentTransaction transaction = activity.getFragmentManager().beginTransaction()
-                .replace(parentsId, uniFragment, tag);
-        if(isHistory){
+        FragmentTransaction transaction = getTransaction()
+                .replace(parentsID, uniFragment, tag);
+        if(history){
             if ( allowingStateLoss ) {
                 transaction.addToBackStack(stackName).commitAllowingStateLoss();
             }
@@ -103,8 +105,8 @@ public class FragmentBuilder {
         }
     }
 
-    public void replace(UniFragment uniFragment){
-        this.replace(uniFragment, true);
+    public void replace(int parentsID, UniFragment uniFragment){
+        this.replace(parentsID, uniFragment, ""+parentsID);
     }
 
     private boolean isScreenOn() {
@@ -113,6 +115,26 @@ public class FragmentBuilder {
         if ( Build.VERSION.SDK_INT >= 20 ) result = powerManager.isInteractive();
         else if ( Build.VERSION.SDK_INT < 20 ) result = powerManager.isScreenOn();
         return result;
+    }
+
+    public FragmentBuilder setHistory(boolean isHistory){
+        history = isHistory;
+        return this;
+    }
+
+    public FragmentBuilder addParam(String key, Object value){
+        if(param==null){
+            param = new Store();
+        }
+        param.add(key, value);
+        return this;
+    }
+
+    public FragmentTransaction getTransaction(){
+        if(transaction == null){
+            this.transaction = activity.getFragmentManager().beginTransaction();
+        }
+        return transaction;
     }
 
     public FragmentBuilder addHistory(Class<? extends UniFragment>... fragmentClasses){
@@ -181,6 +203,12 @@ public class FragmentBuilder {
     public FragmentManager getFragmentManager(){
         return activity.getFragmentManager();
     }
+
+    public boolean onBackpressed(String stackTag){
+        return getFragmentManager().popBackStackImmediate(tag, POP_BACK_STACK_INCLUSIVE);
+    }
+
+
 
 }
 

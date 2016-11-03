@@ -133,6 +133,15 @@ public class UniFragment extends Fragment implements UniInterface{
         this.isPopStack = isPopStack;
     }
 
+    public void onBackPressed() {
+        getActivity().getFragmentManager().popBackStackImmediate();
+//        if(onFinishListener!=null){
+//            onFinishListener.onFinish(finishParam);
+//        }
+//        finishParam.clear();
+//        onFinishListener = null;
+    }
+
     /*************************************************** 필수 항목 *********************************************/
 
     public UniLayout getUniLayout(){

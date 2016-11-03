@@ -21,12 +21,12 @@ import com.markjmind.uni.util.ReflectionUtil;
  * Created by MarkJ on 2016-10-29.
  */
 
-public abstract class UniBoot {
+public abstract class UniBoot{
     private final int layoutID = R.layout.uni_boot_frame_layout;
     private RelativeLayout rootView;
     public IDs id = new IDs();
     public Views view = new Views();
-    private Activity activity;
+    protected Activity activity;
 
     protected Point windowSize = new Point();
 
@@ -57,7 +57,7 @@ public abstract class UniBoot {
      * @param <T> UniBoot를 상속 받은 Class
      * @return T Type의 UniBoot 객체
      */
-    public static <T extends UniBoot>T getBoot(Activity activity, Class<T> boot){
+    protected static <T extends UniBoot>T get(Activity activity, Class<T> boot){
         View rootView = activity.findViewById(R.id.uni_boot_frame_root);
         T bootStrap = null;
         if(rootView!=null){
@@ -74,12 +74,13 @@ public abstract class UniBoot {
         return bootStrap;
     }
 
-    public void putContentView(){
 
+    protected static <T extends UniBoot>T putContentView(Activity activity, Class<T> boot){
+         return (T)ReflectionUtil.getInstance(boot).initLayout(activity);
     }
 
-    public static <T extends UniBoot>T setContentView(Activity activity, Class<T> boot){
-         return (T)ReflectionUtil.getInstance(boot).initLayout(activity);
+    protected static <T extends UniBoot>T putContentView(Activity activity, T boot){
+        return (T)boot.initLayout(activity);
     }
 
     UniBoot initLayout(Activity activity){
@@ -129,7 +130,7 @@ public abstract class UniBoot {
         parentsView.removeAllViews();
         ((LayoutInflater)parentsView.getContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE))
-                .inflate(layoutID, rootView);
+                .inflate(layoutID, parentsView);
     }
 
     protected void setTopLayout(int layoutID){
@@ -180,6 +181,4 @@ public abstract class UniBoot {
     protected void changeRightID(int rightID){
         id.right = rightID;
     }
-
-
 }
