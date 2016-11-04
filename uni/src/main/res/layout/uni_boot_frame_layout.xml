@@ -5,7 +5,7 @@
                 android:layout_height="match_parent">
 
     <FrameLayout
-        android:id="@+id/uni_boot_frame_root_home"
+        android:id="@id/uni_boot_frame_root_home"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true">

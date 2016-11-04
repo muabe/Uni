@@ -24,7 +24,7 @@ import static android.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
  * @since 2016-06-02
  */
 public class FragmentBuilder {
-
+    private static final String DEFALUT_TAG = "UNI";
     private Activity activity;
 //    private UniFragment fragment;
     private FragmentTransaction transaction;
@@ -75,7 +75,7 @@ public class FragmentBuilder {
 
     public void replace(int parentsID, UniFragment uniFragment, String tag){
         uniFragment.setRefreshBackStack(true);
-        String stackName = uniFragment.getClass().getName();
+        String stackName = FragmentBuilder.getDefalutStack(parentsID);
         uniFragment.setParentsViewID(parentsID);
         if(param!=null){
             uniFragment.param.putAll(param);
@@ -106,7 +106,7 @@ public class FragmentBuilder {
     }
 
     public void replace(int parentsID, UniFragment uniFragment){
-        this.replace(parentsID, uniFragment, ""+parentsID);
+        this.replace(parentsID, uniFragment, ""+uniFragment.getClass());
     }
 
     private boolean isScreenOn() {
@@ -208,6 +208,9 @@ public class FragmentBuilder {
         return getFragmentManager().popBackStackImmediate(tag, POP_BACK_STACK_INCLUSIVE);
     }
 
+    public static String getDefalutStack(int parentsID){
+        return DEFALUT_TAG+parentsID;
+    }
 
 
 }

@@ -112,8 +112,6 @@ public abstract class UniBoot{
 
     protected abstract void onAttach(Activity activity);
 
-
-
     public RelativeLayout getRootView(){
         return this.rootView;
     }
