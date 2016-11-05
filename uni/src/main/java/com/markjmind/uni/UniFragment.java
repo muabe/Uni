@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.markjmind.uni.boot.FragmentBuilder;
-import com.markjmind.uni.boot.UniBoot;
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.progress.ProgressBuilder;
@@ -34,7 +33,6 @@ public class UniFragment extends Fragment implements UniInterface{
     public Store<?> param;
     public ProgressBuilder progress;
     private UniAop aop;
-    private UniBoot uniBoot;
 
     private boolean isPopStack;
     private int parentsViewID = -1;
@@ -80,13 +78,6 @@ public class UniFragment extends Fragment implements UniInterface{
     }
 
     /*************************************************** BootStrap Builder관련 *********************************************/
-    public void setUniBoot(UniBoot uniBoot){
-        this.uniBoot = uniBoot;
-    }
-
-    public <T extends UniBoot>T getBoot(Class<T> boot){
-        return (T)uniBoot;
-    }
 
     public int getParentsViewID(){
         return this.parentsViewID;
