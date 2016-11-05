@@ -2,6 +2,7 @@ package com.markjmind.uni;
 
 import android.app.Application;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.markjmind.uni.boot.FragmentBuilder;
 import com.markjmind.uni.boot.UniBoot;
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.UniMapper;
@@ -37,6 +39,11 @@ public class UniFragment extends Fragment implements UniInterface{
     private boolean isPopStack;
     private int parentsViewID = -1;
 
+    private Store<?> finishResult = new Store<>();
+    private OnFinishedListener onFinishedListener;
+    public interface OnFinishedListener{
+        void onFinished(Store<?> finishResult);
+    }
 
     /**
      * 기본생성자
@@ -134,12 +141,21 @@ public class UniFragment extends Fragment implements UniInterface{
     }
 
     public void onBackPressed() {
-        getActivity().getFragmentManager().popBackStackImmediate();
-//        if(onFinishListener!=null){
-//            onFinishListener.onFinish(finishParam);
-//        }
-//        finishParam.clear();
-//        onFinishListener = null;
+        FragmentManager fragmentManager = getActivity().getFragmentManager();
+        fragmentManager.popBackStackImmediate(FragmentBuilder.getDefalutStack(getParentsViewID()), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        if(onFinishedListener!=null){
+            onFinishedListener.onFinished(finishResult);
+            finishResult.clear();
+        }
+    }
+
+    public void setOnFinishedListener(OnFinishedListener finishedListener){
+        this.onFinishedListener = finishedListener;
+    }
+
+    public UniFragment addFinishResult(String key, Object value){
+        finishResult.add(key, value);
+        return this;
     }
 
     /*************************************************** 필수 항목 *********************************************/

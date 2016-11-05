@@ -32,6 +32,7 @@ public class FragmentBuilder {
     private boolean allowingStateLoss = false;
     private boolean history = false;
     private Store param;
+    private UniFragment.OnFinishedListener finishedListener;
 
     protected FragmentBuilder(Activity activity){
         this.activity = activity;
@@ -76,10 +77,8 @@ public class FragmentBuilder {
     public void replace(int parentsID, UniFragment uniFragment, String tag){
         uniFragment.setRefreshBackStack(true);
         String stackName = FragmentBuilder.getDefalutStack(parentsID);
-        uniFragment.setParentsViewID(parentsID);
-        if(param!=null){
-            uniFragment.param.putAll(param);
-        }
+
+        setOption(parentsID, uniFragment);
 
         FragmentTransaction transaction = getTransaction()
                 .replace(parentsID, uniFragment, tag);
@@ -102,6 +101,16 @@ public class FragmentBuilder {
                     transaction.commitAllowingStateLoss();
                 }
             }
+        }
+    }
+
+    private void setOption(int parentsID, UniFragment uniFragment){
+        if(param!=null){
+            uniFragment.param.putAll(param);
+        }
+        uniFragment.setParentsViewID(parentsID);
+        if(finishedListener != null){
+            uniFragment.setOnFinishedListener(finishedListener);
         }
     }
 
@@ -168,6 +177,11 @@ public class FragmentBuilder {
                 transaction.commit();
             }
         }
+        return this;
+    }
+
+    public FragmentBuilder setOnFinishedListener(UniFragment.OnFinishedListener finishedListener){
+        this.finishedListener = finishedListener;
         return this;
     }
 
