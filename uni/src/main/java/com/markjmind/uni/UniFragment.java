@@ -87,6 +87,10 @@ public class UniFragment extends Fragment implements UniInterface{
         this.parentsViewID = parentsViewID;
     }
 
+    public FragmentBuilder getBuilder(){
+        return FragmentBuilder.getBuilder(this);
+    }
+
     /*************************************************** 지원함수 관련 *********************************************/
 
     public Context getContext(boolean isFragment) {

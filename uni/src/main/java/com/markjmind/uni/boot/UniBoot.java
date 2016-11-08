@@ -2,6 +2,7 @@ package com.markjmind.uni.boot;
 
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Point;
 import android.util.Log;
@@ -15,7 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.markjmind.uni.R;
+import com.markjmind.uni.UniFragment;
 import com.markjmind.uni.util.ReflectionUtil;
+
+import java.util.ArrayList;
 
 /**
  * Created by MarkJ on 2016-10-29.
@@ -104,9 +108,10 @@ public abstract class UniBoot{
 
         view.right.getLayoutParams().width = windowSize.x;
         view.right.setX(windowSize.x);
+        rootView.setTag(this);
 
         onAttach(activity);
-        rootView.setTag(this);
+
         return this;
     }
 
@@ -178,5 +183,59 @@ public abstract class UniBoot{
 
     protected void changeRightID(int rightID){
         id.right = rightID;
+    }
+
+    ArrayList<BackPressAdapter> backPressList = new ArrayList<>();
+    public void addBackPressObserver(int parendtsID, BackPressObserver observer){
+        backPressList.add(new BackPressAdapter(parendtsID, observer));
+    }
+
+    public boolean onBackPressed(){
+        FragmentManager fragmentManager = activity.getFragmentManager();
+        for(BackPressAdapter adapter : backPressList){
+            if(adapter.isBackPressed(fragmentManager)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public interface BackPressObserver{
+        boolean isBackPressed(int stackCount, BackPressAdapter backPressAdapter);
+    }
+    public class BackPressAdapter{
+        public int parentsID;
+        public BackPressObserver observer;
+        public String stackName;
+        public FragmentManager fragmentManager;
+        public UniFragment currentFragment;
+        public BackPressAdapter(int parendtsID, BackPressObserver observer){
+            this.parentsID = parendtsID;
+            this.observer = observer;
+            this.stackName = FragmentBuilder.getDefalutStack(parendtsID);
+        }
+
+        boolean isBackPressed(FragmentManager fragmentManager){
+            this.fragmentManager = fragmentManager;
+            this.currentFragment = (UniFragment)fragmentManager.findFragmentById(parentsID);
+            return observer.isBackPressed(getBackStackEntryCount(fragmentManager, stackName), this);
+        }
+
+        public void backPress(){
+            currentFragment.onBackPressed();
+        }
+    }
+
+    protected int getBackStackEntryCount(FragmentManager fragmentManager, String tag) {
+        int count = 0;
+        int size = fragmentManager.getBackStackEntryCount();
+        for ( int entry = 0; entry < size; entry++ ) {
+            String name = fragmentManager.getBackStackEntryAt(entry).getName();
+            Log.i("dd",tag+":"+name+" "+(entry+1)+"/"+size);
+            if ( tag.equals(name) ){
+                count++;
+            }
+        }
+        return count;
     }
 }

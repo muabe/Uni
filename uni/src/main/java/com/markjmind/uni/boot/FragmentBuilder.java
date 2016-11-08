@@ -6,7 +6,6 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Build;
 import android.os.PowerManager;
-import android.util.Log;
 import android.view.View;
 
 import com.markjmind.uni.R;
@@ -53,10 +52,8 @@ public class FragmentBuilder {
         View rootView = activity.findViewById(R.id.uni_boot_frame_root);
         T bootStrap = null;
         if(rootView!=null){
-            Log.e("FragmentBuilder", "기존 부트 사용~~~~");
             bootStrap = (T)rootView.getTag();
             if(bootStrap==null){
-                Log.e("FragmentBuilder", "기존 부트 새로만들었다~~~");
                 bootStrap = ReflectionUtil.getInstance(boot);
                 if(bootStrap!=null){
                     bootStrap.initLayout(activity);

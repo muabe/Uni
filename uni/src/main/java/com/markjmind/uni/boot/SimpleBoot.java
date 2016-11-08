@@ -2,7 +2,6 @@ package com.markjmind.uni.boot;
 
 import android.app.Activity;
 
-import com.markjmind.uni.R;
 import com.markjmind.uni.UniFragment;
 
 /**
@@ -29,17 +28,38 @@ public class SimpleBoot extends UniBoot{
 
     @Override
     public void onAttach(Activity activity) {
-        setCustomLayout(R.layout.uni_boot_frame_layout);
         SimpleBoot.HOME = id.home;
-
 
         getRootView().removeView(view.top);
         getRootView().removeView(view.bottom);
         getRootView().removeView(view.left);
         getRootView().removeView(view.right);
 
+        addBackPressObserver(SimpleBoot.HOME, new BackPressObserver() {
+            @Override
+            public boolean isBackPressed(int stackCount, UniBoot.BackPressAdapter backPressAdapter) {
+                if(stackCount > 0){
+                    backPressAdapter.backPress();
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        });
 
     }
 
+    public static boolean onBackPressed(Activity activity){
+        SimpleBoot boot = SimpleBoot.get(activity);
+        return boot.onBackPressed();
+    }
+
     /************************************** End ************************************/
+
+
+    public SimpleBoot setHomeFragment(UniFragment uniFragment){
+        FragmentBuilder.getBuilder(activity)
+                .replace(SimpleBoot.HOME, uniFragment);
+        return this;
+    }
 }

@@ -8,12 +8,14 @@
 
 package com.markjmind.uni;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 
+import com.markjmind.uni.boot.FragmentBuilder;
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
@@ -95,6 +97,15 @@ public class UniDialog extends Dialog implements UniInterface {
      *********************************************/
     public UniLayout getUniLayout() {
         return uniLayout;
+    }
+
+    /*************************************************** BootStrap Builder관련 *********************************************/
+    public FragmentBuilder getBuilder(Activity activity){
+        return FragmentBuilder.getBuilder(activity);
+    }
+
+    public FragmentBuilder getBuilder(UniFragment uniFragment){
+        return FragmentBuilder.getBuilder(uniFragment);
     }
 
     /***************************************************

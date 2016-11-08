@@ -1,11 +1,13 @@
 package com.markjmind.uni;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.markjmind.uni.boot.FragmentBuilder;
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.progress.UniProgress;
@@ -131,6 +133,15 @@ public class UniLayout extends FrameLayout implements UniInterface{
 //        uniTask.setEnableMapping(true);
 //        uniTask.syncUniLayout(this, uniTask.param, uniTask.progress, uniTask, uniTask.getUniInterface(), null);
 //    }
+
+    /*************************************************** BootStrap Builder관련 *********************************************/
+    public FragmentBuilder getBuilder(Activity activity){
+        return FragmentBuilder.getBuilder(activity);
+    }
+
+    public FragmentBuilder getBuilder(UniFragment uniFragment){
+        return FragmentBuilder.getBuilder(uniFragment);
+    }
 
     /*************************************************** execute 관련 *********************************************/
     public void setCancelAop(CancelAop cancelAop){
