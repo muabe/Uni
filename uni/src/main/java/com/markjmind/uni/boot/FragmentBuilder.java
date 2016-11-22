@@ -29,7 +29,7 @@ public class FragmentBuilder {
     private FragmentTransaction transaction;
     private String tag;
     private boolean allowingStateLoss = false;
-    private boolean history = false;
+    private boolean history = true;
     private Store param;
     private UniFragment.OnFinishedListener finishedListener;
 
@@ -95,7 +95,6 @@ public class FragmentBuilder {
                     transaction.commit();
                 } catch ( IllegalStateException e ) {
                     e.printStackTrace();
-                    transaction.commitAllowingStateLoss();
                 }
             }
         }

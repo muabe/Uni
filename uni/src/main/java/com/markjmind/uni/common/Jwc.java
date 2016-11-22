@@ -5,9 +5,10 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -24,21 +25,9 @@ import java.util.List;
  * @author 오재웅      
  * @version 2013.11.17
  */
-public class Jwc extends JwViewController {
+public class Jwc{
 	
 	
-	public static Drawable getDrawable(int R_drawable_id,View view){
-		return view.getResources().getDrawable(R_drawable_id);
-	}
-	public static Drawable getDrawable(int R_drawable_id,Context context){
-		return context.getResources().getDrawable(R_drawable_id);
-	}
-	public static void setBackgroundDrawable(int R_drawable_id,View view){
-		Drawable d = getDrawable(R_drawable_id, view);
-		if(d!=null){
-			view.setBackgroundDrawable(d);
-		}
-	}
 	public static int getColor(String color){
 		return Color.parseColor(color);
 	}
@@ -134,5 +123,29 @@ public class Jwc extends JwViewController {
 		InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.showSoftInput(editText, 0);
 
+	}
+
+	public static View lastChild(ViewGroup parantView){
+		return parantView.getChildAt(parantView.getChildCount() - 1);
+	}
+
+	public static View getInfalterView(Context context, int layout_id){
+//		return LayoutInflater.from(context).inflate(layout_id, null);
+		return ((LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(layout_id, null);
+//		return View.inflate(context, layout_id,null);
+	}
+
+	public static View getInfalterView(Context context, ViewGroup parents, int layout_id){
+		return ((LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(layout_id, parents);
+	}
+
+
+	public static View findViewById(View view, int R_id){
+		return view.findViewById(R_id);
+	}
+
+
+	public static View findViewWithTag(View parants, Object tag){
+		return parants.findViewWithTag(tag);
 	}
 }
