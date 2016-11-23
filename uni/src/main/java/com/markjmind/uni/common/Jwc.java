@@ -135,7 +135,7 @@ public class Jwc{
 //		return View.inflate(context, layout_id,null);
 	}
 
-	public static View getInfalterView(Context context, ViewGroup parents, int layout_id){
+	public static View getInfalterView(Context context, int layout_id, ViewGroup parents){
 		return ((LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(layout_id, parents);
 	}
 
