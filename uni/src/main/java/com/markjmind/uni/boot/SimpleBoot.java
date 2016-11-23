@@ -59,6 +59,7 @@ public class SimpleBoot extends UniBoot{
 
     public SimpleBoot setHomeFragment(UniFragment uniFragment){
         FragmentBuilder.getBuilder(activity)
+                .setHistory(false)
                 .replace(SimpleBoot.HOME, uniFragment);
         return this;
     }
