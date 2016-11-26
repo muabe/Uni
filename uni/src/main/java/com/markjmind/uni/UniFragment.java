@@ -117,6 +117,10 @@ public class UniFragment extends Fragment implements UniInterface{
         return getActivity().getApplication();
     }
 
+    public <T extends Application>T app(Class<T> clz){
+        return clz.cast(getActivity().getApplication());
+    }
+
     public View findViewById(int id){
         return uniLayout.findViewById(id);
     }

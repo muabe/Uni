@@ -13,8 +13,6 @@ import com.markjmind.uni.UniFragment;
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.util.ReflectionUtil;
 
-import static android.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
-
 /**
  * <br>捲土重來<br>
  *
@@ -27,7 +25,6 @@ public class FragmentBuilder {
     private Activity activity;
 //    private UniFragment fragment;
     private FragmentTransaction transaction;
-    private String tag;
     private boolean allowingStateLoss = false;
     private boolean history = true;
     private Store param;
@@ -122,6 +119,14 @@ public class FragmentBuilder {
         return result;
     }
 
+    public FragmentBuilder clearHistory(int parentsID){
+        String stackName = FragmentBuilder.getDefalutStack(parentsID);
+        if(isScreenOn()) {
+            getFragmentManager().popBackStackImmediate(stackName, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+        return this;
+    }
+
     public FragmentBuilder setHistory(boolean isHistory){
         history = isHistory;
         return this;
@@ -182,16 +187,6 @@ public class FragmentBuilder {
     }
 
     /**
-     * 태그지정 옵션
-     * @param tag
-     * @return
-     */
-    public FragmentBuilder setTag(String tag){
-        this.tag = tag;
-        return this;
-    }
-
-    /**
      * Sync 지정옵션
      * @param isSync
      * @return
@@ -212,10 +207,6 @@ public class FragmentBuilder {
 
     public FragmentManager getFragmentManager(){
         return activity.getFragmentManager();
-    }
-
-    public boolean onBackpressed(String stackTag){
-        return getFragmentManager().popBackStackImmediate(tag, POP_BACK_STACK_INCLUSIVE);
     }
 
     public static String getDefalutStack(int parentsID){
