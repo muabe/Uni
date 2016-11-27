@@ -9,6 +9,7 @@
 package com.markjmind.uni;
 
 import android.app.Activity;
+import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -74,17 +75,6 @@ public class UniDialog extends Dialog implements UniInterface {
         });
     }
 
-    public UniDialog fullSize(){
-        try {
-            PackageInfo packageInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), PackageManager.GET_META_DATA);
-            int themeResId = packageInfo.applicationInfo.theme;
-            getContext().setTheme(themeResId);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return this;
-    }
-
     @Override
     public void setOnShowListener(OnShowListener listener) {
         final OnShowListener lisner = listener;
@@ -104,6 +94,30 @@ public class UniDialog extends Dialog implements UniInterface {
     public boolean isAsync() {
         return this.uniTask.isAsync();
     }
+
+
+    /***************************************************
+     * 간편기능 함수
+     *********************************************/
+    public UniDialog fullSize(){
+        try {
+            PackageInfo packageInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), PackageManager.GET_META_DATA);
+            int themeResId = packageInfo.applicationInfo.theme;
+            getContext().setTheme(themeResId);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    public <T extends Application>T app(Class<T> appClass){
+        return appClass.cast(getContext().getApplicationContext());
+    }
+
+    public String getString(int res){
+        return getContext().getString(res);
+    }
+
 
     /***************************************************
      * 필수 항목
