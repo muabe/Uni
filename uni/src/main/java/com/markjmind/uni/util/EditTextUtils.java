@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager;
  */
 
 public class EditTextUtils {
+
     private static void hideKeyboard(View view){
         if ( view != null ) {
             InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -20,7 +21,6 @@ public class EditTextUtils {
 
     public static void hideKeyboard(Activity activity){
         hideKeyboard(activity.getCurrentFocus());
-
     }
 
     public static void hideKeyboard(Dialog dialog){
