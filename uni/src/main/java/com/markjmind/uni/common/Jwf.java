@@ -1,8 +1,15 @@
 package com.markjmind.uni.common;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * <br>捲土重來<br>
@@ -13,7 +20,21 @@ import java.text.ParseException;
  */
 
 public class Jwf {
+    public static class Map{
 
+        public static Address getAddress(Context context, double lat, double lng){
+            Geocoder geocoder = new Geocoder(context, Locale.KOREA);
+            try {
+                List<Address> list =  geocoder.getFromLocation(lat, lng, 1);
+                if(list.size()>0){
+                    return list.get(0);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
 
     public static class Number {
         public String zeroX(int x, int position){
