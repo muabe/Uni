@@ -121,10 +121,30 @@ public class FragmentBuilder {
 
     public FragmentBuilder clearHistory(int parentsID){
         String stackName = FragmentBuilder.getDefalutStack(parentsID);
-        if(isScreenOn()) {
-            getFragmentManager().popBackStackImmediate(stackName, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+        FragmentManager fragmentManager = getFragmentManager();
+        int count = fragmentManager.getBackStackEntryCount();
+        for(int i=count-1;i>=0;i--){
+            fragmentManager.getBackStackEntryAt(i).getName();
+            if(stackName.equals(fragmentManager.getBackStackEntryAt(i).getName())) {
+                fragmentManager.popBackStackImmediate();
+            }
         }
+
         return this;
+    }
+
+    public void popBackStack(int parentsID){
+        String stackName = FragmentBuilder.getDefalutStack(parentsID);
+        FragmentManager fragmentManager = getFragmentManager();
+        int count = fragmentManager.getBackStackEntryCount();
+        for(int i=count-1;i>=0;i--){
+            fragmentManager.getBackStackEntryAt(i).getName();
+            if(stackName.equals(fragmentManager.getBackStackEntryAt(i).getName())) {
+                fragmentManager.popBackStackImmediate();
+                return;
+            }
+        }
     }
 
     public FragmentBuilder setHistory(boolean isHistory){

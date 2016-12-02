@@ -2,7 +2,6 @@ package com.markjmind.uni;
 
 import android.app.Application;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -140,12 +139,7 @@ public class UniFragment extends Fragment implements UniInterface{
     }
 
     public void onBackPressed() {
-        FragmentManager fragmentManager = getActivity().getFragmentManager();
-        fragmentManager.popBackStackImmediate(FragmentBuilder.getDefalutStack(getParentsViewID()), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        if(onFinishedListener!=null){
-            onFinishedListener.onFinished(finishResult);
-            finishResult.clear();
-        }
+        getBuilder().popBackStack(getParentsViewID());
     }
 
     public void setOnFinishedListener(OnFinishedListener finishedListener){
