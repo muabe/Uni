@@ -32,6 +32,7 @@ public class UniFragment extends Fragment implements UniInterface{
     public Store<?> param;
     public ProgressBuilder progress;
     private UniAop aop;
+    private Bundle savedInstanceState;
 
     private boolean isPopStack;
     private int parentsViewID = -1;
@@ -60,6 +61,7 @@ public class UniFragment extends Fragment implements UniInterface{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        this.savedInstanceState = savedInstanceState;
         if(uniLayout == null) {
             setRefreshBackStack(false);
             uniLayout = new UniLayout(getActivity());
@@ -118,6 +120,10 @@ public class UniFragment extends Fragment implements UniInterface{
 
     public <T extends Application>T app(Class<T> clz){
         return clz.cast(getActivity().getApplication());
+    }
+
+    public Bundle getSavedInstanceState(){
+        return savedInstanceState;
     }
 
     public View findViewById(int id){
