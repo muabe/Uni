@@ -142,7 +142,7 @@ public class FragmentBuilder {
 
 
 
-    public FragmentBuilder clearHistory(int parentsID){
+    public FragmentBuilder popBackStackClear(int parentsID){
         String stackName = FragmentBuilder.getDefalutStack(parentsID);
         if(containStackEntry(stackName)) {
             int entry = getFragmentManager().getBackStackEntryCount();
@@ -166,6 +166,10 @@ public class FragmentBuilder {
 
                 }
             }
+            getFragmentManager().beginTransaction()
+                .remove(getCurrentFragment(stackName))
+                .commitAllowingStateLoss();
+
             int stackCount = uniFragments.size();
             if (stackCount > 0) {
                 for (int i = 0; i < stackCount; i++) {
@@ -173,7 +177,7 @@ public class FragmentBuilder {
                     UniFragment uniFragment = uniFragments.pop();
                     uniFragment.setRefreshBackStack(false);
                     stackName = getDefalutStack(uniFragment.getParentsViewID());
-                    uniFragment.getFragmentStack().index = getStackEntryCount(stackName) + i;
+                    uniFragment.getFragmentStack().index = i;
                     transaction.addToBackStack(uniFragment.getFragmentStack().getName(stackName));
 
                     Log.e("dd", "tagName:" + uniFragment.getClass());
@@ -242,24 +246,8 @@ public class FragmentBuilder {
         }
     }
 
-    public boolean popBackStack2(int parentsID) {
-        UniFragment currentFragment = getCurrentFragment(parentsID);
-        if (currentFragment != null) {
-            String stackName = currentFragment.getFragmentStack().getName(FragmentBuilder.getDefalutStack(parentsID));
-            if (equalsStackEntry(stackName)) {
-                try {
-                    getFragmentManager().popBackStackImmediate(stackName, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                } catch (IllegalStateException e) {
-                    e.printStackTrace();
-                    currentFragment.getFragmentStack().popStackOnResume();
-                }
-                return true;
-            }
-        }
-        return false;
-    }
 
-    private FragmentBuilder clearHistory() {
+    private FragmentBuilder popBackStackClear() {
         String stackName = getLastStackName();
         if(stackName!=null) {
             try {

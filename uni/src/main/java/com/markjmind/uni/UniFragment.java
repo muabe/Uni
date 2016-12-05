@@ -86,7 +86,7 @@ public class UniFragment extends Fragment implements UniInterface{
         if(fragmentStack.clearPopStackOnResume) {
             fragmentStack.clearPopStackOnResume = false;
             try {
-                FragmentBuilder.getBuilder(this).clearHistory(getParentsViewID());
+                FragmentBuilder.getBuilder(this).popBackStackClear(getParentsViewID());
             }catch (Exception e){
                 fragmentStack.clearPopStackOnResume = true;
             }
