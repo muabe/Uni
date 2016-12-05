@@ -173,7 +173,8 @@ public class UniFragment extends Fragment implements UniInterface{
     }
 
     public void onBackPressed() {
-        getBuilder().popBackStack(getParentsViewID());
+        getBuilder().popBackStack(getParentsViewID()); //해당 부모에 대해서만 popback
+//        getBuilder().popBackStack();
     }
 
     public void setOnFinishedListener(OnFinishedListener finishedListener){
