@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.markjmind.uni.boot.FragmentBuilder;
+import com.markjmind.uni.boot.FragmentStack;
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.progress.ProgressBuilder;
@@ -36,6 +37,8 @@ public class UniFragment extends Fragment implements UniInterface{
 
     private boolean isPopStack;
     private int parentsViewID = -1;
+
+    private FragmentStack fragmentStack = new FragmentStack();
 
     private Store<?> finishResult = new Store<>();
     private OnFinishedListener onFinishedListener;
@@ -76,6 +79,31 @@ public class UniFragment extends Fragment implements UniInterface{
             }
         }
         return uniLayout;
+    }
+
+    @Override
+    public void onResume() {
+        if(fragmentStack.clearPopStackOnResume) {
+            fragmentStack.clearPopStackOnResume = false;
+            try {
+                FragmentBuilder.getBuilder(this).clearHistory(getParentsViewID());
+            }catch (Exception e){
+                fragmentStack.clearPopStackOnResume = true;
+            }
+        }
+        if(fragmentStack.popStackOnResume){
+            fragmentStack.popStackOnResume = false;
+            try {
+                onBackPressed();
+            }catch (Exception e){
+                fragmentStack.popStackOnResume = true;
+            }
+        }
+        super.onResume();
+    }
+
+    public FragmentStack getFragmentStack(){
+        return this.fragmentStack;
     }
 
     /*************************************************** BootStrap Builder관련 *********************************************/
