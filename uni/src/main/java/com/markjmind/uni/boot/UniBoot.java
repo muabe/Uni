@@ -217,7 +217,7 @@ public abstract class UniBoot{
 
         boolean isBackPressed(FragmentManager fragmentManager){
             this.fragmentManager = fragmentManager;
-            this.currentFragment = (UniFragment)fragmentManager.findFragmentById(parentsID);
+            this.currentFragment = (UniFragment)fragmentManager.findFragmentByTag(stackName);
             return observer.isBackPressed(getBackStackEntryCount(fragmentManager, stackName), this);
         }
 
@@ -232,7 +232,7 @@ public abstract class UniBoot{
         for ( int entry = 0; entry < size; entry++ ) {
             String name = fragmentManager.getBackStackEntryAt(entry).getName();
             Log.i("dd",tag+":"+name+" "+(entry+1)+"/"+size);
-            if ( tag.equals(name) ){
+            if (name.indexOf(tag) == 0){
                 count++;
             }
         }

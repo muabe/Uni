@@ -86,7 +86,7 @@ public class UniFragment extends Fragment implements UniInterface{
         if(fragmentStack.clearPopStackOnResume) {
             fragmentStack.clearPopStackOnResume = false;
             try {
-                FragmentBuilder.getBuilder(this).clearHistory(getParentsViewID());
+                FragmentBuilder.getBuilder(this).popBackStackClear(getParentsViewID());
             }catch (Exception e){
                 fragmentStack.clearPopStackOnResume = true;
             }
@@ -173,7 +173,8 @@ public class UniFragment extends Fragment implements UniInterface{
     }
 
     public void onBackPressed() {
-        getBuilder().popBackStack(getParentsViewID());
+        getBuilder().popBackStack(getParentsViewID()); //해당 부모에 대해서만 popback
+//        getBuilder().popBackStack();
     }
 
     public void setOnFinishedListener(OnFinishedListener finishedListener){
