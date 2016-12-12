@@ -10,14 +10,19 @@ package com.markjmind.uni.boot;
 
 public class FragmentStack {
     public int index = 0;
+    public boolean clearAll = false;
+    public Integer parentsID = null;
     public boolean clearPopStackOnResume= false;
     public boolean popStackOnResume = false;
 
-    public void clearHistoryOnResume(){
+    public void clearHistoryOnResume(boolean clearAll, Integer parentsID){
+        this.parentsID = parentsID;
+        this.clearAll = clearAll;
         clearPopStackOnResume = true;
     }
 
-    public void popStackOnResume(){
+    public void popStackOnResume(Integer parentsID){
+        this.parentsID = parentsID;
         popStackOnResume = true;
     }
 
