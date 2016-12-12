@@ -48,7 +48,7 @@ public class TestFragment4 extends UniFragment{
             @Override
             public void onPost() {
 //                onBackPressed();
-                FragmentBuilder.getBuilder(TestFragment4.this).clearHistory(layout);
+                FragmentBuilder.getBuilder(TestFragment4.this).popBackStackClear(false);
             }
         }.excute();
 

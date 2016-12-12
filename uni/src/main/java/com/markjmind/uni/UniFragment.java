@@ -42,6 +42,8 @@ public class UniFragment extends Fragment implements UniInterface{
 
     private Store<?> finishResult = new Store<>();
     private OnFinishedListener onFinishedListener;
+
+
     public interface OnFinishedListener{
         void onFinished(Store<?> finishResult);
     }
@@ -85,19 +87,15 @@ public class UniFragment extends Fragment implements UniInterface{
     public void onResume() {
         if(fragmentStack.clearPopStackOnResume) {
             fragmentStack.clearPopStackOnResume = false;
-            try {
-                FragmentBuilder.getBuilder(this).popBackStackClear(getParentsViewID());
-            }catch (Exception e){
-                fragmentStack.clearPopStackOnResume = true;
+            if(fragmentStack.parentsID!=null){
+                FragmentBuilder.getBuilder(this).popBackStackClear(fragmentStack.clearAll, fragmentStack.parentsID);
+            }else{
+                FragmentBuilder.getBuilder(this).popBackStackClear(fragmentStack.clearAll);
             }
         }
         if(fragmentStack.popStackOnResume){
             fragmentStack.popStackOnResume = false;
-            try {
-                onBackPressed();
-            }catch (Exception e){
-                fragmentStack.popStackOnResume = true;
-            }
+            onBackPressed();
         }
         super.onResume();
     }
@@ -173,9 +171,17 @@ public class UniFragment extends Fragment implements UniInterface{
     }
 
     public void onBackPressed() {
-        getBuilder().popBackStack(getParentsViewID()); //해당 부모에 대해서만 popback
-//        getBuilder().popBackStack();
+        if(getFragmentStack().parentsID != null){
+            getBuilder().popBackStack(getFragmentStack().parentsID); //해당 부모에 대해서만 popback
+        }else{
+            getBuilder().popBackStack();
+        }
     }
+
+    public void onBackPressed(int parentsViewID) {
+        getBuilder().popBackStack(parentsViewID); //해당 부모에 대해서만 popback
+    }
+
 
     public void setOnFinishedListener(OnFinishedListener finishedListener){
         this.onFinishedListener = finishedListener;
@@ -185,6 +191,7 @@ public class UniFragment extends Fragment implements UniInterface{
         finishResult.add(key, value);
         return this;
     }
+
 
     /*************************************************** 필수 항목 *********************************************/
 

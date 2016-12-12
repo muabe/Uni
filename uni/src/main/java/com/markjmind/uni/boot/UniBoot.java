@@ -224,6 +224,10 @@ public abstract class UniBoot{
         public void backPress(){
             currentFragment.onBackPressed();
         }
+
+        public void backPressOfParents(){
+            currentFragment.onBackPressed();
+        }
     }
 
     protected int getBackStackEntryCount(FragmentManager fragmentManager, String tag) {
