@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.markjmind.uni.UniAsyncTask;
 import com.markjmind.uni.UniFragment;
+import com.markjmind.uni.boot.FragmentBuilder;
 import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.mapper.annotiation.OnClick;
 import com.markjmind.uni.mapper.annotiation.Progress;
@@ -46,8 +47,8 @@ public class TestFragment4 extends UniFragment{
 
             @Override
             public void onPost() {
-                onBackPressed();
-//                FragmentBuilder.getBuilder(TestFragment4.this).popBackStackClear(false, layout);
+//                onBackPressed();
+                FragmentBuilder.getBuilder(TestFragment4.this).popBackStackClear(false);
             }
         }.excute();
 

@@ -9,7 +9,6 @@ package com.markjmind.uni.boot;
  */
 
 public class FragmentStack {
-    public int index = 0;
     public boolean clearAll = false;
     public Integer parentsID = null;
     public boolean clearPopStackOnResume= false;
@@ -26,7 +25,4 @@ public class FragmentStack {
         popStackOnResume = true;
     }
 
-    public String getName(String stackName){
-        return stackName+"_"+index;
-    }
 }

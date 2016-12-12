@@ -87,19 +87,15 @@ public class UniFragment extends Fragment implements UniInterface{
     public void onResume() {
         if(fragmentStack.clearPopStackOnResume) {
             fragmentStack.clearPopStackOnResume = false;
-            try {
+            if(fragmentStack.parentsID!=null){
                 FragmentBuilder.getBuilder(this).popBackStackClear(fragmentStack.clearAll, fragmentStack.parentsID);
-            }catch (Exception e){
-                fragmentStack.clearPopStackOnResume = true;
+            }else{
+                FragmentBuilder.getBuilder(this).popBackStackClear(fragmentStack.clearAll);
             }
         }
         if(fragmentStack.popStackOnResume){
             fragmentStack.popStackOnResume = false;
-            try {
-                onBackPressed();
-            }catch (Exception e){
-                fragmentStack.popStackOnResume = true;
-            }
+            onBackPressed();
         }
         super.onResume();
     }
@@ -180,6 +176,10 @@ public class UniFragment extends Fragment implements UniInterface{
         }else{
             getBuilder().popBackStack();
         }
+    }
+
+    public void onBackPressed(int parentsViewID) {
+        getBuilder().popBackStack(parentsViewID); //해당 부모에 대해서만 popback
     }
 
 

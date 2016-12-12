@@ -81,12 +81,6 @@ public class FragmentBuilder {
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .replace(parentsID, uniFragment, tag);
         if(history){
-            UniFragment currentFragment = getCurrentFragment(parentsID);
-            if(currentFragment!=null) {
-                uniFragment.getFragmentStack().index = getStackEntryCount(stackName);
-            }
-            stackName = uniFragment.getFragmentStack().getName(stackName);
-
             if ( allowingStateLoss ) {
                 transaction.addToBackStack(stackName)
                         .commitAllowingStateLoss();
@@ -175,16 +169,15 @@ public class FragmentBuilder {
                         FragmentTransaction transaction = getFragmentManager().beginTransaction();
                         UniFragment uniFragment = uniFragments.pop();
                         uniFragment.setRefreshBackStack(false);
-                        stackName = getDefalutStack(uniFragment.getParentsViewID());
-                        uniFragment.getFragmentStack().index = i;
-                        transaction.addToBackStack(uniFragment.getFragmentStack().getName(stackName));
+                        String tagName = getDefalutStack(uniFragment.getParentsViewID());
+                        transaction.addToBackStack(tagName);
 
-                        transaction.replace(uniFragment.getParentsViewID(), uniFragment, stackName);
+                        transaction.replace(uniFragment.getParentsViewID(), uniFragment, tagName);
                         transaction.commitAllowingStateLoss();
                     }
                 }
             }catch (IllegalStateException e){
-                e.printStackTrace();
+//                e.printStackTrace();
                 if(stackName!=null) {
                     UniFragment currentFragment = getCurrentFragment(stackName);
                     if (currentFragment != null) {
@@ -215,7 +208,7 @@ public class FragmentBuilder {
                             .commitAllowingStateLoss();
                 }
             }catch (IllegalStateException e){
-                e.printStackTrace();
+//                e.printStackTrace();
                 String stackName = getFirstStackName();
                 if(stackName!=null) {
                     UniFragment currentFragment = getCurrentFragment(stackName);
@@ -236,7 +229,7 @@ public class FragmentBuilder {
         try {
             getFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }catch (IllegalStateException e){
-            e.printStackTrace();
+//            e.printStackTrace();
             String stackName = getFirstStackName();
             if(stackName!=null) {
                 UniFragment currentFragment = getCurrentFragment(stackName);
@@ -263,7 +256,7 @@ public class FragmentBuilder {
                         result = true;
                         break;
                     } else {
-                        UniFragment uniFragment = getCurrentFragment(tagName.split("_")[0]);
+                        UniFragment uniFragment = getCurrentFragment(tagName);
                         uniFragments.push(uniFragment);
                         FragmentTransaction transaction = getFragmentManager().beginTransaction();
                         transaction.remove(uniFragment);
@@ -280,10 +273,9 @@ public class FragmentBuilder {
                         FragmentTransaction transaction = getFragmentManager().beginTransaction();
                         UniFragment uniFragment = uniFragments.pop();
                         uniFragment.setRefreshBackStack(false);
-                        stackName = getDefalutStack(uniFragment.getParentsViewID());
-                        uniFragment.getFragmentStack().index = getStackEntryCount(stackName) + i;
-                        transaction.addToBackStack(uniFragment.getFragmentStack().getName(stackName));
-                        transaction.replace(uniFragment.getParentsViewID(), uniFragment, stackName);
+                        String tagName = getDefalutStack(uniFragment.getParentsViewID());
+                        transaction.addToBackStack(tagName);
+                        transaction.replace(uniFragment.getParentsViewID(), uniFragment, tagName);
                         transaction.commitAllowingStateLoss();
                     }
                 }
@@ -291,7 +283,7 @@ public class FragmentBuilder {
                 if(stackName!=null) {
                     UniFragment currentFragment = getCurrentFragment(stackName);
                     if (currentFragment != null) {
-                        currentFragment.getFragmentStack().clearHistoryOnResume(false, parentsID);
+                        currentFragment.getFragmentStack().popStackOnResume(parentsID);
                     }
                 }
             }
@@ -309,7 +301,7 @@ public class FragmentBuilder {
                 if(stackName!=null) {
                     UniFragment currentFragment = getCurrentFragment(stackName);
                     if (currentFragment != null) {
-                        currentFragment.getFragmentStack().clearHistoryOnResume(false, null);
+                        currentFragment.getFragmentStack().popStackOnResume(null);
                     }
                 }
             }
@@ -374,20 +366,6 @@ public class FragmentBuilder {
             this.transaction = getFragmentManager().beginTransaction();
         }
         return transaction;
-    }
-
-     public FragmentBuilder addHistory(int parentsID, UniFragment... uniFragment){
-        if(uniFragment.length >0) {
-            String stackName = getDefalutStack(parentsID);
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            for (UniFragment anUniFragment : uniFragment) {
-                anUniFragment.getFragmentStack().index = getStackEntryCount(stackName);
-                transaction.addToBackStack(anUniFragment.getFragmentStack().getName(stackName));
-                transaction.replace(parentsID, anUniFragment, stackName);
-            }
-            transaction.commit();
-        }
-        return this;
     }
 
     public FragmentBuilder setOnFinishedListener(UniFragment.OnFinishedListener finishedListener){
