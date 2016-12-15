@@ -31,7 +31,7 @@ public class UniFragment extends Fragment implements UniInterface{
     private UniTask uniTask;
     private UniLayout uniLayout;
     public Store<?> param;
-    public ProgressBuilder progress;
+    public ProgressBuilder progressBuilder;
     private UniAop aop;
     private Bundle savedInstanceState;
 

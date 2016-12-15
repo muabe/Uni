@@ -37,7 +37,7 @@ public class UniDialog extends Dialog implements UniInterface {
     private UniTask uniTask;
     private UniLayout uniLayout;
     public Store<?> param;
-    public ProgressBuilder progress;
+    public ProgressBuilder progressBuilder;
     private UniAop aop;
 
     private OnDismissResult onDismissResult;

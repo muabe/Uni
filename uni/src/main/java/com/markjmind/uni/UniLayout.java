@@ -28,7 +28,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     private UniTask uniTask;
     private ViewGroup frameLayout;
     public Store<?> param;
-    public ProgressBuilder progress = new ProgressBuilder();
+    public ProgressBuilder progressBuilder = new ProgressBuilder();
     private UniAop aop = new UniAop();
 
     public UniLayout(Context context) {
@@ -49,7 +49,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     private void init(Context context){
         frameLayout = new FrameLayout(context);
         super.addView(frameLayout);
-        this.progress.setParents(this);
+        this.progressBuilder.setParents(this);
         param = new Store<>();
 
         uniTask = new UniTask(true);
@@ -65,7 +65,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
             @Override
             public void onViewDetachedFromWindow(View v) {
                 param.clear();
-                progress.param.clear();
+                progressBuilder.param.clear();
                 uniTask.getCancelObservable().setAttached(false);
                 uniTask.getCancelObservable().cancelAll();
             }
@@ -75,7 +75,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
 //    void setUniTask(UniTask task, Store<?> par, ProgressBuilder pro){
 //        this.uniTask = task;
 //        this.param = par;
-//        this.progress = pro;
+//        this.progressBuilder = pro;
 //        pro.setParents(this);
 //        addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
 //            @Override
@@ -86,7 +86,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
 //            @Override
 //            public void onViewDetachedFromWindow(View v) {
 //                param.clear();
-//                progress.param.clear();
+//                progressBuilder.param.clear();
 //                uniTask.getCancelObservable().setAttached(false);
 //                uniTask.getCancelObservable().cancelAll();
 //            }
@@ -99,7 +99,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
 
     void syncAttribute(Store<?> par, ProgressBuilder pro){
         this.param = par;
-        this.progress = pro;
+        this.progressBuilder = pro;
     }
 
     public void setAsync(boolean isAsync){
@@ -131,7 +131,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
 //    public void bind(UniTask uniTask){
 //        uniTask.mapper.setInjectParents(UniTask.class);
 //        uniTask.setEnableMapping(true);
-//        uniTask.syncUniLayout(this, uniTask.param, uniTask.progress, uniTask, uniTask.getUniInterface(), null);
+//        uniTask.syncUniLayout(this, uniTask.param, uniTask.progressBuilder, uniTask, uniTask.getUniInterface(), null);
 //    }
 
     /*************************************************** BootStrap Builder관련 *********************************************/
@@ -198,10 +198,10 @@ public class UniLayout extends FrameLayout implements UniInterface{
     }
 
     public UniProgress getProgeress(){
-        return progress.get();
+        return progressBuilder.get();
     }
 
     public void setProgress(int mode, UniProgress pro){
-        progress.set(mode, pro);
+        progressBuilder.set(mode, pro);
     }
 }

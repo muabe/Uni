@@ -23,7 +23,7 @@ public class TaskController {
     private CancelObservable cancelObservable;
 
     /** Option **/
-    private ProgressBuilder progress;
+    private ProgressBuilder progressBuilder;
     private UniInterface uniInterface;
     private UniLoadFail uniLoadFail;
     private UniAop uniAop;
@@ -42,7 +42,7 @@ public class TaskController {
         }
         task = new UniMainThread(this.cancelObservable);
         if(uniTask!=null) {
-            this.setProgress(uniTask.progress);
+            this.setProgressBuilder(uniTask.progressBuilder);
         }
 
     }
@@ -57,13 +57,13 @@ public class TaskController {
         return this;
     }
 
-    public TaskController setProgress(ProgressBuilder progress) {
-        this.progress = progress;
+    public TaskController setProgressBuilder(ProgressBuilder progressBuilder) {
+        this.progressBuilder = progressBuilder;
         return this;
     }
 
-    public ProgressBuilder getProgress(){
-        return this.progress;
+    public ProgressBuilder getProgressBuilder(){
+        return this.progressBuilder;
     }
 
     public TaskController setUniInterface(UniInterface uniInterface) {
@@ -181,7 +181,7 @@ public class TaskController {
 
     public synchronized String execute() {
         if (isAsync) {
-            return run(progress, uniInterface, uniLoadFail, false, uniAop, uncaughtException);
+            return run(progressBuilder, uniInterface, uniLoadFail, false, uniAop, uncaughtException);
         } else {
             pre();
             return null;
@@ -193,12 +193,12 @@ public class TaskController {
 
 
     public synchronized String reLoad() {
-        return refresh(progress, uniLoadFail, uniAop, uncaughtException);
+        return refresh(progressBuilder, uniLoadFail, uniAop, uncaughtException);
     }
 
     public synchronized String refresh() {
         if (isAsync) {
-            return refresh(progress, uniLoadFail, uniAop, uncaughtException);
+            return refresh(progressBuilder, uniLoadFail, uniAop, uncaughtException);
         } else {
             pre();
             return null;

@@ -44,7 +44,7 @@ public abstract class UniAsyncTask implements UniInterface{
 
         taskController.init(null, cancelObservable);
         taskController.setUniUncaughtException(uniTask.getTask().getUniUncaughtException());
-        taskController.setProgress(uniTask.progress);
+        taskController.setProgressBuilder(uniTask.progressBuilder);
 
     }
 

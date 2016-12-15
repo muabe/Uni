@@ -30,7 +30,7 @@ public class UniTask implements UniInterface {
     private UniLayout uniLayout;
     public UniMapper mapper;
     public Store<?> param;
-    public ProgressBuilder progress;
+    public ProgressBuilder progressBuilder;
 
 
     private Context context;
@@ -59,7 +59,7 @@ public class UniTask implements UniInterface {
         mapper = new UniMapper();
         isAsync = true;
         param = new Store<>();
-        progress = new ProgressBuilder();
+        progressBuilder = new ProgressBuilder();
         cancelObservable = new CancelObservable();
         taskController = new TaskController(this);
     }
@@ -67,7 +67,7 @@ public class UniTask implements UniInterface {
     private void beforeBind(){
         mapper.addSubscriptionOnInit(new ParamAdapter(param));
         if(enableMapping) {
-            mapper.addSubscriptionOnInit(new ProgressAdapter(progress));
+            mapper.addSubscriptionOnInit(new ProgressAdapter(progressBuilder));
             mapper.addSubscriptionOnInit(new LayoutInjector(inflater, uniLayout, container));
         }
         mapper.injectSubscriptionOnInit();
@@ -137,7 +137,7 @@ public class UniTask implements UniInterface {
         if(container==null){
             container = uniLayout;
         }
-        this.progress.setParents(uniLayout);
+        this.progressBuilder.setParents(uniLayout);
 
         this.inflater = inflater;
         this.container = container;
@@ -145,28 +145,28 @@ public class UniTask implements UniInterface {
 
     void initAtrribute(UniLayout uniLayout, UniInterface uniInterface){
         uniLayout.param = param;
-        uniLayout.progress = progress;
+        uniLayout.progressBuilder = progressBuilder;
         mapper.setInjectParents(UniLayout.class);
         setUniInterface(uniInterface);
     }
 
     void initAtrribute(UniFragment uniFragment, UniInterface uniInterface){
         uniFragment.param = this.param;
-        uniFragment.progress = this.progress;
+        uniFragment.progressBuilder = this.progressBuilder;
         mapper.setInjectParents(UniFragment.class);
         setUniInterface(uniInterface);
     }
 
     void initAtrribute(UniDialog uniDialog, UniInterface uniInterface){
         uniDialog.param = this.param;
-        uniDialog.progress = this.progress;
+        uniDialog.progressBuilder = this.progressBuilder;
         mapper.setInjectParents(UniDialog.class);
         setUniInterface(uniInterface);
     }
 
     void syncUniLayout(UniLayout uniLayout){
         uniLayout.param = param;
-        uniLayout.progress = progress;
+        uniLayout.progressBuilder = progressBuilder;
         uniLayout.setUniTask(this);
     }
 
@@ -175,7 +175,7 @@ public class UniTask implements UniInterface {
 //    public void bindFragment(UniFragment uniFragment) {
 //        setEnableMapping(true); //바인드가 되면 매핑을 할수있다.
 //        uniLayout.param = param;
-//        uniLayout.progress = progress;
+//        uniLayout.progressBuilder = progressBuilder;
 //        uniFragment.setUniTask(this);
 //        //UniFragment에서 새로감싼 uniInterface가 필요하다.
 //        setUniInterface(uniFragment.getUniInterface(this));
