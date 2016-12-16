@@ -51,6 +51,10 @@ public class UniProgress implements OnProgressListener{
         this.progressInterface = progressInterface;
     }
 
+    public ProgressBuilder getBuilder(){
+        return builder;
+    }
+
     public int getLayoutId() {
         return layoutId;
     }

@@ -170,16 +170,28 @@ public class UniFragment extends Fragment implements UniInterface{
         this.isPopStack = isPopStack;
     }
 
-    public void onBackPressed() {
-        if(getFragmentStack().parentsID != null){
-            getBuilder().popBackStack(getFragmentStack().parentsID); //해당 부모에 대해서만 popback
-        }else{
-            getBuilder().popBackStack();
+    public synchronized void onBackPressed() {
+        if(!isBacking) {
+            if (getFragmentStack().parentsID != null) {
+                isBacking = true;
+                getBuilder().popBackStack(getFragmentStack().parentsID); //해당 부모에 대해서만 popback
+                onBackPressed(getFragmentStack().parentsID);
+            } else {
+                getBuilder().popBackStack();
+            }
+
         }
+        isBacking = false;
     }
 
-    public void onBackPressed(int parentsViewID) {
-        getBuilder().popBackStack(parentsViewID); //해당 부모에 대해서만 popback
+    private boolean isBacking = false;
+    public synchronized void onBackPressed(int parentsViewID) {
+        if(!isBacking) {
+            isBacking = true;
+            getBuilder().popBackStack(parentsViewID); //해당 부모에 대해서만 popback
+            onBackPressed();
+        }
+        isBacking = false;
     }
 
 

@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 
 import com.markjmind.uni.progress.ProgressBuilder;
+import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelObservable;
 import com.markjmind.uni.thread.ThreadProcessAdapter;
 import com.markjmind.uni.thread.UniMainThread;
@@ -28,6 +29,8 @@ public class TaskController {
     private UniLoadFail uniLoadFail;
     private UniAop uniAop;
     private UniUncaughtException uncaughtException;
+    private UniProgress uniProgress;
+
 
     public TaskController(UniInterface uniInterface){
         this.uniInterface = uniInterface;
@@ -126,7 +129,7 @@ public class TaskController {
      * execute 관련
      *********************************************************************************/
 
-    private synchronized String run(ProgressBuilder progress, UniInterface uniInterface, UniLoadFail uniLoadFail, boolean skipOnPre, UniAop uniAop, UniUncaughtException uncaughtException) {
+    private synchronized String run(ProgressBuilder progressBuilder, UniInterface uniInterface, UniLoadFail uniLoadFail, boolean skipOnPre, UniAop uniAop, UniUncaughtException uncaughtException) {
         if (uniTask!=null) {
             uniTask.beforeExecute();
         }
@@ -136,11 +139,8 @@ public class TaskController {
             task = new UniMainThread(cancelObservable);
         }
 
-        if (progress!=null && progress.isAble()) {
-            task.addTaskObserver(progress);
-        }
-        task.addTaskObserver(new ThreadProcessAdapter(uniInterface, uniLoadFail, skipOnPre).setUniAop(uniAop));
-        task.setUIuncaughtException(uncaughtException);
+        initThreadTask(progressBuilder, uniInterface, uniLoadFail, skipOnPre, uniAop, uncaughtException);
+
         cancelObservable.add(task);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -149,6 +149,23 @@ public class TaskController {
         }
 
         return task.getId();
+    }
+
+    private void initThreadTask(ProgressBuilder progressBuilder, UniInterface uniInterface, UniLoadFail uniLoadFail, boolean skipOnPre, UniAop uniAop, UniUncaughtException uncaughtException){
+        /**ProgressBuilder*/
+        if (progressBuilder!=null && progressBuilder.isAble()) {
+            task.addTaskObserver(progressBuilder);
+        }
+
+        /**UniProgress*/
+        if(uniProgress!=null) {
+            task.addTaskObserver(uniProgress.getBuilder());
+        }
+
+        /**UniLayout*/
+        task.addTaskObserver(new ThreadProcessAdapter(uniInterface, uniLoadFail, skipOnPre).setUniAop(uniAop));
+
+        task.setUIuncaughtException(uncaughtException);
     }
 
     public void pre(){
