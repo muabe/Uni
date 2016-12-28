@@ -15,7 +15,7 @@ allprojects {
 ###Add the dependency
 ```
 dependencies {
-  compile 'com.github.JaeWoongOh:UniBoot:v0.5.3'
+  compile 'com.github.JaeWoongOh:Uni:v1.5.5'
 }
 ```
 
