@@ -1,7 +1,7 @@
 # Uni FrameWork - Dynamic Async Viewer
 
 <br>
-### Add it in your root build.gradle at the end of repositories:
+## Add it in your root build.gradle at the end of repositories:
 ```
 allprojects {
   repositories {
@@ -12,7 +12,7 @@ allprojects {
 ```
 
 <br>  
-### Add the dependency
+## Add the dependency
 ```
 dependencies {
   compile 'com.github.JaeWoongOh:Uni:v1.5.5'
