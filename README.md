@@ -9,7 +9,7 @@ allprojects {
 	}
 }
 ```
-<br>  
+
 ## Add the dependency
 ```
 dependencies {
