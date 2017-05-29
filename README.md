@@ -18,4 +18,7 @@ dependencies {
 }
 ```
 
-
+## Typical development process
+1. Executes on pre initializes the view in layout 
+2. Executes on background thread
+2. Executes on post initializes the view in layout
