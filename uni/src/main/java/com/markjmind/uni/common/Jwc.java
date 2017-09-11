@@ -3,6 +3,8 @@ package com.markjmind.uni.common;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.view.Display;
@@ -14,6 +16,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -147,5 +153,17 @@ public class Jwc{
 
 	public static View findViewWithTag(View parants, Object tag){
 		return parants.findViewWithTag(tag);
+	}
+
+	public static void saveViewToImage(View saveView, File saveFile) throws IOException {
+		OutputStream out = new FileOutputStream(saveFile);
+
+		Bitmap bitmap = Bitmap.createBitmap(saveView.getMeasuredWidth(),saveView.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+		Canvas bitmapHolder = new Canvas(bitmap);
+		saveView.draw(bitmapHolder);
+		bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+		out.flush();
+		out.close();
+		saveFile.setReadable(true, false);
 	}
 }
