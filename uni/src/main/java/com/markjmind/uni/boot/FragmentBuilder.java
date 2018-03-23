@@ -33,6 +33,7 @@ public class FragmentBuilder {
     private boolean history = true;
     private Store param;
     private UniFragment.OnFinishedListener finishedListener;
+    private int parentsViewID = -1;
 
     protected FragmentBuilder(Activity activity){
         this.activity = activity;
@@ -69,7 +70,28 @@ public class FragmentBuilder {
     }
 
     public static FragmentBuilder getBuilder(UniFragment uniFragment){
-        return new FragmentBuilder(uniFragment.getActivity());
+        return new FragmentBuilder(uniFragment.getActivity()).setParentsId(uniFragment.getParentsViewID());
+    }
+
+    public FragmentBuilder setParentsId(int id){
+        this.parentsViewID = id;
+        return this;
+    }
+
+    public int getParentsId(){
+        return parentsViewID;
+    }
+
+    public void replace(UniFragment uniFragment, String tag){
+        if(parentsViewID < 0) {
+            throw new RuntimeException(new NullPointerException("parentsID is null"));
+        }else{
+            this.replace(getParentsId(), uniFragment, tag);
+        }
+    }
+
+    public void replace(UniFragment uniFragment){
+        this.replace(uniFragment, FragmentBuilder.getDefalutTag(getParentsId()));
     }
 
     public void replace(int parentsID, UniFragment uniFragment, String tag){
@@ -86,6 +108,7 @@ public class FragmentBuilder {
                         .commitAllowingStateLoss();
             }
             else {
+                //아래걸 써야하는데 폰이 잠김(화면꺼짐) 상태에서는 fragment가 replace가 안됨
                 transaction.addToBackStack(stackName).commit();
             }
         }else{
@@ -113,7 +136,7 @@ public class FragmentBuilder {
     }
 
     public UniFragment getCurrentFragment(int parentsID){
-        return getCurrentFragment(FragmentBuilder.getDefalutStack(parentsID));
+        return getCurrentFragment(FragmentBuilder.getDefalutTag(parentsID));
     }
 
     private UniFragment getCurrentFragment(String tagName){
@@ -122,7 +145,7 @@ public class FragmentBuilder {
 
     public void replace(int parentsID, UniFragment uniFragment){
 //        this.replace(parentsID, uniFragment, ""+uniFragment.getClass());
-        this.replace(parentsID, uniFragment, FragmentBuilder.getDefalutStack(parentsID));
+        this.replace(parentsID, uniFragment, FragmentBuilder.getDefalutTag(parentsID));
     }
 
     private boolean isScreenOn() {
@@ -169,7 +192,7 @@ public class FragmentBuilder {
                         FragmentTransaction transaction = getFragmentManager().beginTransaction();
                         UniFragment uniFragment = uniFragments.pop();
                         uniFragment.setRefreshBackStack(false);
-                        String tagName = getDefalutStack(uniFragment.getParentsViewID());
+                        String tagName = getDefalutTag(uniFragment.getParentsViewID());
                         transaction.addToBackStack(tagName);
 
                         transaction.replace(uniFragment.getParentsViewID(), uniFragment, tagName);
@@ -273,7 +296,7 @@ public class FragmentBuilder {
                         FragmentTransaction transaction = getFragmentManager().beginTransaction();
                         UniFragment uniFragment = uniFragments.pop();
                         uniFragment.setRefreshBackStack(false);
-                        String tagName = getDefalutStack(uniFragment.getParentsViewID());
+                        String tagName = getDefalutTag(uniFragment.getParentsViewID());
                         transaction.addToBackStack(tagName);
                         transaction.replace(uniFragment.getParentsViewID(), uniFragment, tagName);
                         transaction.commitAllowingStateLoss();
@@ -400,7 +423,11 @@ public class FragmentBuilder {
     }
 
     public static String getDefalutStack(int parentsID){
-        return DEFALUT_TAG+parentsID;
+        return DEFALUT_TAG + parentsID;
+    }
+
+    public static String getDefalutTag(int parentsID){
+        return DEFALUT_TAG + parentsID;
     }
 
 

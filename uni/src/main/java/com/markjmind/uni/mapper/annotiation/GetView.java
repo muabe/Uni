@@ -10,5 +10,6 @@ import java.lang.annotation.Target;
 public @interface GetView
 {
 	int value() default -1;
+	boolean nullable() default false;
 }
 

@@ -36,12 +36,15 @@ public class GetViewAdapter extends FieldInjectAdapter<GetView> {
         if(id==-1){
             id = getIdentifier(field.getName(), "id");
         }
-        setView(field, id);
+        setView(field, id, annotation.nullable());
     }
 
-    private View setView(Field field, int id){
+    private View setView(Field field, int id, boolean isNull){
         View v = findViewById(id);
         if(v==null){
+            if(isNull){
+                return null;
+            }
             throw new UinMapperException(ErrorMessage.Runtime.injectField(getObject().getClass(), field.getName()));
         }
         setField(field, v);
