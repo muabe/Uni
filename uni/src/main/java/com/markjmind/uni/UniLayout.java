@@ -48,6 +48,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
 
     private void init(Context context){
         frameLayout = new FrameLayout(context);
+        isInEditMode();
         super.addView(frameLayout);
         this.progressBuilder.setParents(this);
         param = new Store<>();
