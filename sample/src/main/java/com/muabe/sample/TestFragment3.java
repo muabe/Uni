@@ -1,5 +1,6 @@
 package com.muabe.sample;
 
+import android.annotation.SuppressLint;
 import android.view.View;
 
 import com.markjmind.uni.UniFragment;
@@ -15,6 +16,7 @@ import com.markjmind.uni.mapper.annotiation.OnClick;
  * @since 2016-12-05
  */
 
+@SuppressLint("ValidFragment")
 @Layout(R.layout.layout3)
 public class TestFragment3 extends UniFragment{
     int layout;

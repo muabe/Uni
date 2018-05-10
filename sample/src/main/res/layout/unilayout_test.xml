@@ -25,6 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:background="#5a5a5a" android:padding="5dp" android:textColor="#ffffff" android:textSize="18sp"/>
             <LinearLayout
+                android:id="@+id/standard"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" android:layout_marginTop="5dp" android:gravity="center">

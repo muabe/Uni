@@ -1,5 +1,6 @@
 package com.muabe.sample;
 
+import android.annotation.SuppressLint;
 import android.view.View;
 
 import com.markjmind.uni.UniAsyncTask;
@@ -20,6 +21,7 @@ import com.markjmind.uni.thread.LoadEvent;
  * @since 2016-12-05
  */
 
+@SuppressLint("ValidFragment")
 @Layout(R.layout.layout4)
 @Progress(mode= UniProgress.VIEW, res=R.layout.default_progress)
 public class TestFragment4 extends UniFragment{

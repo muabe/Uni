@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.markjmind.uni.boot.FragmentBuilder;
+import com.muabe.sample.unilayout.LayoutTestFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 //                .commit();
         FragmentBuilder.getBuilder(this)
                 .setHistory(false)
-                .replace(R.id.main_container, new TestFragment1(R.id.main_container));
+                .replace(R.id.main_container, new LayoutTestFragment());
 
         FragmentBuilder.getBuilder(this)
                 .setHistory(false)

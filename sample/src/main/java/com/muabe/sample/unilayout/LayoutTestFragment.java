@@ -1,5 +1,7 @@
 package com.muabe.sample.unilayout;
 
+import android.view.ViewGroup;
+
 import com.markjmind.uni.UniFragment;
 import com.markjmind.uni.UniLayout;
 import com.markjmind.uni.mapper.annotiation.GetView;
@@ -14,11 +16,15 @@ import com.muabe.sample.R;
  * @since 2016-10-14
  */
 
+
 @Layout(R.layout.unilayout_test)
 public class LayoutTestFragment extends UniFragment{
 
     @GetView
     UniLayout layout_xml_bind;
+
+    @GetView
+    ViewGroup standard;
 
     @Override
     public void onPre() {
@@ -30,6 +36,11 @@ public class LayoutTestFragment extends UniFragment{
         BindXml bindXml = new BindXml();
         bindXml.bind(layout_xml_bind);
         bindXml.getTask().execute();
+
+        UniLayout_Standard s = new UniLayout_Standard(getContext());
+        standard.addView(s);
+        s.getTask().execute();
+
     }
 
 //    private void replace(String mode, UniFragment fragment){

@@ -4,8 +4,11 @@ import android.widget.TextView;
 
 import com.markjmind.uni.UniTask;
 import com.markjmind.uni.mapper.annotiation.GetView;
+import com.markjmind.uni.mapper.annotiation.Progress;
+import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
+import com.muabe.sample.R;
 
 /**
  * <br>捲土重來<br>
@@ -15,6 +18,7 @@ import com.markjmind.uni.thread.LoadEvent;
  * @since 2016-10-20
  */
 
+@Progress(mode= UniProgress.VIEW, res= R.layout.default_progress)
 public class BindXml extends UniTask {
 
     @GetView

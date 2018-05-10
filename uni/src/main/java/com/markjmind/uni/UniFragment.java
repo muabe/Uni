@@ -190,6 +190,9 @@ public class UniFragment extends Fragment implements UniInterface{
             isBacking = true;
             getBuilder().popBackStack(parentsViewID); //해당 부모에 대해서만 popback
             onBackPressed();
+            if(this.onFinishedListener!=null){
+                this.onFinishedListener.onFinished(finishResult);
+            }
         }
         isBacking = false;
     }
