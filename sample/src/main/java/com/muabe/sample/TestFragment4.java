@@ -40,7 +40,7 @@ public class TestFragment4 extends UniFragment{
     }
 
     @OnClick
-    public void text(View view){
+    public void area(View view){
         new UniAsyncTask(this) {
             @Override
             public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {

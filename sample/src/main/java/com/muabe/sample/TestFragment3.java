@@ -28,7 +28,7 @@ public class TestFragment3 extends UniFragment{
     }
 
     @OnClick
-    public void text(View view){
+    public void area(View view){
         FragmentBuilder.getBuilder(this)
                 .replace(layout, new TestFragment4(layout));
     }
