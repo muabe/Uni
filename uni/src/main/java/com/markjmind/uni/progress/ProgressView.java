@@ -53,6 +53,9 @@ class ProgressView implements ProgressBuilder.ProgressInterface {
     @Override
     public synchronized void show(View view) {
         if(!isShowing) {
+            if(outAnimation!=null && outAnimation.isRunning()){
+                outAnimation.cancel();
+            }
             isShowing = true;
             progressLayout.removeAllViews();
             parents.removeView(progressLayout);

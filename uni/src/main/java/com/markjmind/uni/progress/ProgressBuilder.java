@@ -121,7 +121,6 @@ public class ProgressBuilder extends ThreadProcessObserver {
                         layout.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
                             @Override
                             public void onViewAttachedToWindow(View v) {
-
                             }
 
                             @Override
@@ -132,8 +131,9 @@ public class ProgressBuilder extends ThreadProcessObserver {
                             }
                         });
                         listener.onStart(layout, null);
+                    }else{
+                        listener.onStart(layout, cancelAdapter);
                     }
-                    listener.onStart(layout, cancelAdapter);
                 }
                 progressInterface.show(layout);
             }
