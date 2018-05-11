@@ -17,7 +17,7 @@ public class ThreadProcessAdapter extends ThreadProcessObserver {
     private UniInterface uniInterface;
     private UniLoadFail uniLoadFail;
     private boolean skipOnPre;
-    private ArrayList<AopListener> aopListeners = new ArrayList<>();
+    private ArrayList<AopListener> aopListeners;
 
     public ThreadProcessAdapter(UniInterface uniInterface, UniLoadFail uniLoadFail, boolean skipOnPre, ArrayList<AopListener> aopListeners) {
         this.uniInterface = uniInterface;

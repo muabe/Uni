@@ -133,6 +133,13 @@ public class ErrorMessage {
             return boxLine(msg);
         }
 
+        public static String defalutConstructInstantiation(Class<?> viewerClass, String fieldName){
+            String msg =
+                    ""+fieldName+" 클래스에 기본생성자가 반드시 있어야 합니다." +
+                            "\n"+javaFile(viewerClass);
+            return boxLine(msg);
+        }
+
         public static String uniLayoutClassCast(Class<?> viewerClass, String fieldName){
             String msg =
                     ""+fieldName+" 클래스가 UniLayout Type이 아닙니다." +

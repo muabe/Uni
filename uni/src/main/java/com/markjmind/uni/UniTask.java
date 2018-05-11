@@ -3,6 +3,7 @@ package com.markjmind.uni;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.mapper.annotiation.LayoutInjector;
+import com.markjmind.uni.mapper.annotiation.adapter.AopAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.GetViewAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ImportAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.OnClickAdapter;
@@ -68,6 +70,7 @@ public class UniTask implements UniInterface, AopListener {
         progressBuilder = new ProgressBuilder();
         cancelObservable = new CancelObservable();
         taskController = new TaskController(this);
+        taskController.addAop(this);
     }
 
     private void beforeBind(){
@@ -76,8 +79,9 @@ public class UniTask implements UniInterface, AopListener {
         if(enableMapping) {
             mapper.addSubscriptionOnInit(new ProgressAdapter(progressBuilder));
             mapper.addSubscriptionOnInit(new LayoutInjector(inflater, uniLayout, container));
-            mapper.addSubscriptionOnStart(new ImportAdapter(uniLayout, importor));
         }
+        mapper.addSubscriptionOnStart(new ImportAdapter(uniLayout, importor));
+        mapper.addSubscriptionOnStart(new AopAdapter());
         mapper.injectSubscriptionOnInit();
     }
 
@@ -105,6 +109,7 @@ public class UniTask implements UniInterface, AopListener {
 
     void bindImport(){
         for(UniLayout uniLayout : importor){
+            Log.e("dd","*****************aksjdflkajsd;lfkjasdlkjfalsdk*****************");
             uniLayout.getTask().execute();
         }
     }
@@ -239,7 +244,6 @@ public class UniTask implements UniInterface, AopListener {
     public TaskController getTask() {
         if (enableMapping) {
             taskController.init(this, cancelObservable);
-            taskController.addAop(this);
         } else {
             taskController.init(null, cancelObservable);
         }

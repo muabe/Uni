@@ -11,6 +11,7 @@ package com.markjmind.uni.mapper.annotiation;
 import com.markjmind.uni.progress.UniProgress;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -22,6 +23,7 @@ import java.lang.annotation.Target;
  * @email markjmind@gmail.com
  * @since 2016-02-26
  */
+@Inherited
 @Retention( RetentionPolicy.RUNTIME )
 @Target(ElementType.TYPE)
 public @interface Progress {

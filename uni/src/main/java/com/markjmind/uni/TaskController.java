@@ -36,6 +36,7 @@ public class TaskController {
 
     public TaskController(UniInterface uniInterface){
         this.uniInterface = uniInterface;
+        aopListeners.clear();
     }
 
 
@@ -94,12 +95,14 @@ public class TaskController {
         return uncaughtException;
     }
 
-    public void addAop(AopListener aopListener){
+    public TaskController addAop(AopListener aopListener){
         aopListeners.add(aopListener);
+        return this;
     }
 
-    public void removeAop(AopListener aopListener){
+    public TaskController removeAop(AopListener aopListener){
         aopListeners.remove(aopListener);
+        return this;
     }
 
     /*********************************************************************************

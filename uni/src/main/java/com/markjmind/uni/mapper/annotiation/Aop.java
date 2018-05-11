@@ -1,5 +1,7 @@
 package com.markjmind.uni.mapper.annotiation;
 
+import com.markjmind.uni.thread.aop.AopListener;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -13,10 +15,6 @@ import java.lang.annotation.Target;
 @Inherited
 @Retention( RetentionPolicy.RUNTIME )
 @Target( ElementType.FIELD )
-public @interface Import {
-    int value();
-    int mode() default Import.replace;
-
-    public static final int replace = 0;
-    public static final int add = 1;
+public @interface Aop {
+    Class<? extends AopListener> value();
 }
