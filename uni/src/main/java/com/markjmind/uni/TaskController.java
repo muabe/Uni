@@ -8,7 +8,9 @@ import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelObservable;
 import com.markjmind.uni.thread.ThreadProcessAdapter;
 import com.markjmind.uni.thread.UniMainThread;
-import com.markjmind.uni.thread.aop.UniAop;
+import com.markjmind.uni.thread.aop.AopListener;
+
+import java.util.ArrayList;
 
 /**
  * <br>捲土重來<br>
@@ -27,9 +29,9 @@ public class TaskController {
     private ProgressBuilder progressBuilder;
     private UniInterface uniInterface;
     private UniLoadFail uniLoadFail;
-    private UniAop uniAop;
     private UniUncaughtException uncaughtException;
     private UniProgress uniProgress;
+    private ArrayList<AopListener> aopListeners = new ArrayList<>();
 
 
     public TaskController(UniInterface uniInterface){
@@ -92,9 +94,12 @@ public class TaskController {
         return uncaughtException;
     }
 
-    public TaskController setUniAop(UniAop uniAop) {
-        this.uniAop = uniAop;
-        return this;
+    public void addAop(AopListener aopListener){
+        aopListeners.add(aopListener);
+    }
+
+    public void removeAop(AopListener aopListener){
+        aopListeners.remove(aopListener);
     }
 
     /*********************************************************************************
@@ -129,9 +134,9 @@ public class TaskController {
      * execute 관련
      *********************************************************************************/
 
-    private synchronized String run(ProgressBuilder progressBuilder, UniInterface uniInterface, UniLoadFail uniLoadFail, boolean skipOnPre, UniAop uniAop, UniUncaughtException uncaughtException) {
-        if (uniTask!=null) {
-            uniTask.beforeExecute();
+    private synchronized String run(ProgressBuilder progressBuilder, UniInterface uniInterface, UniLoadFail uniLoadFail, boolean skipOnPre, UniUncaughtException uncaughtException) {
+        if (uniTask!=null) { //UniAsycTask 일 경우는 매핑을 안함
+            uniTask.taskBinding();
         }
         if(getStatus().equals(AsyncTask.Status.RUNNING)) {
             return null;
@@ -139,7 +144,8 @@ public class TaskController {
             task = new UniMainThread(cancelObservable);
         }
 
-        initThreadTask(progressBuilder, uniInterface, uniLoadFail, skipOnPre, uniAop, uncaughtException);
+        //태스크 옵저버 등록을 위한 initThreadTask
+        initThreadTask(progressBuilder, uniInterface, uniLoadFail, skipOnPre, uncaughtException);
 
         cancelObservable.add(task);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -151,7 +157,7 @@ public class TaskController {
         return task.getId();
     }
 
-    private void initThreadTask(ProgressBuilder progressBuilder, UniInterface uniInterface, UniLoadFail uniLoadFail, boolean skipOnPre, UniAop uniAop, UniUncaughtException uncaughtException){
+    private void initThreadTask(ProgressBuilder progressBuilder, UniInterface uniInterface, UniLoadFail uniLoadFail, boolean skipOnPre, UniUncaughtException uncaughtException){
         /**ProgressBuilder*/
         if (progressBuilder!=null && progressBuilder.isAble()) {
             task.addTaskObserver(progressBuilder);
@@ -163,23 +169,29 @@ public class TaskController {
         }
 
         /**UniLayout*/
-        task.addTaskObserver(new ThreadProcessAdapter(uniInterface, uniLoadFail, skipOnPre).setUniAop(uniAop));
+        task.addTaskObserver(new ThreadProcessAdapter(uniInterface, uniLoadFail, skipOnPre, aopListeners));
 
         task.setUIuncaughtException(uncaughtException);
     }
 
     public void pre(){
         if (uniTask!=null) {
-            uniTask.beforeExecute();
+            uniTask.taskBinding();
         }
         uniInterface.onPre();
+        if (uniTask!=null) {
+            uniTask.bindImport();
+        }
     }
 
     public void post() {
         if (uniTask!=null) {
-            uniTask.beforeExecute();
+            uniTask.taskBinding();
         }
         uniInterface.onPost();
+        if (uniTask!=null) {
+            uniTask.bindImport();
+        }
     }
 
     public void notifyPre() {
@@ -190,15 +202,15 @@ public class TaskController {
         uniInterface.onPost();
     }
 
-    private synchronized String refresh(ProgressBuilder progress, UniLoadFail uniLoadFail, UniAop uniAop, UniUncaughtException uncaughtException) {
+    private synchronized String refresh(ProgressBuilder progress, UniLoadFail uniLoadFail, UniUncaughtException uncaughtException) {
         cancelAll();
-        return run(progress, uniInterface, uniLoadFail, true, uniAop, uncaughtException);
+        return run(progress, uniInterface, uniLoadFail, true, uncaughtException);
     }
 
 
     public synchronized String execute() {
         if (isAsync) {
-            return run(progressBuilder, uniInterface, uniLoadFail, false, uniAop, uncaughtException);
+            return run(progressBuilder, uniInterface, uniLoadFail, false, uncaughtException);
         } else {
             pre();
             return null;
@@ -210,12 +222,12 @@ public class TaskController {
 
 
     public synchronized String reLoad() {
-        return refresh(progressBuilder, uniLoadFail, uniAop, uncaughtException);
+        return refresh(progressBuilder, uniLoadFail, uncaughtException);
     }
 
     public synchronized String refresh() {
         if (isAsync) {
-            return refresh(progressBuilder, uniLoadFail, uniAop, uncaughtException);
+            return refresh(progressBuilder, uniLoadFail, uncaughtException);
         } else {
             pre();
             return null;

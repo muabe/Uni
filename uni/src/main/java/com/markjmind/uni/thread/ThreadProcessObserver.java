@@ -8,9 +8,6 @@
 
 package com.markjmind.uni.thread;
 
-import com.markjmind.uni.thread.aop.CancelAop;
-import com.markjmind.uni.thread.aop.UniAop;
-
 /**
  * <br>捲土重來<br>
  *
@@ -19,9 +16,6 @@ import com.markjmind.uni.thread.aop.UniAop;
  * @since 2016-02-17
  */
 public abstract class ThreadProcessObserver {
-    private UniAop uniAop;
-    private CancelAop cancelAop;
-
     public abstract void onPreExecute(CancelAdapter cancelAdapter);
 
     public abstract void doInBackground(LoadEvent event,CancelAdapter cancelAdapter) throws Exception;
@@ -36,17 +30,4 @@ public abstract class ThreadProcessObserver {
 
     public abstract void onCancelled(boolean attached);
 
-    public CancelAop getCancelAop() {
-        if(uniAop!=null){
-            return uniAop.getCancelAop();
-        }else{
-            return null;
-        }
-
-    }
-
-    public ThreadProcessObserver setUniAop(UniAop uniAop){
-        this.uniAop = uniAop;
-        return this;
-    }
 }

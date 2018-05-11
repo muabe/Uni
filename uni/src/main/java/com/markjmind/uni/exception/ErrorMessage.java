@@ -126,6 +126,33 @@ public class ErrorMessage {
             return boxLine(msg);
         }
 
+        public static String fieldInstantiation(Class<?> viewerClass, String fieldName){
+            String msg =
+                    ""+fieldName+" 클래스에 객체를 생성할수 없습니다." +
+                            "\n"+javaFile(viewerClass);
+            return boxLine(msg);
+        }
+
+        public static String uniLayoutClassCast(Class<?> viewerClass, String fieldName){
+            String msg =
+                    ""+fieldName+" 클래스가 UniLayout Type이 아닙니다." +
+                            "\n"+javaFile(viewerClass);
+            return boxLine(msg);
+        }
+
+        public static String uniLayoutNoSuchMethod(Class<?> viewerClass, String fieldName){
+            String msg =
+                    ""+fieldName+" UniLayout Type이 아니거나 매개변수로 Context 받는 생성자가 없습니다." +
+                            "\n"+javaFile(viewerClass);
+            return boxLine(msg);
+        }
+
+        public static String invocationTarget(Class<?> viewerClass, String fieldName){
+            String msg =
+                    ""+fieldName+" 생성자 또는 메소드를 실행할수 없거나 객체를 생성할수 없습니다." +
+                            "\n"+javaFile(viewerClass);
+            return boxLine(msg);
+        }
 
     }
 

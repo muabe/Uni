@@ -23,8 +23,9 @@ import com.markjmind.uni.common.Store;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
-import com.markjmind.uni.thread.aop.CancelAop;
-import com.markjmind.uni.thread.aop.UniAop;
+import com.markjmind.uni.thread.aop.AopListener;
+
+import java.util.ArrayList;
 
 /**
  * <br>捲土重來<br>
@@ -38,7 +39,7 @@ public class UniDialog extends Dialog implements UniInterface {
     private UniLayout uniLayout;
     public Store<?> param;
     public ProgressBuilder progressBuilder;
-    private UniAop aop;
+    private ArrayList<AopListener> aopListeners = new ArrayList<>();
 
     private OnDismissResult onDismissResult;
 
@@ -138,14 +139,6 @@ public class UniDialog extends Dialog implements UniInterface {
     /***************************************************
      * 실행 관련
      *********************************************/
-    public void setCancelAop(CancelAop cancelAop) {
-        aop.setCancelAop(cancelAop);
-    }
-
-    public UniAop getAop() {
-        return aop;
-    }
-
     public TaskController getTask() {
         return uniTask.getTask();
     }

@@ -16,8 +16,6 @@ import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
-import com.markjmind.uni.thread.aop.CancelAop;
-import com.markjmind.uni.thread.aop.UniAop;
 
 
 /**
@@ -32,7 +30,6 @@ public class UniFragment extends Fragment implements UniInterface{
     private UniLayout uniLayout;
     public Store<?> param;
     public ProgressBuilder progressBuilder;
-    private UniAop aop;
     private Bundle savedInstanceState;
 
     private boolean isPopStack;
@@ -216,15 +213,6 @@ public class UniFragment extends Fragment implements UniInterface{
 
 
     /*************************************************** 실행 관련 *********************************************/
-
-    public void setCancelAop(CancelAop cancelAop){
-        aop.setCancelAop(cancelAop);
-    }
-
-    public UniAop getAop(){
-        return aop;
-    }
-
     void setUniTask(UniTask uniTask){
         this.uniTask = uniTask;
     }

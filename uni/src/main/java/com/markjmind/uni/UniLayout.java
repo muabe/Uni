@@ -13,8 +13,6 @@ import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
-import com.markjmind.uni.thread.aop.CancelAop;
-import com.markjmind.uni.thread.aop.UniAop;
 
 /**
  * <br>捲土重來<br>
@@ -29,7 +27,6 @@ public class UniLayout extends FrameLayout implements UniInterface{
     private ViewGroup frameLayout;
     public Store<?> param;
     public ProgressBuilder progressBuilder = new ProgressBuilder();
-    private UniAop aop = new UniAop();
 
     public UniLayout(Context context) {
         super(context);
@@ -145,14 +142,6 @@ public class UniLayout extends FrameLayout implements UniInterface{
     }
 
     /*************************************************** execute 관련 *********************************************/
-    public void setCancelAop(CancelAop cancelAop){
-        aop.setCancelAop(cancelAop);
-    }
-
-    public UniAop getAop(){
-        return aop;
-    }
-
     public TaskController getTask(){
         return uniTask.getTask();
     }

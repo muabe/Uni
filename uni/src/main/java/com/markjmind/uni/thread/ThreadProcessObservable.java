@@ -65,14 +65,7 @@ public class ThreadProcessObservable extends ThreadProcessObserver {
     @Override
     public void onCancelled(boolean attached) {
         for(ThreadProcessObserver observer : observers){
-            if(observer.getCancelAop()!=null){
-                observer.getCancelAop().beforeOnCancel(attached);
                 observer.onCancelled(attached);
-                observer.getCancelAop().afterOnCancel(attached);
-            }else{
-                observer.onCancelled(attached);
-            }
-
         }
     }
 

@@ -11,6 +11,7 @@ import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.mapper.annotiation.LayoutInjector;
 import com.markjmind.uni.mapper.annotiation.adapter.GetViewAdapter;
+import com.markjmind.uni.mapper.annotiation.adapter.ImportAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.OnClickAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ProgressAdapter;
@@ -18,6 +19,9 @@ import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.CancelObservable;
 import com.markjmind.uni.thread.LoadEvent;
+import com.markjmind.uni.thread.aop.AopListener;
+
+import java.util.ArrayList;
 
 /**
  * <br>捲土重來<br>
@@ -26,7 +30,7 @@ import com.markjmind.uni.thread.LoadEvent;
  * @email markjmind@gmail.com
  * @since 2016-03-04
  */
-public class UniTask implements UniInterface {
+public class UniTask implements UniInterface, AopListener {
     private UniLayout uniLayout;
     public UniMapper mapper;
     public Store<?> param;
@@ -39,6 +43,8 @@ public class UniTask implements UniInterface {
     private TaskController taskController;
     private CancelObservable cancelObservable;
     private boolean enableMapping; //매필을 할수 있는지 여부(UniAsyncTask는 매핑을 안함)
+
+    private ArrayList<UniLayout> importor = new ArrayList<>();
 
     private boolean binded = false;
     private LayoutInflater inflater;
@@ -65,10 +71,12 @@ public class UniTask implements UniInterface {
     }
 
     private void beforeBind(){
+        importor.clear();
         mapper.addSubscriptionOnInit(new ParamAdapter(param));
         if(enableMapping) {
             mapper.addSubscriptionOnInit(new ProgressAdapter(progressBuilder));
             mapper.addSubscriptionOnInit(new LayoutInjector(inflater, uniLayout, container));
+            mapper.addSubscriptionOnStart(new ImportAdapter(uniLayout, importor));
         }
         mapper.injectSubscriptionOnInit();
     }
@@ -91,39 +99,14 @@ public class UniTask implements UniInterface {
     /**
      * Execute는 여러번 일어날수있다는것에 주의
      */
-    void beforeExecute() {
+    void taskBinding() {
         binding();
     }
 
-    void beforeOnPre(){
-
-    }
-    void afterOnPre(){
-
-    }
-    void beforeOnLoad(){
-
-    }
-    void afterOnLoad(){
-
-    }
-    void beforeOnPost(){
-
-    }
-    void afterOnPost(){
-
-    }
-    void beforeOnCancel(){
-
-    }
-    void afterOnCancel(){
-
-    }
-    void beforeOnException(){
-
-    }
-    void afterOnException(){
-
+    void bindImport(){
+        for(UniLayout uniLayout : importor){
+            uniLayout.getTask().execute();
+        }
     }
 
     void setBindInfo(Object mappingObj, UniLayout uniLayout, LayoutInflater inflater, ViewGroup container){
@@ -256,6 +239,7 @@ public class UniTask implements UniInterface {
     public TaskController getTask() {
         if (enableMapping) {
             taskController.init(this, cancelObservable);
+            taskController.addAop(this);
         } else {
             taskController.init(null, cancelObservable);
         }
@@ -313,6 +297,59 @@ public class UniTask implements UniInterface {
 
     }
 
+    /***************************************************************************************************************
+     * AOP Interface 관련
+     **************************************************************************************************************/
 
+
+    @Override
+    public void beforeOnPre() {
+
+    }
+
+    @Override
+    public void afterOnPre() {
+        bindImport();
+    }
+
+    @Override
+    public void beforeOnLoad() {
+
+    }
+
+    @Override
+    public void afterOnLoad() {
+
+    }
+
+    @Override
+    public void beforeOnPost() {
+
+    }
+
+    @Override
+    public void afterOnPost() {
+
+    }
+
+    @Override
+    public void beforeOnCancel() {
+
+    }
+
+    @Override
+    public void afterOnCancel() {
+
+    }
+
+    @Override
+    public void beforeOnException(Exception e) {
+
+    }
+
+    @Override
+    public void afterOnException(Exception e) {
+
+    }
 }
 

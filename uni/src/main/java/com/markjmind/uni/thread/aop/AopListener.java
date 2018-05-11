@@ -1,4 +1,4 @@
-package com.markjmind.uni;
+package com.markjmind.uni.thread.aop;
 
 /**
  * <br>捲土重來<br>
@@ -8,16 +8,20 @@ package com.markjmind.uni;
  * @since 2016-10-05
  */
 
-public interface AopStateListener {
+public interface AopListener {
     void beforeOnPre();
     void afterOnPre();
+
     void beforeOnLoad();
     void afterOnLoad();
+
     void beforeOnPost();
     void afterOnPost();
+
     void beforeOnCancel();
     void afterOnCancel();
-    void beforeOnException();
-    void afterOnException();
+
+    void beforeOnException(Exception e);
+    void afterOnException(Exception e);
 
 }
