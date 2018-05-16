@@ -2,9 +2,12 @@ package com.muabe.sample;
 
 import android.annotation.SuppressLint;
 import android.view.View;
+import android.widget.TextView;
 
 import com.markjmind.uni.UniFragment;
 import com.markjmind.uni.boot.FragmentBuilder;
+import com.markjmind.uni.common.Store;
+import com.markjmind.uni.mapper.annotiation.GetView;
 import com.markjmind.uni.mapper.annotiation.Layout;
 import com.markjmind.uni.mapper.annotiation.OnClick;
 
@@ -21,6 +24,8 @@ import com.markjmind.uni.mapper.annotiation.OnClick;
 public class TestFragment1 extends UniFragment{
     int layout;
 
+    @GetView
+    TextView text;
     public TestFragment1(int layout){
         super();
         this.layout = layout;
@@ -30,6 +35,13 @@ public class TestFragment1 extends UniFragment{
     @OnClick
     public void area(View view){
         FragmentBuilder.getBuilder(this)
+                .setOnFinishedListener(new OnFinishedListener() {
+                    @Override
+                    public void onFinished(Store<?> finishResult) {
+                        String result = finishResult.getString("result");
+                        text.setText(result);
+                    }
+                })
                 .replace(layout, new TestFragment2(layout));
     }
 }
