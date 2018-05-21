@@ -26,7 +26,13 @@ public class TestFragment2 extends UniFragment{
         this.layout = layout;
 
     }
-        @OnClick
+
+    @Override
+    public void onPre() {
+        addFinishResult("result","result : 2 -> 1");
+    }
+
+    @OnClick
     public void area(View view){
         FragmentBuilder.getBuilder(this)
                 .replace(layout, new TestFragment3(layout));
