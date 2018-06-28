@@ -3,7 +3,6 @@ package com.markjmind.uni;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -109,7 +108,6 @@ public class UniTask implements UniInterface, AopListener {
 
     void bindImport(){
         for(UniLayout uniLayout : importor){
-            Log.e("dd","*****************aksjdflkajsd;lfkjasdlkjfalsdk*****************");
             uniLayout.getTask().execute();
         }
     }

@@ -34,6 +34,7 @@ public class FragmentBuilder {
     private Store param;
     private UniFragment.OnFinishedListener finishedListener;
     private int parentsViewID = -1;
+    private int inAnimRes=-1, outAnimRes=-1;
 
     protected FragmentBuilder(Activity activity){
         this.activity = activity;
@@ -99,9 +100,13 @@ public class FragmentBuilder {
         String stackName = FragmentBuilder.getDefalutStack(parentsID);
         setOption(parentsID, uniFragment);
 
-        FragmentTransaction transaction = getTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        FragmentTransaction transaction = getTransaction();
+        if(inAnimRes>0 && outAnimRes >0){
+            transaction.setCustomAnimations(inAnimRes, outAnimRes);
+        }
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .replace(parentsID, uniFragment, tag);
+
         if(history){
             if ( allowingStateLoss ) {
                 transaction.addToBackStack(stackName)
@@ -381,6 +386,12 @@ public class FragmentBuilder {
             param = new Store();
         }
         param.add(key, value);
+        return this;
+    }
+
+    public FragmentBuilder setAnimations(int inRes, int outRes){
+        this.inAnimRes = inRes;
+        this.outAnimRes = outRes;
         return this;
     }
 
