@@ -18,6 +18,7 @@ public class JwGroup {
 	protected Store<Store<Object>> group = new Store<Store<Object>>();
 	protected int maxBackCount = 10;
 	protected JwOnGroupSelect onGroupSelect;
+	protected JwOnGroupReSelect onGroupReSelect;
 	private boolean isHistory = false; 
 	private boolean isReselected = false;
 	
@@ -39,6 +40,10 @@ public class JwGroup {
 	
 	public void setOnGroupSelect(JwOnGroupSelect onGroupSelect){
 		this.onGroupSelect = onGroupSelect;
+	}
+
+	public void setOnGroupReSelect(JwOnGroupReSelect onGroupReSelect){
+		this.onGroupReSelect = onGroupReSelect;
 	}
 	
 	public void add(String name, View click_view){
@@ -167,6 +172,9 @@ public class JwGroup {
 
 	public void select(String name, Object param, boolean pushHistory){
 		if(name.equals(currView) && !isReselected){
+			if(onGroupReSelect!=null) {
+				onGroupReSelect.reselected(getView(name), name, getCurrentIndex(), param);
+			}
 			return;
 		}
 		if(currView!=null && !name.equals(currView)){
