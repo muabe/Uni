@@ -7,6 +7,8 @@ import android.content.Context;
 import android.os.Build;
 import android.os.PowerManager;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 
 import com.markjmind.uni.R;
 import com.markjmind.uni.UniFragment;
@@ -104,6 +106,17 @@ public class FragmentBuilder {
         if(inAnimRes>0 && outAnimRes >0){
             transaction.setCustomAnimations(inAnimRes, outAnimRes);
         }
+
+        //안드로이드 애니메이션이 돌고 있는동안 replace가 되면 에러나는 버그 때문에 추가된 코드
+        UniFragment currFragment = getCurrentFragment(parentsID);
+        if (currFragment!=null && currFragment.getView() != null) {
+            ViewParent parent = currFragment.getView().getParent();
+            if(parent instanceof ViewGroup) {
+                ViewGroup parentViewGroup = (ViewGroup) parent;
+                parentViewGroup.removeAllViews();
+            }
+        }
+
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .replace(parentsID, uniFragment, tag);
 
