@@ -2,6 +2,7 @@ package com.markjmind.uni.common;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -165,5 +166,18 @@ public class Jwc{
 		out.flush();
 		out.close();
 		saveFile.setReadable(true, false);
+	}
+
+	public static void setlargeDialog(Dialog dialog){
+		WindowManager.LayoutParams lp = dialog.getWindow().getAttributes( ) ;
+		WindowManager wm = ((WindowManager)dialog.getContext().getApplicationContext().getSystemService(dialog.getContext().getApplicationContext().WINDOW_SERVICE)) ;
+		Display display = wm.getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		lp.width = size.x;
+		lp.height = size.y - getStatusBarHeight(dialog.getContext())-(int)(50*getDensity(dialog.getContext()));
+
+		dialog.getWindow().setAttributes( lp ) ;
+//		dialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
 	}
 }
