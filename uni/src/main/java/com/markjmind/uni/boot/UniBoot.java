@@ -140,7 +140,7 @@ public abstract class UniBoot{
         setLayout(view.top, layoutID);
     }
 
-    protected void setCustomLayout(int layoutID){
+    public void setCustomLayout(int layoutID){
         setLayout(view.custom, layoutID);
     }
 
