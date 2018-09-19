@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.util.Base64;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +24,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 /**
@@ -179,5 +184,23 @@ public class Jwc{
 
 		dialog.getWindow().setAttributes( lp ) ;
 //		dialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+	}
+
+	public static String getHashKey(Context context) throws NoSuchAlgorithmException, PackageManager.NameNotFoundException {
+		MessageDigest md = null;
+		PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(),PackageManager.GET_SIGNATURES);
+		for (android.content.pm.Signature signature : info.signatures) {
+			md = MessageDigest.getInstance("SHA1");
+			md.update(signature.toByteArray());
+		}
+		return Base64.encodeToString(md.digest(), Base64.DEFAULT);
+	}
+
+	public static String getVersion(Context context) throws PackageManager.NameNotFoundException {
+		return getPackageInfo(context).versionName;
+	}
+
+	public static PackageInfo getPackageInfo(Context context) throws PackageManager.NameNotFoundException {
+		return context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 	}
 }
