@@ -161,6 +161,12 @@ public class ErrorMessage {
             return boxLine(msg);
         }
 
+        public static String batchException(Class batchClass){
+            String msg = batchClass.getName() + "배치 클래스를 생성할수 없습니다.";
+            return boxLine(msg);
+        }
+
+
     }
 
     private static String boxLine(String msg){
