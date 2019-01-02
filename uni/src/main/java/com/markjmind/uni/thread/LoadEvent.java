@@ -7,6 +7,8 @@ import com.markjmind.uni.exception.UniLoadFailException;
  */
 public interface LoadEvent {
     void update(Object value);
+    void lockedUpdate(Object value) throws InterruptedException;
+    void unlock();
     void fail(String message) throws UniLoadFailException;
     void fail(String message, Object arg) throws UniLoadFailException;
 }

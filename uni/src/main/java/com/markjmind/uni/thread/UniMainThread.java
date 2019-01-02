@@ -1,6 +1,7 @@
 package com.markjmind.uni.thread;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.markjmind.uni.UniUncaughtException;
 import com.markjmind.uni.common.StoreObserver;
@@ -20,6 +21,8 @@ public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements S
     private ThreadProcessObservable taskObservable = new ThreadProcessObservable();
     private Exception doInBackException;
     private UniUncaughtException uncaughtException;
+    UpdateInfo info;
+
 
     public UniMainThread(CancelObservable observable){
         this.isCancel = false;
@@ -46,7 +49,6 @@ public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements S
         }
     }
 
-
     @Override
     protected Boolean doInBackground(Void... params) {
         doInBackException = null;
@@ -61,12 +63,17 @@ public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements S
 
     @Override
     protected void onProgressUpdate(Object... values) {
+//        if(!isCancel){
+//            Object value = null;
+//            if(values != null) {
+//                value = values[0];
+//            }
+//            taskObservable.onProgressUpdate(value, cancelAdapter);
+//        }
+
         if(!isCancel){
-            Object value = null;
-            if(values != null) {
-                value = values[0];
-            }
-            taskObservable.onProgressUpdate(value, cancelAdapter);
+            UpdateInfo info = (UpdateInfo)values[0];
+            taskObservable.onProgressUpdate(info.paramValue, cancelAdapter);
         }
     }
 
@@ -116,11 +123,54 @@ public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements S
         return isCancel;
     }
 
+    class UpdateInfo{
+        Object paramValue;
+        boolean isLock;
+        boolean noty;
+
+        UpdateInfo(Object paramValue){
+            this(paramValue, false);
+        }
+
+        UpdateInfo(Object paramValue, boolean isLock){
+            this.paramValue = paramValue;
+            this.isLock = isLock;
+            this.noty = false;
+        }
+    }
 
     @Override
     public void update(Object value) {
-        this.publishProgress(value);
-     }
+        this.publishProgress(new UpdateInfo(value));
+    }
+
+
+    @Override
+    public void lockedUpdate(Object value) throws InterruptedException {
+        info = new UpdateInfo(value, true);
+        cancelAdapter.setLoadEvent(this);
+        this.publishProgress(info);
+        synchronized(this){
+            while(!info.noty){
+                Log.e("dd","기다림");
+                this.wait();
+
+            }
+        }
+    }
+
+    @Override
+    public void unlock() {
+        Log.e("dd","unlock"+(info==null));
+        synchronized(this) {
+            if (info != null && info.isLock && !info.noty) {
+                info.noty = true;
+                Log.e("dd","깨움");
+                this.notify();
+            }
+        }
+    }
+
 
     @Override
     public void fail(String message) throws UniLoadFailException {

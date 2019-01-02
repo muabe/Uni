@@ -9,6 +9,7 @@ package com.markjmind.uni.thread;
 public class CancelAdapter implements CancelObserver {
     private String taskId;
     private CancelObserver cancelObserver;
+    private LoadEvent loadEvent;
 
     public CancelAdapter(String taskId, CancelObserver cancelObserver){
         this.taskId = taskId;
@@ -31,5 +32,15 @@ public class CancelAdapter implements CancelObserver {
     @Override
     public void cancelAll() {
         cancelObserver.cancelAll();
+    }
+
+    public void setLoadEvent(LoadEvent loadEvent){
+        this.loadEvent = loadEvent;
+    }
+
+    public void unlock(){
+        if(loadEvent!=null) {
+            loadEvent.unlock();
+        }
     }
 }
