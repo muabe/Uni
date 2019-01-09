@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.net.Uri;
 import android.util.Base64;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -202,5 +204,18 @@ public class Jwc{
 
 	public static PackageInfo getPackageInfo(Context context) throws PackageManager.NameNotFoundException {
 		return context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+	}
+
+	public static void gotMarket(Context context){
+		String packageName = context.getPackageName();
+		try {
+			context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName)));
+		} catch (android.content.ActivityNotFoundException anfe) {
+			context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName)));
+		}
+	}
+
+	public static void appStore(Context context){
+		gotMarket(context);
 	}
 }
