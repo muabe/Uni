@@ -198,6 +198,7 @@ public class UniDialog extends Dialog implements UniInterface {
         if (onDismissResult != null) {
             onDismissResult.setArg(arg);
         }
+        dismiss();
     }
 
     public void setDismissResultLstener(DismissResultLstener dismissResultLstener) {
@@ -214,7 +215,7 @@ public class UniDialog extends Dialog implements UniInterface {
         }
     }
 
-    interface DismissResultLstener {
+    public interface DismissResultLstener {
         public void onDismiss(Object arg);
     }
 
