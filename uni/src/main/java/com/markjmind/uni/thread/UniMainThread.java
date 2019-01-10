@@ -1,7 +1,6 @@
 package com.markjmind.uni.thread;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.markjmind.uni.UniUncaughtException;
 import com.markjmind.uni.common.StoreObserver;
@@ -152,7 +151,6 @@ public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements S
         this.publishProgress(info);
         synchronized(this){
             while(!info.noty){
-                Log.e("dd","기다림");
                 this.wait();
 
             }
@@ -161,11 +159,9 @@ public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements S
 
     @Override
     public void unlock() {
-        Log.e("dd","unlock"+(info==null));
         synchronized(this) {
             if (info != null && info.isLock && !info.noty) {
                 info.noty = true;
-                Log.e("dd","깨움");
                 this.notify();
             }
         }
