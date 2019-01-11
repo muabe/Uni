@@ -65,10 +65,10 @@ public abstract class UniBoot{
         View rootView = activity.findViewById(R.id.uni_boot_frame_root);
         T bootStrap = null;
         if(rootView!=null){
-            Log.e("FragmentBuilder", "기존 부트 사용~~~~");
+//            Log.e("FragmentBuilder", "기존 부트 사용~~~~");
             bootStrap = (T)rootView.getTag();
             if(bootStrap==null){
-                Log.e("FragmentBuilder", "기존 부트 새로만들었다~~~");
+//                Log.e("FragmentBuilder", "기존 부트 새로만들었다~~~");
                 bootStrap = ReflectionUtil.getInstance(boot);
                 if(bootStrap!=null){
                     bootStrap.initLayout(activity);
