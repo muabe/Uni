@@ -42,7 +42,7 @@ public class ImportAdapter extends FieldInjectAdapter<Import> {
                 setField(field, importLayout);
                 int parentsId = annotation.value();
                 int mode = annotation.mode();
-                ViewGroup parents = ((ViewGroup)finder.findViewById(parentsId));
+                ViewGroup parents = finder.findViewById(parentsId);
                 if(mode == Import.replace){
                     parents.removeAllViews();
                 }

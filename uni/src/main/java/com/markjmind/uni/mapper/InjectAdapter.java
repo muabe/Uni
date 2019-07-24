@@ -98,7 +98,7 @@ public abstract class InjectAdapter<T extends Annotation>{
 
     public View findViewById(int id){
         if(mapper.viewHash.containsKey(id)){
-            return (View)mapper.viewHash.get(id);
+            return mapper.viewHash.get(id);
         }
         return mapper.finder.findViewById(id);
     }

@@ -90,14 +90,14 @@ public abstract class UniBoot{
     UniBoot initLayout(Activity activity){
         this.activity = activity;
         activity.setContentView(layoutID);
-        rootView = (RelativeLayout)activity.findViewById(R.id.uni_boot_frame_root);
-        view.top = (FrameLayout)activity.findViewById(id.top);
-        view.custom = (FrameLayout)activity.findViewById(id.custom);
-        view.home = (FrameLayout)activity.findViewById(id.home);
-        view.bottom = (FrameLayout)activity.findViewById(id.bottom);
-        view.left = (LinearLayout)activity.findViewById(id.left);
-        view.right = (LinearLayout)activity.findViewById(id.right);
-        view.root_home = (FrameLayout)activity.findViewById(R.id.uni_boot_frame_root_home);
+        rootView = activity.findViewById(R.id.uni_boot_frame_root);
+        view.top = activity.findViewById(id.top);
+        view.custom = activity.findViewById(id.custom);
+        view.home = activity.findViewById(id.home);
+        view.bottom = activity.findViewById(id.bottom);
+        view.left = activity.findViewById(id.left);
+        view.right = activity.findViewById(id.right);
+        view.root_home = activity.findViewById(R.id.uni_boot_frame_root_home);
 
         WindowManager wm = (WindowManager)activity.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();

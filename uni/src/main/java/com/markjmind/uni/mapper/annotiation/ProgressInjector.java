@@ -27,7 +27,7 @@ public class ProgressInjector extends ClassInjectAdapter<Progress> {
 
             if (!type.equals(Progress.None.class)) {
                 try {
-                    UniProgress info = (UniProgress) type.newInstance();
+                    UniProgress info = type.newInstance();
                     progress.set(mode, info);
                 } catch (InstantiationException e) {
                     e.printStackTrace();

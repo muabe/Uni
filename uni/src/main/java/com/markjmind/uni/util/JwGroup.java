@@ -22,7 +22,7 @@ public class JwGroup {
 	private boolean isHistory = false; 
 	private boolean isReselected = false;
 	
-	public static enum Motion{
+	public enum Motion{
 		CLICK,
 		TOUCH_DOWN
 	}
@@ -66,7 +66,7 @@ public class JwGroup {
 
 	public void deSelectAll(){
 		for(int i=0;i<group.size();i++){
-			Store<Object> temp = (Store<Object>)group.getValue(i);
+			Store<Object> temp = group.getValue(i);
 			String tempName =(String)temp.get("name");
 			View view =(View)temp.get("view");
 			Object vparam = temp.get("param");
@@ -111,7 +111,7 @@ public class JwGroup {
 	}
 	
 	public Store<Object> getViewStore(String name){
-		Store<Object> temp = (Store<Object>)group.get(name);
+		Store<Object> temp = group.get(name);
 		return temp;
 	}
 	
@@ -152,7 +152,7 @@ public class JwGroup {
 		switch (motion) {
 		case CLICK:
 			for(int i=0;i<keys.length;i++){
-				Store<Object> temp = (Store<Object>)group.get(keys[i]);
+				Store<Object> temp = group.get(keys[i]);
 				View click_view = (View)temp.get("view");
 				click_view.setOnClickListener(new GroupOnClickListener(keys[i]));
 				click_view.setOnTouchListener(null);
@@ -160,7 +160,7 @@ public class JwGroup {
 			break;
 		case TOUCH_DOWN:
 			for(int i=0;i<keys.length;i++){
-				Store temp = (Store)group.get(keys[i]);
+				Store temp = group.get(keys[i]);
 				View click_view = (View)temp.get("view");
 				click_view.setOnClickListener(null);
 				click_view.setOnTouchListener(new GroupOnTouchListener(keys[i]));
@@ -187,7 +187,7 @@ public class JwGroup {
 		}
 		currView = name;
 		for(int i=0;i<group.size();i++){
-			Store<Object> temp = (Store<Object>)group.getValue(i);
+			Store<Object> temp = group.getValue(i);
 			String tempName =(String)temp.get("name");
 			View view =(View)temp.get("view");
 			Object vparam = temp.get("param");
@@ -215,12 +215,12 @@ public class JwGroup {
 	}
 	
 	public void select(int index, Object param){
-		Store<Object> temp = (Store<Object>)group.getValue(index);
+		Store<Object> temp = group.getValue(index);
 		select(temp.getString("name"),param);
 	}
 	
 	public void select(int index, Object param, boolean pushHistory){
-		Store<Object> temp = (Store<Object>)group.getValue(index);
+		Store<Object> temp = group.getValue(index);
 		select(temp.getString("name"), param, pushHistory);
 	}
 	

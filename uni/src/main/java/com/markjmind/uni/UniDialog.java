@@ -216,11 +216,11 @@ public class UniDialog extends Dialog implements UniInterface {
     }
 
     public interface DismissResultLstener {
-        public void onDismiss(Object arg);
+        void onDismiss(Object arg);
     }
 
     interface ClickViewListener {
-        public void onClick(UniDialog uniDialog, View view);
+        void onClick(UniDialog uniDialog, View view);
     }
 
     private class OnDismissResult {

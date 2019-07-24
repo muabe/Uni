@@ -17,6 +17,6 @@ public @interface Import {
     int value();
     int mode() default Import.replace;
 
-    public static final int replace = 0;
-    public static final int add = 1;
+    int replace = 0;
+    int add = 1;
 }

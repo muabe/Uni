@@ -209,11 +209,7 @@ public class ProgressBuilder extends ThreadProcessObserver {
     }
 
     public boolean isAble(){
-        if(isEnable && this.uniProgress != null){
-            return true;
-        }else{
-            return false;
-        }
+        return isEnable && this.uniProgress != null;
     }
     public interface ProgressInterface{
         boolean isShowing();

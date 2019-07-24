@@ -12,24 +12,24 @@ public class ReflectionUtil {
     public static <T>T getInstance(Class<T> clz){
         T frag = null;
         try {
-            frag = (T)clz.newInstance();
+            frag = clz.newInstance();
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        return (T)frag;
+        return frag;
     }
 
     public static <T>T getSafeInstance(Class<T> clz){
         T frag = null;
         try {
-            frag = (T)clz.newInstance();
+            frag = clz.newInstance();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-        return (T)frag;
+        return frag;
     }
 }

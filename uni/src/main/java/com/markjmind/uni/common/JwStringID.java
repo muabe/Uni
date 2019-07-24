@@ -69,7 +69,7 @@ public class JwStringID {
 		ArrayList<String> result = new ArrayList<String>();
 		
 		for(int i=0;i<ids.size();i++){
-			if(((String)ids.get(i)).indexOf(key)==0){
+			if(ids.get(i).indexOf(key)==0){
 				result.add(ids.get(i));
 			}
 		}

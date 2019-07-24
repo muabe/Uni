@@ -50,7 +50,7 @@ public class Store<Value> extends LinkedHashMap<String, Object> implements Compa
 			if(i!=0){
 				msg.append(",");
 			}
-			msg.append(keys[i].toString()+":"+values[i].toString());
+			msg.append(keys[i] +":"+ values[i]);
 		}
 		msg.append("}");
 		return msg.toString();
@@ -176,7 +176,7 @@ public class Store<Value> extends LinkedHashMap<String, Object> implements Compa
 	/**
 	 * Store의 에 배열로 값을 셋팅한다.
 	 */
-	public void put(String keys[], Object[] values){
+	public void put(String[] keys, Object[] values){
 		if(keys.length!= values.length){
 			System.out.println("Store클래스 put(Object keys[], Object[] values) 함수에는\nkeys와 values의 배열의 길이가 같아야합니다.");
 		}
@@ -336,12 +336,12 @@ public class Store<Value> extends LinkedHashMap<String, Object> implements Compa
 	public Map mapMapper(Object instance) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, SecurityException{
 		LinkedHashMap result = new LinkedHashMap();
 		Class model = instance.getClass();
-		Field fields[] = model.getDeclaredFields();
+		Field[] fields = model.getDeclaredFields();
 		String methodName = null;
 		Object value = null;
 		Method method = null;
 		for(int i=0;i<fields.length; i++){
-			methodName = "get"+fields[i].getName().substring(0,1).toUpperCase()+fields[i].getName().substring(1,fields[i].getName().length());
+			methodName = "get"+fields[i].getName().substring(0,1).toUpperCase()+fields[i].getName().substring(1);
 			try
 			{
 				method = model.getMethod(methodName);	
@@ -378,7 +378,7 @@ public class Store<Value> extends LinkedHashMap<String, Object> implements Compa
 		for(int i=0; i<fields.length; i++){
 			curName = fields[i].getName();
 			if(store.get((curStoreKey=curName))!=null || store.get((curStoreKey=curName.toUpperCase()))!=null){				
-				curName = "set"+curName.substring(0,1).toUpperCase()+curName.substring(1,curName.length());
+				curName = "set"+curName.substring(0,1).toUpperCase()+curName.substring(1);
 				paramTypes[0]= store.get(curStoreKey).getClass();
 				paramValues[0] = store.get(curStoreKey);
 				try {
@@ -435,10 +435,7 @@ public class Store<Value> extends LinkedHashMap<String, Object> implements Compa
 	}
 	
 	public boolean isStoreList(String key){
-		if(Type_StoreList.equals(types.get(key))){
-			return true;
-		}
-		return false;
+		return Type_StoreList.equals(types.get(key));
 	}
 	
 	/**
@@ -493,7 +490,7 @@ public class Store<Value> extends LinkedHashMap<String, Object> implements Compa
 	    String[] keys = this.getKeys();
 	    for(int i=0;i<keys.length;i++){
 		String key = keys[i];
-		String value = (String)(this.getString(key));
+		String value = (this.getString(key));
 		value.replace(arg0, arg1);
 		this.add(key, value);
 	    }

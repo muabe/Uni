@@ -31,7 +31,7 @@ public @interface Progress {
     int mode() default UniProgress.DIALOG;
     int res() default -1;
 
-    static class None extends UniProgress {
+    class None extends UniProgress {
     }
 
 }
