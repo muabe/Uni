@@ -218,6 +218,9 @@ public abstract class UniBoot{
         boolean isBackPressed(FragmentManager fragmentManager){
             this.fragmentManager = fragmentManager;
             this.currentFragment = (UniFragment)fragmentManager.findFragmentByTag(stackName);
+            if(currentFragment != null && !currentFragment.isOnBackPressed()){
+                return true;
+            }
             return observer.isBackPressed(getBackStackEntryCount(fragmentManager, stackName), this);
         }
 

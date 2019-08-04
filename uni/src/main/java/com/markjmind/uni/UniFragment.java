@@ -168,9 +168,6 @@ public class UniFragment extends Fragment implements UniInterface{
     }
 
     public synchronized void onBackPressed() {
-        if(!isOnBackPressed()){
-            return;
-        }
         if(!isBacking) {
 //            if (getFragmentStack().parentsID != null) {
 //                isBacking = true;
@@ -192,9 +189,6 @@ public class UniFragment extends Fragment implements UniInterface{
 
     private boolean isBacking = false;
     public synchronized void onBackPressed(int parentsViewID) {
-        if(!isOnBackPressed()){
-            return;
-        }
         if(!isBacking) {
             isBacking = true;
             getBuilder().popBackStack(parentsViewID); //해당 부모에 대해서만 popback
