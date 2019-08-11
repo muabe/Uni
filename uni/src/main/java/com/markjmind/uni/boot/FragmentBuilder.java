@@ -306,8 +306,6 @@ public class FragmentBuilder {
                         getFragmentManager().executePendingTransactions();
                         transaction.commitAllowingStateLoss();
                         getFragmentManager().popBackStackImmediate();
-
-
                     }
                 }
                 int stackCount = uniFragments.size();

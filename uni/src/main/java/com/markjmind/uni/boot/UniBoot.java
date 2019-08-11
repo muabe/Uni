@@ -225,11 +225,11 @@ public abstract class UniBoot{
         }
 
         public void backPress(){
-            currentFragment.onBackPressed();
+            currentFragment.popBackPressed();
         }
 
         public void backPressOfParents(){
-            currentFragment.onBackPressed(currentFragment.getParentsViewID());
+            currentFragment.popBackPressed(currentFragment.getParentsViewID());
         }
     }
 

@@ -167,32 +167,39 @@ public class UniFragment extends Fragment implements UniInterface{
         this.isPopStack = isPopStack;
     }
 
-    public synchronized void onBackPressed() {
-        if(!isBacking) {
-//            if (getFragmentStack().parentsID != null) {
-//                isBacking = true;
-//                getBuilder().popBackStack(getFragmentStack().parentsID); //해당 부모에 대해서만 popback
-//                onBackPressed(getFragmentStack().parentsID);
-//            } else {
-            getBuilder().popBackStack();
-            if(this.onFinishedListener!=null){
-                this.onFinishedListener.onFinished(finishResult);
-            }
-//            }
-        }
-        isBacking = false;
-    }
-
     public boolean isOnBackPressed(){
         return true;
     }
 
     private boolean isBacking = false;
+
+    public synchronized void onBackPressed() {
+        if(isOnBackPressed()){
+            popBackPressed();
+        }
+    }
+
+    public synchronized void popBackPressed() {
+        if(!isBacking) {
+            getBuilder().popBackStack();
+            if(this.onFinishedListener!=null){
+                this.onFinishedListener.onFinished(finishResult);
+            }
+        }
+        isBacking = false;
+    }
+
     public synchronized void onBackPressed(int parentsViewID) {
+        if(isOnBackPressed()){
+            popBackPressed(parentsViewID);
+        }
+    }
+
+    public synchronized void popBackPressed(int parentsViewID){
         if(!isBacking) {
             isBacking = true;
             getBuilder().popBackStack(parentsViewID); //해당 부모에 대해서만 popback
-            onBackPressed();
+//            onBackPressed(); isBacking이 false이기 때문에 의미 없음 나중에 다시 생각해보자 왜이랬는지
             if(this.onFinishedListener!=null){
                 this.onFinishedListener.onFinished(finishResult);
             }
