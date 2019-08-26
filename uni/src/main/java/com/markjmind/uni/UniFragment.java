@@ -3,6 +3,7 @@ package com.markjmind.uni;
 import android.app.Application;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -215,6 +216,10 @@ public class UniFragment extends Fragment implements UniInterface{
     public UniFragment addFinishResult(String key, Object value){
         finishResult.add(key, value);
         return this;
+    }
+
+    public void onNewIntent(Intent intent){
+
     }
 
 

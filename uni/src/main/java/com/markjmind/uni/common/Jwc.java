@@ -3,6 +3,7 @@ package com.markjmind.uni.common;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -217,5 +218,10 @@ public class Jwc{
 
 	public static void appStore(Context context){
 		gotMarket(context);
+	}
+
+	public static void clearNotification(Context context){
+		NotificationManager notifiyMgr = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+		notifiyMgr.cancelAll();
 	}
 }
