@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Dialog;
 import android.app.NotificationManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -223,5 +225,20 @@ public class Jwc{
 	public static void clearNotification(Context context){
 		NotificationManager notifiyMgr = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
 		notifiyMgr.cancelAll();
+	}
+
+	public static void clipboardCopy(Context context, String label, String text){
+		ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+		ClipData clipData = ClipData.newPlainText(label, text);
+		clipboardManager.setPrimaryClip(clipData);
+	}
+
+	public static void share(Context context, String title, String subject, String text){
+		Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+		intent.setType("text/plain");
+		intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+		intent.putExtra(Intent.EXTRA_TEXT, text);
+		Intent chooser = Intent.createChooser(intent, title);
+		context.startActivity(chooser);
 	}
 }
