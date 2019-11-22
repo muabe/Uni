@@ -1,10 +1,11 @@
 package com.muabe.sample;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
 import com.markjmind.uni.boot.FragmentBuilder;
 import com.muabe.sample.unilayout.LayoutTestFragment;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
