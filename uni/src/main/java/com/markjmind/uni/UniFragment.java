@@ -57,6 +57,7 @@ public class UniFragment extends Fragment implements UniInterface{
         isPopStack = false;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +80,11 @@ public class UniFragment extends Fragment implements UniInterface{
             }
         }
         return uniLayout;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -222,6 +228,9 @@ public class UniFragment extends Fragment implements UniInterface{
 
     }
 
+    public BindLayoutInfo getBindLayoutInfo(){
+        return uniTask.getBindLayoutInfo();
+    }
 
     /*************************************************** 필수 항목 *********************************************/
 

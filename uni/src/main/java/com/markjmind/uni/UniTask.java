@@ -48,8 +48,9 @@ public class UniTask implements UniInterface, AopListener {
     private ArrayList<UniLayout> importor = new ArrayList<>();
 
     private boolean binded = false;
-    private LayoutInflater inflater;
-    private ViewGroup container;
+//    private LayoutInflater inflater;
+//    private ViewGroup container;
+    private BindLayoutInfo bindLayoutInfo = new BindLayoutInfo();
 
     public UniTask() {
         this(false);
@@ -72,12 +73,16 @@ public class UniTask implements UniInterface, AopListener {
         taskController.addAop(this);
     }
 
+     public BindLayoutInfo getBindLayoutInfo(){
+        return bindLayoutInfo;
+    }
+
     private void beforeBind(){
         importor.clear();
         mapper.addSubscriptionOnInit(new ParamAdapter(param));
         if(enableMapping) {
             mapper.addSubscriptionOnInit(new ProgressAdapter(progressBuilder));
-            mapper.addSubscriptionOnInit(new LayoutInjector(inflater, uniLayout, container));
+            mapper.addSubscriptionOnInit(new LayoutInjector(bindLayoutInfo.getLayoutInflater(), uniLayout, bindLayoutInfo.getContainer()));
         }
         mapper.addSubscriptionOnStart(new ImportAdapter(uniLayout, importor));
         mapper.addSubscriptionOnStart(new AopAdapter());
@@ -125,8 +130,7 @@ public class UniTask implements UniInterface, AopListener {
         }
         this.progressBuilder.setParents(uniLayout);
 
-        this.inflater = inflater;
-        this.container = container;
+        this.bindLayoutInfo.setBindLayoutInfo(inflater, container);
     }
 
     void initAtrribute(UniLayout uniLayout, UniInterface uniInterface){

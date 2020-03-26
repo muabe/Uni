@@ -20,7 +20,7 @@ public class UniMainThread extends AsyncTask<Void, Object, Boolean> implements S
     private ThreadProcessObservable taskObservable = new ThreadProcessObservable();
     private Exception doInBackException;
     private UniUncaughtException uncaughtException;
-    UpdateInfo info;
+    private UpdateInfo info;
 
 
     public UniMainThread(CancelObservable observable){
