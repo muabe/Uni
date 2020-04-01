@@ -1,8 +1,8 @@
 package com.markjmind.uni.boot;
 
-import android.app.Activity;
-
 import com.markjmind.uni.UniFragment;
+
+import androidx.fragment.app.FragmentActivity;
 
 /**
  * Created by MarkJ on 2016-10-30.
@@ -13,7 +13,7 @@ public class SimpleBoot extends UniBoot{
 
     /************************************** Must implement ************************************/
 
-    public static SimpleBoot get(Activity activity){
+    public static SimpleBoot get(FragmentActivity activity){
         return UniBoot.get(activity, SimpleBoot.class);
     }
 
@@ -21,13 +21,13 @@ public class SimpleBoot extends UniBoot{
         return UniBoot.get(uniFragment.getActivity(), SimpleBoot.class);
     }
 
-    public static SimpleBoot putContentView(Activity activity){
+    public static SimpleBoot putContentView(FragmentActivity activity){
         return UniBoot.putContentView(activity, SimpleBoot.class);
     }
 
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(FragmentActivity activity) {
         SimpleBoot.HOME = id.home;
 
         getRootView().removeView(view.top);
@@ -49,7 +49,7 @@ public class SimpleBoot extends UniBoot{
 
     }
 
-    public static boolean onBackPressed(Activity activity){
+    public static boolean onBackPressed(FragmentActivity activity){
         SimpleBoot boot = SimpleBoot.get(activity);
         return boot.onBackPressed();
     }

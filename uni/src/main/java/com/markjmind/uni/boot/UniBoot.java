@@ -1,8 +1,6 @@
 package com.markjmind.uni.boot;
 
 
-import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Point;
 import android.util.Log;
@@ -21,6 +19,9 @@ import com.markjmind.uni.util.ReflectionUtil;
 
 import java.util.ArrayList;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+
 /**
  * Created by MarkJ on 2016-10-29.
  */
@@ -30,7 +31,7 @@ public abstract class UniBoot{
     private RelativeLayout rootView;
     public IDs id = new IDs();
     public Views view = new Views();
-    protected Activity activity;
+    protected FragmentActivity activity;
 
     protected Point windowSize = new Point();
 
@@ -61,7 +62,7 @@ public abstract class UniBoot{
      * @param <T> UniBoot를 상속 받은 Class
      * @return T Type의 UniBoot 객체
      */
-    protected static <T extends UniBoot>T get(Activity activity, Class<T> boot){
+    protected static <T extends UniBoot>T get(FragmentActivity activity, Class<T> boot){
         View rootView = activity.findViewById(R.id.uni_boot_frame_root);
         T bootStrap = null;
         if(rootView!=null){
@@ -79,15 +80,15 @@ public abstract class UniBoot{
     }
 
 
-    protected static <T extends UniBoot>T putContentView(Activity activity, Class<T> boot){
+    protected static <T extends UniBoot>T putContentView(FragmentActivity activity, Class<T> boot){
          return (T)ReflectionUtil.getInstance(boot).initLayout(activity);
     }
 
-    protected static <T extends UniBoot>T putContentView(Activity activity, T boot){
+    protected static <T extends UniBoot>T putContentView(FragmentActivity activity, T boot){
         return (T)boot.initLayout(activity);
     }
 
-    UniBoot initLayout(Activity activity){
+    UniBoot initLayout(FragmentActivity activity){
         this.activity = activity;
         activity.setContentView(layoutID);
         rootView = activity.findViewById(R.id.uni_boot_frame_root);
@@ -115,7 +116,7 @@ public abstract class UniBoot{
         return this;
     }
 
-    protected abstract void onAttach(Activity activity);
+    protected abstract void onAttach(FragmentActivity activity);
 
     public RelativeLayout getRootView(){
         return this.rootView;
@@ -191,7 +192,7 @@ public abstract class UniBoot{
     }
 
     public boolean onBackPressed(){
-        FragmentManager fragmentManager = activity.getFragmentManager();
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
         for(BackPressAdapter adapter : backPressList){
             if(adapter.isBackPressed(fragmentManager)){
                 return true;

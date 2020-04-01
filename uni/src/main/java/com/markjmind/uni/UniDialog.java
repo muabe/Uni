@@ -8,7 +8,6 @@
 
 package com.markjmind.uni;
 
-import android.app.Activity;
 import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
@@ -26,6 +25,8 @@ import com.markjmind.uni.thread.LoadEvent;
 import com.markjmind.uni.thread.aop.AopListener;
 
 import java.util.ArrayList;
+
+import androidx.fragment.app.FragmentActivity;
 
 /**
  * <br>捲土重來<br>
@@ -128,7 +129,7 @@ public class UniDialog extends Dialog implements UniInterface {
     }
 
     /*************************************************** BootStrap Builder관련 *********************************************/
-    public FragmentBuilder getBuilder(Activity activity){
+    public FragmentBuilder getBuilder(FragmentActivity activity){
         return FragmentBuilder.getBuilder(activity);
     }
 

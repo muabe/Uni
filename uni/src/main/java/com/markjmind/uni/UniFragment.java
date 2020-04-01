@@ -1,7 +1,6 @@
 package com.markjmind.uni;
 
 import android.app.Application;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -17,6 +16,8 @@ import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
+
+import androidx.fragment.app.Fragment;
 
 
 /**

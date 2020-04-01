@@ -1,8 +1,5 @@
 package com.markjmind.uni.boot;
 
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Build;
 import android.os.PowerManager;
@@ -18,6 +15,10 @@ import com.markjmind.uni.util.ReflectionUtil;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 /**
  * <br>捲土重來<br>
  *
@@ -27,7 +28,7 @@ import java.util.Stack;
  */
 public class FragmentBuilder {
     private static final String DEFALUT_TAG = "UNI";
-    private Activity activity;
+    private FragmentActivity activity;
 
     private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
@@ -38,11 +39,11 @@ public class FragmentBuilder {
     private int parentsViewID = -1;
     private int inAnimRes=-1, outAnimRes=-1;
 
-    protected FragmentBuilder(Activity activity){
+    protected FragmentBuilder(FragmentActivity activity){
         this.activity = activity;
     }
 
-    public static <T extends UniBoot>T setContentView(Activity activity, Class<T> boot){
+    public static <T extends UniBoot>T setContentView(FragmentActivity activity, Class<T> boot){
         return (T) ReflectionUtil.getInstance(boot).initLayout(activity);
     }
 
@@ -53,7 +54,7 @@ public class FragmentBuilder {
      * @param <T> UniBoot를 상속 받은 Class
      * @return T Type의 UniBoot 객체
      */
-    public static <T extends UniBoot>T getBoot(Activity activity, Class<T> boot){
+    public static <T extends UniBoot>T getBoot(FragmentActivity activity, Class<T> boot){
         View rootView = activity.findViewById(R.id.uni_boot_frame_root);
         T bootStrap = null;
         if(rootView!=null){
@@ -68,7 +69,7 @@ public class FragmentBuilder {
         return bootStrap;
     }
 
-    public static FragmentBuilder getBuilder(Activity activity){
+    public static FragmentBuilder getBuilder(FragmentActivity activity){
         return new FragmentBuilder(activity);
     }
 
@@ -441,7 +442,7 @@ public class FragmentBuilder {
 
     public FragmentManager getFragmentManager(){
         if(fragmentManager == null){
-            fragmentManager = activity.getFragmentManager();
+            fragmentManager = activity.getSupportFragmentManager();
         }
         return fragmentManager;
     }

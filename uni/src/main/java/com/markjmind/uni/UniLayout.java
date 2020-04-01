@@ -1,6 +1,5 @@
 package com.markjmind.uni;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -15,6 +14,7 @@ import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
 
 import androidx.databinding.ViewDataBinding;
+import androidx.fragment.app.FragmentActivity;
 
 /**
  * <br>捲土重來<br>
@@ -144,7 +144,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
 //    }
 
     /*************************************************** BootStrap Builder관련 *********************************************/
-    public FragmentBuilder getBuilder(Activity activity){
+    public FragmentBuilder getBuilder(FragmentActivity activity){
         return FragmentBuilder.getBuilder(activity);
     }
 
