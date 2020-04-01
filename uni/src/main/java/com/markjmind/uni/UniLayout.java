@@ -14,6 +14,8 @@ import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
 
+import androidx.databinding.ViewDataBinding;
+
 /**
  * <br>捲土重來<br>
  * @author 오재웅(JaeWoong-Oh)
@@ -27,6 +29,7 @@ public class UniLayout extends FrameLayout implements UniInterface{
     private ViewGroup frameLayout;
     public Store<?> param;
     public ProgressBuilder progressBuilder = new ProgressBuilder();
+    private ViewDataBinding viewDataBinding;
 
     public UniLayout(Context context) {
         super(context);
@@ -68,6 +71,14 @@ public class UniLayout extends FrameLayout implements UniInterface{
                 uniTask.getCancelObservable().cancelAll();
             }
         });
+    }
+
+    public void setViewDataBinding(ViewDataBinding viewDataBinding){
+        this.viewDataBinding = viewDataBinding;
+    }
+
+    public <T extends ViewDataBinding>T getViewDataBinding(){
+        return (T)viewDataBinding;
     }
 
 //    void setUniTask(UniTask task, Store<?> par, ProgressBuilder pro){

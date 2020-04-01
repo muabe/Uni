@@ -11,6 +11,7 @@ import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.mapper.annotiation.LayoutInjector;
 import com.markjmind.uni.mapper.annotiation.adapter.AopAdapter;
+import com.markjmind.uni.mapper.annotiation.adapter.BinderAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.GetViewAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ImportAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.OnClickAdapter;
@@ -82,6 +83,7 @@ public class UniTask implements UniInterface, AopListener {
         mapper.addSubscriptionOnInit(new ParamAdapter(param));
         if(enableMapping) {
             mapper.addSubscriptionOnInit(new ProgressAdapter(progressBuilder));
+            mapper.addSubscriptionOnInit(new BinderAdapter(uniLayout, bindLayoutInfo.getLayoutInflater()));
             mapper.addSubscriptionOnInit(new LayoutInjector(bindLayoutInfo.getLayoutInflater(), uniLayout, bindLayoutInfo.getContainer()));
         }
         mapper.addSubscriptionOnStart(new ImportAdapter(uniLayout, importor));
@@ -117,7 +119,7 @@ public class UniTask implements UniInterface, AopListener {
         }
     }
 
-    void setBindInfo(Object mappingObj, UniLayout uniLayout, LayoutInflater inflater, ViewGroup container){
+    public void setBindInfo(Object mappingObj, UniLayout uniLayout, LayoutInflater inflater, ViewGroup container){
         this.uniLayout = uniLayout;
         this.context = uniLayout.getContext();
         this.mapper.reset(this.uniLayout, mappingObj);
@@ -132,6 +134,7 @@ public class UniTask implements UniInterface, AopListener {
 
         this.bindLayoutInfo.setBindLayoutInfo(inflater, container);
     }
+
 
     void initAtrribute(UniLayout uniLayout, UniInterface uniInterface){
         uniLayout.param = param;
@@ -154,7 +157,7 @@ public class UniTask implements UniInterface, AopListener {
         setUniInterface(uniInterface);
     }
 
-    void syncUniLayout(UniLayout uniLayout){
+    public void syncUniLayout(UniLayout uniLayout){
         uniLayout.param = param;
         uniLayout.progressBuilder = progressBuilder;
         uniLayout.setUniTask(this);

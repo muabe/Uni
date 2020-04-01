@@ -27,8 +27,8 @@ import com.markjmind.uni.thread.LoadEvent;
  */
 
 public class UniFragment extends Fragment implements UniInterface{
-    private UniTask uniTask;
-    private UniLayout uniLayout;
+    public UniTask uniTask;
+    public UniLayout uniLayout;
     public Store<?> param;
     public ProgressBuilder progressBuilder;
     private Bundle savedInstanceState;
@@ -63,6 +63,8 @@ public class UniFragment extends Fragment implements UniInterface{
         super.onCreate(savedInstanceState);
     }
 
+    public String layoutStatus = "new";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.savedInstanceState = savedInstanceState;
@@ -71,15 +73,29 @@ public class UniFragment extends Fragment implements UniInterface{
             uniLayout = new UniLayout(getActivity());
             uniTask.syncUniLayout(uniLayout);
             uniTask.setBindInfo(this,uniLayout,inflater,container);
-            getTask().setAsync(isAsync()).execute();
+            layoutStatus = "new";
+//            getTask().setAsync(isAsync()).execute();
         }else{
             if(isPopStack){
-                getTask().refresh();
+                layoutStatus = "refresh";
+//                getTask().refresh();
             }else {
-                onPostCache();
+                layoutStatus = "cache";
+//                onPostCache();
             }
         }
         return uniLayout;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        if(layoutStatus.equals("new")){
+            getTask().setAsync(isAsync()).execute();
+        }else if(layoutStatus.equals("refresh")){
+            getTask().refresh();
+        }else{
+            onPostCache();
+        }
     }
 
     @Override

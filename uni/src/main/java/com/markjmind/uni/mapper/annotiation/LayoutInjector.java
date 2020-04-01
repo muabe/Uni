@@ -34,9 +34,7 @@ public class LayoutInjector extends ClassInjectAdapter<Layout> {
     public void injectClass(Layout annotation, Class targetClass, Object targetObject) {
         int layoutId = annotation.value();
         if (layoutId > 0) {
-            uniLayout.setView(inflater.inflate(layoutId, container, false));
+//            uniLayout.setView(inflater.inflate(layoutId, container, false));
         }
-
     }
-
 }
