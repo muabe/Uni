@@ -6,15 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import androidx.databinding.ViewDataBinding;
+import androidx.fragment.app.FragmentActivity;
+
 import com.markjmind.uni.boot.FragmentBuilder;
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.progress.UniProgress;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
-
-import androidx.databinding.ViewDataBinding;
-import androidx.fragment.app.FragmentActivity;
 
 /**
  * <br>捲土重來<br>

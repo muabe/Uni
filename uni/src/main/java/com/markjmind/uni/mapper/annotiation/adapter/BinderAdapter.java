@@ -2,6 +2,8 @@ package com.markjmind.uni.mapper.annotiation.adapter;
 
 import android.view.LayoutInflater;
 
+import androidx.databinding.ViewDataBinding;
+
 import com.markjmind.uni.UniLayout;
 import com.markjmind.uni.mapper.FieldInjectAdapter;
 import com.markjmind.uni.mapper.annotiation.Binder;
@@ -9,8 +11,6 @@ import com.markjmind.uni.mapper.annotiation.Binder;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import androidx.databinding.ViewDataBinding;
 
 public class BinderAdapter extends FieldInjectAdapter<Binder> {
     private UniLayout uniLayout;
@@ -30,7 +30,7 @@ public class BinderAdapter extends FieldInjectAdapter<Binder> {
     @Override
     public void injectField(Binder annotation, Field field, Object targetObject) {
         try {
-            Method method = field.getType().getMethod("inflate", LayoutInflater.class);
+            Method method = field.getType().getMethod("inflate", LayoutInflater.class);//, ViewGroup.class, boolean.class);
             ViewDataBinding vb = (ViewDataBinding)method.invoke(null, inflater);
             uniLayout.setView(vb.getRoot());
             uniLayout.setViewDataBinding(vb);

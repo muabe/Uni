@@ -10,17 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.markjmind.uni.R;
 import com.markjmind.uni.UniFragment;
 import com.markjmind.uni.util.ReflectionUtil;
 
 import java.util.ArrayList;
-
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 
 /**
  * Created by MarkJ on 2016-10-29.
@@ -50,8 +49,8 @@ public abstract class UniBoot{
         public FrameLayout home;
         public FrameLayout root_home;
         public FrameLayout bottom;
-        public LinearLayout left;
-        public LinearLayout right;
+        public FrameLayout left;
+        public FrameLayout right;
 
     }
 

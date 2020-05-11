@@ -46,24 +46,20 @@
         </FrameLayout>
     </FrameLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:id="@id/uni_boot_frame_left"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="right"
-        android:orientation="vertical"
         android:clickable="true">
 
-    </LinearLayout>
+    </FrameLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:id="@id/uni_boot_frame_right"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="left"
-        android:orientation="vertical"
         android:clickable="true">
 
-    </LinearLayout>
+    </FrameLayout>
 
 </RelativeLayout>
