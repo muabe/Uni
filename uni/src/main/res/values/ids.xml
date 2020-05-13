@@ -8,4 +8,5 @@
     <item name="uni_boot_frame_custom" type="id"/>
     <item name="uni_boot_frame_left" type="id"/>
     <item name="uni_boot_frame_right" type="id"/>
+    <item name="uni_boot_frame_menu_drag" type="id"/>
 </resources>

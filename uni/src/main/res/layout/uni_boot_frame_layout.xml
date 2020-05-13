@@ -45,21 +45,24 @@
 
         </FrameLayout>
     </FrameLayout>
-
     <com.markjmind.uni.boot.MenuFrameLayout
-        android:id="@id/uni_boot_frame_left"
+        android:id="@id/uni_boot_frame_menu_drag"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true">
+        >
+        <com.markjmind.uni.boot.MenuFrameLayout
+            android:id="@id/uni_boot_frame_left"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+        </com.markjmind.uni.boot.MenuFrameLayout>
 
+        <FrameLayout
+            android:id="@id/uni_boot_frame_right"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+        </FrameLayout>
     </com.markjmind.uni.boot.MenuFrameLayout>
-
-    <FrameLayout
-        android:id="@id/uni_boot_frame_right"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true">
-
-    </FrameLayout>
 
 </RelativeLayout>

@@ -41,6 +41,7 @@ public abstract class UniBoot{
         public int bottom = R.id.uni_boot_frame_bottom;
         public int left = R.id.uni_boot_frame_left;
         public int right = R.id.uni_boot_frame_right;
+        public int menu_drag = R.id.uni_boot_frame_menu_drag;
     }
 
     public class Views{
