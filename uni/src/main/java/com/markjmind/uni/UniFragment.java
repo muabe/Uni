@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.markjmind.uni.boot.FragmentBuilder;
 import com.markjmind.uni.boot.FragmentStack;
@@ -16,8 +19,6 @@ import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
-
-import androidx.fragment.app.Fragment;
 
 
 /**
@@ -247,6 +248,10 @@ public class UniFragment extends Fragment implements UniInterface{
 
     public BindLayoutInfo getBindLayoutInfo(){
         return uniTask.getBindLayoutInfo();
+    }
+
+    public void toast(String message){
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     /*************************************************** 필수 항목 *********************************************/

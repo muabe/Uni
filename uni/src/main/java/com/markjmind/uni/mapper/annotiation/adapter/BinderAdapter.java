@@ -21,7 +21,6 @@ public class BinderAdapter extends FieldInjectAdapter<Binder> {
         this.inflater = inflater;
     }
 
-
     @Override
     public Class<Binder> getAnnotationType() {
         return Binder.class;

@@ -11,6 +11,7 @@ import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.mapper.annotiation.LayoutInjector;
 import com.markjmind.uni.mapper.annotiation.adapter.AopAdapter;
+import com.markjmind.uni.mapper.annotiation.adapter.AutoBinderAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.BinderAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.GetViewAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ImportAdapter;
@@ -83,6 +84,7 @@ public class UniTask implements UniInterface, AopListener {
         mapper.addSubscriptionOnInit(new ParamAdapter(param));
         if(enableMapping) {
             mapper.addSubscriptionOnInit(new ProgressAdapter(progressBuilder));
+            mapper.addSubscriptionOnInit(new AutoBinderAdapter(uniLayout, bindLayoutInfo.getLayoutInflater()));
             mapper.addSubscriptionOnInit(new BinderAdapter(uniLayout, bindLayoutInfo.getLayoutInflater()));
             mapper.addSubscriptionOnInit(new LayoutInjector(bindLayoutInfo.getLayoutInflater(), uniLayout, bindLayoutInfo.getContainer()));
         }
