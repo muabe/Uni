@@ -33,6 +33,7 @@ public class BinderAdapter extends FieldInjectAdapter<Binder> {
             ViewDataBinding vb = (ViewDataBinding)method.invoke(null, inflater);
             uniLayout.setView(vb.getRoot());
             uniLayout.setViewDataBinding(vb);
+            field.setAccessible(true);
             field.set(targetObject, uniLayout.getViewDataBinding());
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException("Binder Annotation Exception",e);

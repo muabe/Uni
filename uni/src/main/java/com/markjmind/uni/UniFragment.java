@@ -20,6 +20,8 @@ import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
 
+import java.util.ArrayList;
+
 
 /**
  * <br>捲土重來<br>
@@ -313,6 +315,12 @@ public class UniFragment extends Fragment implements UniInterface{
 
     }
 
+    LoadBatch loadBatch;
+
+    public void setLoadBatch(LoadBatch batch){
+        this.loadBatch = batch;
+    }
+
     protected UniInterface getUniInterface(){
         return new UniInterface() {
             @Override
@@ -328,11 +336,18 @@ public class UniFragment extends Fragment implements UniInterface{
             @Override
             public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
                 UniFragment.this.onLoad(event, cancelAdapter);
+                if(loadBatch != null) {
+                    loadBatch.getBatch().onLoad(event, cancelAdapter);
+                }
+
             }
 
             @Override
             public void onUpdate(Object value, CancelAdapter cancelAdapter) {
                 UniFragment.this.onUpdate(value, cancelAdapter);
+                if(loadBatch != null) {
+                    loadBatch.getBatch().onUpdate(value, cancelAdapter);
+                }
             }
 
             @Override

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -239,7 +240,7 @@ public abstract class UniBoot{
         int size = fragmentManager.getBackStackEntryCount();
         for ( int entry = 0; entry < size; entry++ ) {
             String name = fragmentManager.getBackStackEntryAt(entry).getName();
-            Log.i("dd",tag+":"+name+" "+(entry+1)+"/"+size);
+            Log.i("UniBoot",tag+":"+name+" "+(entry+1)+"/"+size);
             if (name.indexOf(tag) == 0){
                 count++;
             }

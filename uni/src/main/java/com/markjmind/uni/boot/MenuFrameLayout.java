@@ -4,7 +4,9 @@ import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -22,6 +24,9 @@ public class MenuFrameLayout extends FrameLayout implements GestureDetector.OnGe
     private float y = 0f;
     private float distDistance;
     private OnTouchListener touchListener;
+
+    private int default_gravity  = -1;
+
 
     public MenuFrameLayout(@NonNull Context context) {
         super(context);
