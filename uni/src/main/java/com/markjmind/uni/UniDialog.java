@@ -17,6 +17,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.fragment.app.FragmentActivity;
+
 import com.markjmind.uni.boot.FragmentBuilder;
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.progress.ProgressBuilder;
@@ -25,8 +27,6 @@ import com.markjmind.uni.thread.LoadEvent;
 import com.markjmind.uni.thread.aop.AopListener;
 
 import java.util.ArrayList;
-
-import androidx.fragment.app.FragmentActivity;
 
 /**
  * <br>捲土重來<br>
@@ -120,6 +120,9 @@ public class UniDialog extends Dialog implements UniInterface {
         return getContext().getString(res);
     }
 
+    public void toast(String msg){
+
+    }
 
     /***************************************************
      * 필수 항목

@@ -2,6 +2,7 @@ package com.markjmind.uni;
 
 import android.util.Log;
 
+import com.markjmind.uni.exception.LoadBatchException;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
 
@@ -13,8 +14,15 @@ public abstract class LoadBatch<RetunValue>{
     private String preUpdate = "load pre update index : ";
     private LoadBatch<?> next;
     private int index = 0;
+    private LoadEvent event;
     private CancelAdapter cancelAdapter;
-    private boolean isPreUpdate = false;
+    private boolean isPreUpdate = true;
+    private Object param;
+    private LoadBatch root = null;
+
+    public LoadBatch(){
+        root = this;
+    }
 
     public UniInterface getBatch(){
         return uniInterface;
@@ -33,13 +41,22 @@ public abstract class LoadBatch<RetunValue>{
 
         @Override
         public void onLoad(LoadEvent event, CancelAdapter cancelAdapter) throws Exception {
-            load(0, event, cancelAdapter);
+            isPreUpdate = true;
+            try {
+                load(0, event, cancelAdapter);
+            }catch (Exception e){
+                throw new LoadBatchException(e, getLoadClass());
+            }
         }
 
         @Override
         public void onUpdate(Object value, CancelAdapter cancelAdapter) {
-            preUpdate((String)value);
-            update((String)value, cancelAdapter);
+            if(isPreUpdate) {
+                isPreUpdate = false;
+                preUpdate((String) value);
+            }else {
+                lockUpdate((String) value, cancelAdapter);
+            }
         }
 
         @Override
@@ -69,6 +86,13 @@ public abstract class LoadBatch<RetunValue>{
 
     abstract public void onUpdate(RetunValue value, CancelAdapter cancelAdapter);
 
+    public void onEnd(){
+
+    }
+
+    private Class<? extends LoadBatch> getLoadClass(){
+        return getClass();
+    }
 
     void preUpdate(String value){
         if((preUpdate+index).equals(value)){
@@ -79,7 +103,12 @@ public abstract class LoadBatch<RetunValue>{
     }
 
     void load(int index, LoadEvent event, CancelAdapter cancelAdapter){
+        if(isExcepted){
+            unlock();
+            return;
+        }
         this.index = index;
+        this.event = event;
         try {
             Log.i("LoadUpdate","LoadUpdate : "+index);
             event.update(preUpdate+index);
@@ -96,14 +125,27 @@ public abstract class LoadBatch<RetunValue>{
         }
     }
 
-    void update(String value, CancelAdapter cancelAdapter){
+    void lockUpdate(String value, CancelAdapter cancelAdapter){
+        if(isExcepted){
+            unlock();
+            return;
+        }
         if((batchLock+index).equals(value)){
             this.cancelAdapter = cancelAdapter;
             onUpdate(retunValue, cancelAdapter);
+            unlock();
         }else if(next != null){
-            next.update(value, cancelAdapter);
+            next.lockUpdate(value, cancelAdapter);
         }
+    }
 
+    public Object getParam(){
+        return param;
+    }
+
+    public void update(Object param){
+        this.param = param;
+        event.update(batchLock+index);
     }
 
     public void unlock(){
@@ -127,10 +169,15 @@ public abstract class LoadBatch<RetunValue>{
 
     public void next(LoadBatch<?> batch){
         this.next = batch;
+        batch.root = this.root;
     }
     public void setException(UniInterface exception){
         this.exception = exception;
     }
 
+    LoadBatch endPost;
 
+    public void end(){
+        root.endPost = this;
+    }
 }

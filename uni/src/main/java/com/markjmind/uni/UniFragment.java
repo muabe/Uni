@@ -42,6 +42,7 @@ public class UniFragment extends Fragment implements UniInterface{
 
     private Store<?> finishResult = new Store<>();
     private OnFinishedListener onFinishedListener;
+    private LoadBatch loadBatch;
 
 
     public interface OnFinishedListener{
@@ -313,8 +314,6 @@ public class UniFragment extends Fragment implements UniInterface{
 
     }
 
-    LoadBatch loadBatch;
-
     public void setLoadBatch(LoadBatch batch){
         this.loadBatch = batch;
     }
@@ -355,6 +354,9 @@ public class UniFragment extends Fragment implements UniInterface{
             @Override
             public void onPost() {
                 UniFragment.this.onPost();
+                if(loadBatch != null && loadBatch.endPost != null) {
+                    loadBatch.endPost.onEnd();
+                }
             }
 
             @Override
