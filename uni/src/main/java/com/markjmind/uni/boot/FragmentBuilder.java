@@ -334,7 +334,7 @@ public class FragmentBuilder {
         return result;
     }
 
-    public void popBackStack() {
+    public boolean popBackStack() {
         if(getFragmentManager().getBackStackEntryCount()>0) {
             try {
                 getFragmentManager().popBackStackImmediate();
@@ -347,7 +347,9 @@ public class FragmentBuilder {
                     }
                 }
             }
+            return true;
         }
+        return false;
     }
 
 

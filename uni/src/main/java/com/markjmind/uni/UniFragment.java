@@ -207,7 +207,10 @@ public class UniFragment extends Fragment implements UniInterface{
 
     public synchronized void popBackPressed() {
         if(!isBacking) {
-            getBuilder().popBackStack();
+            if(!getBuilder().popBackStack()){
+                getActivity().onBackPressed();
+                return;
+            }
             if(this.onFinishedListener!=null){
                 this.onFinishedListener.onFinished(finishResult);
             }

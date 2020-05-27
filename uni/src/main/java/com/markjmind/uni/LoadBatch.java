@@ -102,14 +102,11 @@ public abstract class LoadBatch<RetunValue>{
         }
     }
 
-    void load(int index, LoadEvent event, CancelAdapter cancelAdapter){
-        if(isExcepted){
-            unlock();
-            return;
-        }
+    void load(int index, LoadEvent event, CancelAdapter cancelAdapter) throws Exception{
+
         this.index = index;
         this.event = event;
-        try {
+
             Log.i("LoadUpdate","LoadUpdate : "+index);
             event.update(preUpdate+index);
             retunValue = LoadBatch.this.onLoad(event, cancelAdapter);
@@ -118,11 +115,6 @@ public abstract class LoadBatch<RetunValue>{
                 next.load(++index, event, cancelAdapter);
             }
 
-        }catch (Exception e){
-            isExcepted = true;
-            LoadBatch.this.onException(e);
-            cancelAdapter.cancelAll();
-        }
     }
 
     void lockUpdate(String value, CancelAdapter cancelAdapter){
@@ -133,7 +125,6 @@ public abstract class LoadBatch<RetunValue>{
         if((batchLock+index).equals(value)){
             this.cancelAdapter = cancelAdapter;
             onUpdate(retunValue, cancelAdapter);
-            unlock();
         }else if(next != null){
             next.lockUpdate(value, cancelAdapter);
         }
