@@ -20,6 +20,7 @@ import android.view.View;
 import androidx.fragment.app.FragmentActivity;
 
 import com.markjmind.uni.boot.FragmentBuilder;
+import com.markjmind.uni.common.SimpleLog;
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
@@ -41,14 +42,15 @@ public class UniDialog extends Dialog implements UniInterface {
     public Store<?> param;
     public ProgressBuilder progressBuilder;
     private ArrayList<AopListener> aopListeners = new ArrayList<>();
-
     private OnDismissResult onDismissResult;
+    protected SimpleLog log;
 
     public UniDialog(Context context) {
         super(context);
         uniLayout = null;
         uniTask = new UniTask(true);
         uniTask.initAtrribute(this, this);
+        log = new SimpleLog(getClass());
     }
 
     public UniDialog(Context context, int themeResId) {
@@ -56,6 +58,7 @@ public class UniDialog extends Dialog implements UniInterface {
         uniLayout = null;
         uniTask = new UniTask(true);
         uniTask.initAtrribute(this, this);
+        log = new SimpleLog(getClass());
     }
 
     void setUniTask(UniTask uniTask) {

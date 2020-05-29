@@ -170,5 +170,6 @@ public abstract class LoadBatch<RetunValue>{
 
     public void end(){
         root.endPost = this;
+        unlock();
     }
 }

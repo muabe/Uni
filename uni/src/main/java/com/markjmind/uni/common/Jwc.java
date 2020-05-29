@@ -1,5 +1,6 @@
 package com.markjmind.uni.common;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Dialog;
@@ -14,7 +15,11 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Base64;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -29,8 +34,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.NetworkInterface;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -241,4 +250,88 @@ public class Jwc{
 		Intent chooser = Intent.createChooser(intent, title);
 		context.startActivity(chooser);
 	}
+
+	@SuppressLint("MissingPermission")
+	public static boolean isConnectNetwork(Context context) {
+		ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			Network network = null;
+			if (connectivityManager == null) {
+				return false;
+			} else {
+				network = connectivityManager.getActiveNetwork();
+				NetworkCapabilities networkCapabilities = connectivityManager.getNetworkCapabilities(network);
+				if (networkCapabilities == null) {
+					return false;
+				}
+				return networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+						networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR);
+			}
+		} else {
+			if (connectivityManager == null) {
+				return false;
+			}
+			if (connectivityManager.getActiveNetworkInfo() == null) {
+				return false;
+			}
+			return connectivityManager.getActiveNetworkInfo().isConnected();
+		}
+	}
+
+	@SuppressLint("MissingPermission")
+	public static boolean isWifi(Context context){
+		ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			Network network = null;
+			if (connectivityManager == null) {
+				return false;
+			} else {
+				network = connectivityManager.getActiveNetwork();
+				NetworkCapabilities networkCapabilities = connectivityManager.getNetworkCapabilities(network);
+				if (networkCapabilities == null) {
+					return false;
+				}
+				return networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI);
+			}
+		} else {
+			if (connectivityManager == null) {
+				return false;
+			}
+			if (connectivityManager.getActiveNetworkInfo() == null) {
+				return false;
+			}
+			return connectivityManager.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI;
+		}
+	}
+
+	public static String getMacAddress() {
+		String interfaceName = "wlan0";
+		try {
+			List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+			for (NetworkInterface intf : interfaces) {
+				if (interfaceName != null) {
+					if (!intf.getName().equalsIgnoreCase(interfaceName)) continue;
+				}
+				byte[] mac = intf.getHardwareAddress();
+				if (mac==null) return "";
+				StringBuilder buf = new StringBuilder();
+				for (int idx=0; idx<mac.length; idx++)
+					buf.append(String.format("%02X:", mac[idx]));
+				if (buf.length()>0) buf.deleteCharAt(buf.length()-1);
+				return buf.toString();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return "";
+	}
+
+
+	public static String getStringStackTrace(Exception e){
+		StringWriter sw = new StringWriter();
+		e.printStackTrace(new PrintWriter(sw));
+		return sw.toString();
+
+	}
+
 }

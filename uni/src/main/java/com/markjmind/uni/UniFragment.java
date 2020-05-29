@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.markjmind.uni.boot.FragmentBuilder;
 import com.markjmind.uni.boot.FragmentStack;
+import com.markjmind.uni.common.SimpleLog;
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.UniMapper;
 import com.markjmind.uni.progress.ProgressBuilder;
@@ -44,6 +45,8 @@ public class UniFragment extends Fragment implements UniInterface{
     private OnFinishedListener onFinishedListener;
     private LoadBatch loadBatch;
 
+    protected SimpleLog log;
+
 
     public interface OnFinishedListener{
         void onFinished(Store<?> finishResult);
@@ -58,6 +61,7 @@ public class UniFragment extends Fragment implements UniInterface{
         uniTask = new UniTask(true);
         uniTask.initAtrribute(this, getUniInterface());
         isPopStack = false;
+        log = new SimpleLog(getClass());
     }
 
 
