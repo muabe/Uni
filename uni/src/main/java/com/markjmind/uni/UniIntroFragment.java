@@ -1,5 +1,6 @@
 package com.markjmind.uni;
 
+import com.markjmind.uni.exception.LoadBatchException;
 import com.markjmind.uni.mapper.annotiation.TimeouttInjector;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;

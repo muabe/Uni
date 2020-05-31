@@ -24,6 +24,11 @@ public abstract class LoadBatch<RetunValue>{
         root = this;
     }
 
+    public UniInterface getExceptionInterface(){
+        return exception;
+    }
+
+
     public UniInterface getBatch(){
         return uniInterface;
     }
@@ -153,9 +158,9 @@ public abstract class LoadBatch<RetunValue>{
     }
 
     public void onException(Exception e) {
-        if(exception != null){
-            exception.onException(e);
-        }
+//        if(exception!=null){
+//            exception.onException(e);
+//        }
     }
 
     public void next(LoadBatch<?> batch){
