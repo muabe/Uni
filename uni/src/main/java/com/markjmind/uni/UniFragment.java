@@ -41,15 +41,15 @@ public class UniFragment extends Fragment implements UniInterface{
 
     private FragmentStack fragmentStack = new FragmentStack();
 
-    private Store<?> finishResult = new Store<>();
-    private OnFinishedListener onFinishedListener;
+    private OnBackpressCallback preOnBackpressListener;
+    private OnBackpressCallback onBackpressCallback;
     private LoadBatch loadBatch;
 
     protected SimpleLog log;
 
 
-    public interface OnFinishedListener{
-        void onFinished(Store<?> finishResult);
+    public interface OnBackpressListener {
+        void onBack(Store<?> finishResult);
     }
 
     /**
@@ -100,7 +100,7 @@ public class UniFragment extends Fragment implements UniInterface{
             getTask().setAsync(isAsync()).execute();
         }else if(layoutStatus.equals("refresh")){
             getTask().refresh();
-        }else{
+        }else {
             onPostCache();
         }
     }
@@ -215,9 +215,6 @@ public class UniFragment extends Fragment implements UniInterface{
                 getActivity().onBackPressed();
                 return;
             }
-            if(this.onFinishedListener!=null){
-                this.onFinishedListener.onFinished(finishResult);
-            }
         }
         isBacking = false;
     }
@@ -233,20 +230,29 @@ public class UniFragment extends Fragment implements UniInterface{
             isBacking = true;
             getBuilder().popBackStack(parentsViewID); //해당 부모에 대해서만 popback
 //            onBackPressed(); isBacking이 false이기 때문에 의미 없음 나중에 다시 생각해보자 왜이랬는지
-            if(this.onFinishedListener!=null){
-                this.onFinishedListener.onFinished(finishResult);
-            }
         }
         isBacking = false;
     }
 
 
-    public void setOnFinishedListener(OnFinishedListener finishedListener){
-        this.onFinishedListener = finishedListener;
+    public void setPreOnBackpressListener(OnBackpressCallback finishedListener){
+        this.preOnBackpressListener = finishedListener;
     }
 
-    public UniFragment addFinishResult(String key, Object value){
-        finishResult.add(key, value);
+    public OnBackpressCallback getPreOnBackpressListener(){
+        return this.preOnBackpressListener;
+    }
+
+    public void setOriginOnBackpressCallback(OnBackpressCallback onBackpressCallback){
+        if(onBackpressCallback!=null && "cache".equals(layoutStatus) && getClass().getName().equals(onBackpressCallback.callbackClass.getName())) {
+            onBackpressCallback.backEvent(this);
+        }
+    }
+
+    public UniFragment addBackpressResult(String key, Object value){
+        if(preOnBackpressListener != null){
+            preOnBackpressListener.result.add(key, value);
+        }
         return this;
     }
 

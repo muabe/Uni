@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import com.markjmind.uni.OnBackpressCallback;
 import com.markjmind.uni.R;
 import com.markjmind.uni.UniFragment;
 import com.markjmind.uni.common.Store;
@@ -35,12 +36,13 @@ public class FragmentBuilder {
     private boolean allowingStateLoss = false;
     private boolean history = true;
     private Store param;
-    private UniFragment.OnFinishedListener finishedListener;
+    private OnBackpressCallback finishedListener;
     private int parentsViewID = -1;
     private int inAnimRes=-1, outAnimRes=-1;
 
     protected FragmentBuilder(FragmentActivity activity){
         this.activity = activity;
+        this.finishedListener = null;
     }
 
     public static <T extends UniBoot>T setContentView(FragmentActivity activity, Class<T> boot){
@@ -102,7 +104,11 @@ public class FragmentBuilder {
         uniFragment.setRefreshBackStack(true);
         String stackName = FragmentBuilder.getDefalutStack(parentsID);
         setOption(parentsID, uniFragment);
-
+        if(finishedListener != null) {
+            UniFragment currFragment = getCurrentFragment(parentsID);
+            currFragment.setRefreshBackStack(false);
+            finishedListener.setCallbackClass(currFragment.getClass());
+        }
         FragmentTransaction transaction = getTransaction();
         if(inAnimRes > 0 && outAnimRes > 0){
             transaction.setCustomAnimations(inAnimRes, outAnimRes);
@@ -151,8 +157,8 @@ public class FragmentBuilder {
             uniFragment.param.putAll(param);
         }
         uniFragment.setParentsViewID(parentsID);
-        if(finishedListener != null){
-            uniFragment.setOnFinishedListener(finishedListener);
+        if(finishedListener!=null) {
+            uniFragment.setPreOnBackpressListener(finishedListener);
         }
     }
 
@@ -269,6 +275,10 @@ public class FragmentBuilder {
         return this;
     }
 
+    public FragmentBuilder historyAllClear(){
+        return popBackStackClear(true);
+    }
+
     private FragmentBuilder popBackStackClear() {
         try {
             getFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -296,7 +306,7 @@ public class FragmentBuilder {
                 for (int i = entry - 1; i >= 0; i--) {
                     String tagName = getFragmentManager().getBackStackEntryAt(i).getName();
                     if (tagName.contains(stackName)) {
-                        getFragmentManager().popBackStackImmediate();
+                        popBackStackImmediateToCallback(parentsID);
                         result = true;
                         break;
                     } else {
@@ -337,7 +347,8 @@ public class FragmentBuilder {
     public boolean popBackStack() {
         if(getFragmentManager().getBackStackEntryCount()>0) {
             try {
-                getFragmentManager().popBackStackImmediate();
+                popBackStackImmediateToCallback(getParentsId());
+
             }catch (IllegalStateException e){
                 String stackName = getFirstStackName();
                 if(stackName!=null) {
@@ -352,6 +363,15 @@ public class FragmentBuilder {
         return false;
     }
 
+    private void popBackStackImmediateToCallback(int parentsViewID){
+        OnBackpressCallback backpressCallback = getCurrentFragment(parentsViewID).getPreOnBackpressListener();
+        getFragmentManager().popBackStackImmediate();
+
+        if(backpressCallback != null) {
+            UniFragment uniFragment = getCurrentFragment(parentsViewID);
+            uniFragment.setOriginOnBackpressCallback(backpressCallback);
+        }
+    }
 
     private int getStackEntryCount(String stackName){
         int entry = getFragmentManager().getBackStackEntryCount();
@@ -418,8 +438,8 @@ public class FragmentBuilder {
         return transaction;
     }
 
-    public FragmentBuilder setOnFinishedListener(UniFragment.OnFinishedListener finishedListener){
-        this.finishedListener = finishedListener;
+    public FragmentBuilder setOnBackCallback(OnBackpressCallback onBackCallback){
+        this.finishedListener = onBackCallback;
         return this;
     }
 
