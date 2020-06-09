@@ -10,6 +10,7 @@ public class CatchException {
 
     public boolean onException(Exception exception){
         boolean result = false;
+        Log.e("CatchException","Exception:"+exception.getClass().getName());
         if(exceptionStore.containsKey(exception.getClass().getName())){
             result = ((OnExceptionListener)exceptionStore.get(exception.getClass().getName())).onException(exception);
         }else{
@@ -22,7 +23,6 @@ public class CatchException {
 
 
     public void addException(Class<? extends Exception> e, OnExceptionListener listener){
-        Log.e("dd","여기:"+e.getName());
         exceptionStore.add(e.getName(), listener);
     }
 
