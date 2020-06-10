@@ -40,6 +40,11 @@ public class Mapper {
 	}
 
 
+	public Mapper(Class<?> targetClass){
+		this.targetClass = targetClass;
+		viewHash.clear();
+	}
+
 	public Mapper(View finder){
 		this(finder, finder);
 	}
