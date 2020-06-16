@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Progress {
     Class<? extends UniProgress> type() default None.class;
-    int mode() default UniProgress.DIALOG;
+    int mode() default UniProgress.VIEW;
     int res() default -1;
 
     class None extends UniProgress {

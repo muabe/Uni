@@ -48,6 +48,10 @@ public class ProgressBuilder extends ThreadProcessObserver {
         progressLayout.setClickable(true);
     }
 
+    public ViewGroup getParents(){
+        return parents;
+    }
+
     @Override
     public void onPreExecute(CancelAdapter cancelAdapter) {
         show(cancelAdapter);
