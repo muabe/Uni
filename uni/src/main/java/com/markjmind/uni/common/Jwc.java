@@ -52,8 +52,8 @@ import java.util.List;
  * @version 2013.11.17
  */
 public class Jwc{
-	
-	
+
+
 	public static int getColor(String color){
 		return Color.parseColor(color);
 	}
@@ -212,6 +212,14 @@ public class Jwc{
 
 	public static String getVersion(Context context) throws PackageManager.NameNotFoundException {
 		return getPackageInfo(context).versionName;
+	}
+
+	public static long getVersionCode(Context context) throws PackageManager.NameNotFoundException {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+			return getPackageInfo(context).getLongVersionCode();
+		} else {
+			return getPackageInfo(context).versionCode;
+		}
 	}
 
 	public static PackageInfo getPackageInfo(Context context) throws PackageManager.NameNotFoundException {
