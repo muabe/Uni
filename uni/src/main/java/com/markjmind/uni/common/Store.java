@@ -68,6 +68,14 @@ public class Store<Value> extends LinkedHashMap<String, Object> implements Compa
 		return result;
 	}
 
+	public <T>T opt(String key, T opt){
+		T result = (T)super.get(key);
+		if(result==null){
+			result = opt;
+		}
+		return result;
+	}
+
 	/**
 	 * key값에 대응하는 Object 객체를 가져온다
 	 */
