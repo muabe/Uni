@@ -12,6 +12,7 @@ import com.markjmind.uni.common.Store;
 import com.markjmind.uni.mapper.Mapper;
 import com.markjmind.uni.mapper.annotiation.adapter.GetViewAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.LayoutAdapter;
+import com.markjmind.uni.mapper.annotiation.adapter.OnCheckedChangeAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.OnClickAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
 import com.markjmind.uni.thread.CancelAdapter;
@@ -76,7 +77,7 @@ public class UniProgress implements OnProgressListener{
             LayoutInflater inflater = ((LayoutInflater) finder.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
             layout = inflater.inflate(layoutId, finder, false);
             mapper.reset(layout, this);
-            mapper.inject(new GetViewAdapter(), new OnClickAdapter(), new ParamAdapter(param));
+            mapper.inject(new GetViewAdapter(), new OnClickAdapter(), new ParamAdapter(param), new OnCheckedChangeAdapter());
         }else{
             if(layoutId == -1) {
 

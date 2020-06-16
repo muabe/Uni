@@ -15,6 +15,7 @@ import com.markjmind.uni.mapper.annotiation.adapter.AutoBinderAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.BinderAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.GetViewAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ImportAdapter;
+import com.markjmind.uni.mapper.annotiation.adapter.OnCheckedChangeAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.OnClickAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ParamAdapter;
 import com.markjmind.uni.mapper.annotiation.adapter.ProgressAdapter;
@@ -96,6 +97,7 @@ public class UniTask implements UniInterface, AopListener {
     private void afterBind(){
         mapper.addSubscriptionOnStart(new GetViewAdapter());
         mapper.addSubscriptionOnStart(new OnClickAdapter());
+        mapper.addSubscriptionOnStart(new OnCheckedChangeAdapter());
         mapper.injectSubscriptionOnStart();
     }
 
