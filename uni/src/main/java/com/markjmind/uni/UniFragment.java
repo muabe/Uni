@@ -21,6 +21,8 @@ import com.markjmind.uni.progress.ProgressBuilder;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
 
+import org.jetbrains.annotations.NotNull;
+
 
 /**
  * <br>捲土重來<br>
@@ -141,6 +143,7 @@ public class UniFragment extends Fragment implements UniInterface{
         this.parentsViewID = parentsViewID;
     }
 
+    @NotNull
     public FragmentBuilder getBuilder(){
         return FragmentBuilder.getBuilder(this);
     }
