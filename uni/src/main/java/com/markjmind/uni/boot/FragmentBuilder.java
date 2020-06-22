@@ -7,6 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.markjmind.uni.OnBackpressCallback;
 import com.markjmind.uni.R;
 import com.markjmind.uni.UniFragment;
@@ -15,10 +19,6 @@ import com.markjmind.uni.util.ReflectionUtil;
 
 import java.util.ArrayList;
 import java.util.Stack;
-
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 /**
  * <br>捲土重來<br>
@@ -432,9 +432,9 @@ public class FragmentBuilder {
     }
 
     public FragmentTransaction getTransaction(){
-        if(transaction == null){
+//        if(transaction == null){
             this.transaction = getFragmentManager().beginTransaction();
-        }
+//        }
         return transaction;
     }
 
