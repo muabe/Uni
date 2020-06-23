@@ -5,10 +5,12 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Dialog;
 import android.app.NotificationManager;
+import android.app.Service;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -226,6 +228,12 @@ public class Jwc{
 		return context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 	}
 
+	public static String getAppName(Context context) {
+		ApplicationInfo applicationInfo = context.getApplicationInfo();
+		int stringId = applicationInfo.labelRes;
+		return stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : context.getString(stringId);
+	}
+
 	public static void gotMarket(Context context){
 		String packageName = context.getPackageName();
 		try {
@@ -341,5 +349,24 @@ public class Jwc{
 		return sw.toString();
 
 	}
+
+
+	public static void startForegourndService(Context context, Class<? extends Service> serviceClass){
+		Intent intent = new Intent(context, serviceClass);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			context.startForegroundService(intent);
+		}
+		else {
+			context.startService(intent);
+		}
+		context.startService(intent);
+	}
+
+	public static void stopService(Context context, Class<? extends Service> serviceClass) {
+		Intent intent = new Intent(context, serviceClass);
+		context.stopService(intent);
+	}
+
+
 
 }
