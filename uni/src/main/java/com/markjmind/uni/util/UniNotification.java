@@ -73,6 +73,7 @@ public class UniNotification {
             if (nChannel == null) {
                 nChannel = new NotificationChannel(id, appName, importance);
                 nChannel.setDescription(channelDesc);
+                nChannel.setShowBadge(false);
                 nm.createNotificationChannel(nChannel);
             }
         }
