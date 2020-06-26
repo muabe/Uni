@@ -2,6 +2,7 @@ package com.markjmind.uni;
 
 import android.util.Log;
 
+import com.markjmind.uni.common.SimpleLog;
 import com.markjmind.uni.exception.LoadBatchException;
 import com.markjmind.uni.thread.CancelAdapter;
 import com.markjmind.uni.thread.LoadEvent;
@@ -19,9 +20,11 @@ public abstract class LoadBatch<RetunValue>{
     private boolean isPreUpdate = true;
     private Object param;
     private LoadBatch root = null;
+    protected SimpleLog log;
 
     public LoadBatch(){
         root = this;
+        log = new SimpleLog(getClass());
     }
 
     public UniInterface getExceptionInterface(){
