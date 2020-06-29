@@ -21,9 +21,11 @@ public abstract class LoadBatch<RetunValue>{
     private Object param;
     private LoadBatch root = null;
     protected SimpleLog log;
+    private LoadBatch<?> currLoadBatch;
 
     public LoadBatch(){
         root = this;
+        currLoadBatch = this;
         log = new SimpleLog(getClass());
     }
 
@@ -99,7 +101,7 @@ public abstract class LoadBatch<RetunValue>{
     }
 
     private Class<? extends LoadBatch> getLoadClass(){
-        return getClass();
+        return currLoadBatch.getClass();
     }
 
     void preUpdate(String value){
@@ -169,6 +171,7 @@ public abstract class LoadBatch<RetunValue>{
     public void next(LoadBatch<?> batch){
         this.next = batch;
         batch.root = this.root;
+        currLoadBatch = batch;
     }
     public void setException(UniInterface exception){
         this.exception = exception;
