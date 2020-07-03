@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.Build;
 import android.os.PowerManager;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -32,7 +30,7 @@ public class FragmentBuilder {
     private FragmentActivity activity;
 
     private FragmentManager fragmentManager;
-    private FragmentTransaction transaction;
+//    private FragmentTransaction transaction;
     private boolean allowingStateLoss = false;
     private boolean history = true;
     private Store param;
@@ -103,31 +101,43 @@ public class FragmentBuilder {
     public void replace(int parentsID, UniFragment uniFragment, String tag){
         uniFragment.setRefreshBackStack(true);
         String stackName = FragmentBuilder.getDefalutStack(parentsID);
-        setOption(parentsID, uniFragment);
+        UniFragment currFragment = getCurrentFragment(parentsID);
+         setOption(parentsID, uniFragment);
         if(finishedListener != null) {
-            UniFragment currFragment = getCurrentFragment(parentsID);
             currFragment.setRefreshBackStack(false);
             finishedListener.setCallbackClass(currFragment.getClass());
         }
         FragmentTransaction transaction = getTransaction();
         if(inAnimRes > 0 && outAnimRes > 0){
-            transaction.setCustomAnimations(inAnimRes, outAnimRes);
+//            transaction.setCustomAnimations(inAnimRes, inAnimRes);
         }
 
-        //안드로이드 애니메이션이 돌고 있는동안 replace가 되면 에러나는 버그 때문에 추가된 코드
-        if(outAnimRes > 0 ) {
-            UniFragment currFragment = getCurrentFragment(parentsID);
-            if (currFragment != null && currFragment.getView() != null) {
-                ViewParent parent = currFragment.getView().getParent();
-                if (parent instanceof ViewGroup) {
-                    ViewGroup parentViewGroup = (ViewGroup) parent;
-                    parentViewGroup.removeAllViews();
-                }
-            }
+//        안드로이드 애니메이션이 돌고 있는동안 replace가 되면 에러나는 버그 때문에 추가된 코드
+//        if(outAnimRes > 0 ) {
+//            if (currFragment != null && currFragment.getView() != null) {
+//                ViewParent parent = currFragment.getView().getParent();
+//                if (parent instanceof ViewGroup) {
+//                    ViewGroup parentViewGroup = (ViewGroup) parent;
+//                    parentViewGroup.removeAllViews();
+//
+//                }
+//            }
+//        }
+
+
+        if(currFragment != null){
+            transaction
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+            transaction.hide(currFragment);
+            transaction.remove(currFragment);
         }
 
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .replace(parentsID, uniFragment, tag);
+        transaction
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .add(parentsID, uniFragment, tag);
+
+
+        transaction.show(uniFragment);
 
         if(history){
             if ( allowingStateLoss ) {
@@ -144,12 +154,14 @@ public class FragmentBuilder {
             }
             else {
                 try {
-                    transaction.commit();
+                    transaction.commitAllowingStateLoss();
                 } catch ( IllegalStateException e ) {
                     e.printStackTrace();
                 }
             }
         }
+
+
     }
 
     private void setOption(int parentsID, UniFragment uniFragment){
@@ -221,7 +233,6 @@ public class FragmentBuilder {
                         uniFragment.setRefreshBackStack(false);
                         String tagName = getDefalutTag(uniFragment.getParentsViewID());
                         transaction.addToBackStack(tagName);
-
                         transaction.replace(uniFragment.getParentsViewID(), uniFragment, tagName);
                         transaction.commitAllowingStateLoss();
                     }
@@ -332,16 +343,33 @@ public class FragmentBuilder {
                     }
                 }
             }catch (IllegalStateException e){
-                if(stackName!=null) {
-                    UniFragment currentFragment = getCurrentFragment(stackName);
-                    if (currentFragment != null) {
-                        currentFragment.getFragmentStack().popStackOnResume(parentsID);
-                    }
-                }
+                popStackOnResume(stackName, parentsID);
             }
         }
 
         return result;
+    }
+
+    private void popStackOnResume(String stackName, int parentsID){
+        UniFragment currentFragment;
+        if(stackName == null) {
+            currentFragment = getCurrentFragment(parentsID);
+        }else{
+            currentFragment = getCurrentFragment(stackName);
+        }
+        if (currentFragment != null) {
+            try{
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                getFragmentManager().executePendingTransactions();
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+                transaction.show(currentFragment);
+                transaction.commitNowAllowingStateLoss();
+
+            }catch (Exception ex){
+                currentFragment.getFragmentStack().popStackOnResume(parentsID);
+                ex.printStackTrace();
+            }
+        }
     }
 
     public boolean popBackStack() {
@@ -351,12 +379,7 @@ public class FragmentBuilder {
 
             }catch (IllegalStateException e){
                 String stackName = getFirstStackName();
-                if(stackName!=null) {
-                    UniFragment currentFragment = getCurrentFragment(stackName);
-                    if (currentFragment != null) {
-                        currentFragment.getFragmentStack().popStackOnResume(null);
-                    }
-                }
+                popStackOnResume(stackName, getParentsId());
             }
             return true;
         }
@@ -364,12 +387,22 @@ public class FragmentBuilder {
     }
 
     private void popBackStackImmediateToCallback(int parentsViewID){
-        OnBackpressCallback backpressCallback = getCurrentFragment(parentsViewID).getPreOnBackpressListener();
+        UniFragment currFragment = getCurrentFragment(parentsViewID);
+        OnBackpressCallback backpressCallback = currFragment.getPreOnBackpressListener();
+
         getFragmentManager().popBackStackImmediate();
 
-        if(backpressCallback != null) {
-            UniFragment uniFragment = getCurrentFragment(parentsViewID);
-            uniFragment.setOriginOnBackpressCallback(backpressCallback);
+        UniFragment uniFragment = getCurrentFragment(parentsViewID);
+        if(uniFragment!=null) {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            getFragmentManager().executePendingTransactions();
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+            transaction.show(uniFragment);
+            transaction.commitNowAllowingStateLoss();
+
+            if (backpressCallback != null) {
+                uniFragment.setOriginOnBackpressCallback(backpressCallback);
+            }
         }
     }
 
@@ -433,9 +466,9 @@ public class FragmentBuilder {
 
     public FragmentTransaction getTransaction(){
 //        if(transaction == null){
-            this.transaction = getFragmentManager().beginTransaction();
+//            this.transaction = getFragmentManager().beginTransaction();
 //        }
-        return transaction;
+        return getFragmentManager().beginTransaction();
     }
 
     public FragmentBuilder setOnBackCallback(OnBackpressCallback onBackCallback){
