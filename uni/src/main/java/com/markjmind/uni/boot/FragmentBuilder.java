@@ -126,8 +126,7 @@ public class FragmentBuilder {
 
 
         if(currFragment != null){
-            transaction
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
             transaction.hide(currFragment);
             transaction.remove(currFragment);
         }
@@ -238,7 +237,7 @@ public class FragmentBuilder {
                     }
                 }
             }catch (IllegalStateException e){
-//                e.printStackTrace();
+                e.printStackTrace();
                 if(stackName!=null) {
                     UniFragment currentFragment = getCurrentFragment(stackName);
                     if (currentFragment != null) {
@@ -269,7 +268,7 @@ public class FragmentBuilder {
                             .commitAllowingStateLoss();
                 }
             }catch (IllegalStateException e){
-//                e.printStackTrace();
+                e.printStackTrace();
                 String stackName = getFirstStackName();
                 if(stackName!=null) {
                     UniFragment currentFragment = getCurrentFragment(stackName);
@@ -294,7 +293,7 @@ public class FragmentBuilder {
         try {
             getFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }catch (IllegalStateException e){
-//            e.printStackTrace();
+            e.printStackTrace();
             String stackName = getFirstStackName();
             if(stackName!=null) {
                 UniFragment currentFragment = getCurrentFragment(stackName);
@@ -317,7 +316,7 @@ public class FragmentBuilder {
                 for (int i = entry - 1; i >= 0; i--) {
                     String tagName = getFragmentManager().getBackStackEntryAt(i).getName();
                     if (tagName.contains(stackName)) {
-                        popBackStackImmediateToCallback(parentsID);
+                        popBackStackImmediateToCallback(stackName, parentsID);
                         result = true;
                         break;
                     } else {
@@ -343,6 +342,7 @@ public class FragmentBuilder {
                     }
                 }
             }catch (IllegalStateException e){
+                e.printStackTrace();
                 popStackOnResume(stackName, parentsID);
             }
         }
@@ -375,9 +375,10 @@ public class FragmentBuilder {
     public boolean popBackStack() {
         if(getFragmentManager().getBackStackEntryCount()>0) {
             try {
-                popBackStackImmediateToCallback(getParentsId());
+                popBackStackImmediateToCallback(null, getParentsId());
 
             }catch (IllegalStateException e){
+                e.printStackTrace();
                 String stackName = getFirstStackName();
                 popStackOnResume(stackName, getParentsId());
             }
@@ -386,24 +387,37 @@ public class FragmentBuilder {
         return false;
     }
 
-    private void popBackStackImmediateToCallback(int parentsViewID){
+    private void popBackStackImmediateToCallback(String stackName, int parentsViewID){
         UniFragment currFragment = getCurrentFragment(parentsViewID);
         OnBackpressCallback backpressCallback = currFragment.getPreOnBackpressListener();
 
-        getFragmentManager().popBackStackImmediate();
+        try {
+            getFragmentManager().popBackStackImmediate();
+//            UniFragment uniFragment = getCurrentFragment(parentsViewID);
+//            if(uniFragment!=null) {
+//                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//                getFragmentManager().executePendingTransactions();
+//                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+//                transaction.show(uniFragment);
+//                transaction.commitNowAllowingStateLoss();
+//
+//            }
+        }catch (Exception e){
+            if(currFragment!=null){
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                getFragmentManager().executePendingTransactions();
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+                transaction.hide(currFragment);
+                transaction.remove(currFragment);
+                transaction.commitNowAllowingStateLoss();
 
-        UniFragment uniFragment = getCurrentFragment(parentsViewID);
-        if(uniFragment!=null) {
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            getFragmentManager().executePendingTransactions();
-            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
-            transaction.show(uniFragment);
-            transaction.commitNowAllowingStateLoss();
-
-            if (backpressCallback != null) {
-                uniFragment.setOriginOnBackpressCallback(backpressCallback);
             }
+            popStackOnResume(stackName, parentsViewID);
         }
+        if (backpressCallback != null) {
+            getCurrentFragment(parentsViewID).setOriginOnBackpressCallback(backpressCallback);
+        }
+
     }
 
     private int getStackEntryCount(String stackName){
