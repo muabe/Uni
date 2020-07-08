@@ -393,15 +393,15 @@ public class FragmentBuilder {
 
         try {
             getFragmentManager().popBackStackImmediate();
-//            UniFragment uniFragment = getCurrentFragment(parentsViewID);
-//            if(uniFragment!=null) {
-//                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//                getFragmentManager().executePendingTransactions();
-//                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
-//                transaction.show(uniFragment);
-//                transaction.commitNowAllowingStateLoss();
-//
-//            }
+            if(currFragment!=null){
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                getFragmentManager().executePendingTransactions();
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+                transaction.hide(currFragment);
+                transaction.remove(currFragment);
+                transaction.commitNowAllowingStateLoss();
+
+            }
         }catch (Exception e){
             if(currFragment!=null){
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
