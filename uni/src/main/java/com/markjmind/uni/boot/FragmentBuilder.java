@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.PowerManager;
 import android.view.View;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -16,6 +17,7 @@ import com.markjmind.uni.common.Store;
 import com.markjmind.uni.util.ReflectionUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -212,6 +214,7 @@ public class FragmentBuilder {
                         UniFragment uniFragment = getCurrentFragment(tagName);
                         uniFragments.push(uniFragment);
                         FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        transaction.hide(uniFragment);
                         transaction.remove(uniFragment);
                         getFragmentManager().executePendingTransactions();
                         transaction.commitAllowingStateLoss();
@@ -260,15 +263,40 @@ public class FragmentBuilder {
                     stackNames.add(tagName);
                 }
             }
+
             try {
-                getFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 for (String tagName : stackNames) {
-                    getFragmentManager().beginTransaction()
-                            .remove(getCurrentFragment(tagName))
-                            .commitAllowingStateLoss();
+                    getFragmentManager().popBackStackImmediate(tagName, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                }
+
+                List<Fragment> fragmentList = getFragmentManager().getFragments();
+                if(fragmentList.size() > 0) {
+                    int i = 0;
+                    for (Fragment fragment : fragmentList) {
+                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                            transaction
+                                    .hide(fragment)
+                                    .remove(fragment);
+                            transaction.commitAllowingStateLoss();
+                        i++;
+                    }
+
                 }
             }catch (IllegalStateException e){
                 e.printStackTrace();
+                List<Fragment> fragmentList = getFragmentManager().getFragments();
+                if(fragmentList.size() > 0) {
+                    int i = 0;
+                    for (Fragment fragment : fragmentList) {
+                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                            transaction
+                                    .hide(fragment)
+                                    .remove(fragment);
+                            transaction.commitAllowingStateLoss();
+                        i++;
+                    }
+
+                }
                 String stackName = getFirstStackName();
                 if(stackName!=null) {
                     UniFragment currentFragment = getCurrentFragment(stackName);
@@ -286,6 +314,12 @@ public class FragmentBuilder {
     }
 
     public FragmentBuilder historyAllClear(){
+//        FragmentManager manager = getFragmentManager();
+//        if (manager.getBackStackEntryCount() > 0) {
+//            FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
+//            manager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//        }
+//        return this;
         return popBackStackClear(true);
     }
 
