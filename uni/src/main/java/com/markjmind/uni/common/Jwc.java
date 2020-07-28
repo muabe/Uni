@@ -27,6 +27,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -149,8 +150,35 @@ public class Jwc{
 
 	public static void showKeyboard(Context context, EditText editText){
 		InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.showSoftInput(editText, 0);
+		imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
 
+	}
+
+	public static void setKeyboardVisibilityListener(Activity activity, final KeyboardVisibilityListener keyboardVisibilityListener) {
+		final View contentView = activity.findViewById(android.R.id.content);
+		contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+			private int mPreviousHeight;
+			@Override
+			public void onGlobalLayout() {
+				int newHeight = contentView.getHeight();
+				if (mPreviousHeight != 0) {
+					if (mPreviousHeight > newHeight) {
+						// Height decreased: keyboard was shown
+						keyboardVisibilityListener.onAction(true);
+					} else if (mPreviousHeight < newHeight) {
+						// Height increased: keyboard was hidden
+						keyboardVisibilityListener.onAction(false);
+					} else {
+						// No change
+					}
+				}
+				mPreviousHeight = newHeight;
+			}
+		});
+	}
+
+	public interface KeyboardVisibilityListener{
+		void onAction(boolean isShow);
 	}
 
 	public static View lastChild(ViewGroup parantView){
