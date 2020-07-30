@@ -104,6 +104,11 @@ public class Jwc{
 		return result;
 	}
 
+	public static final void setStatusBarTextColor(final Activity activity, final boolean isWhite) {
+		final int lFlags = activity.getWindow().getDecorView().getSystemUiVisibility();
+		activity.getWindow().getDecorView().setSystemUiVisibility(isWhite ? (lFlags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) : (lFlags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR));
+	}
+
 	public static void setVisible(View target, boolean isVisible, int falseVisible){
 		if(isVisible){
 			target.setVisibility(View.VISIBLE);
