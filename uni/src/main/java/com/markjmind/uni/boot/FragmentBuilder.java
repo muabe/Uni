@@ -111,7 +111,7 @@ public class FragmentBuilder {
         }
         FragmentTransaction transaction = getTransaction();
         if(inAnimRes > 0 && outAnimRes > 0){
-//            transaction.setCustomAnimations(inAnimRes, inAnimRes);
+            transaction.setCustomAnimations(inAnimRes, 0);
         }
 
 //        안드로이드 애니메이션이 돌고 있는동안 replace가 되면 에러나는 버그 때문에 추가된 코드
@@ -133,9 +133,15 @@ public class FragmentBuilder {
             transaction.remove(currFragment);
         }
 
-        transaction
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .add(parentsID, uniFragment, tag);
+        if(inAnimRes >0){
+            transaction.setCustomAnimations(inAnimRes, 0);
+            transaction
+                    .add(parentsID, uniFragment, tag);
+        }else {
+            transaction
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .add(parentsID, uniFragment, tag);
+        }
 
 
         transaction.show(uniFragment);
