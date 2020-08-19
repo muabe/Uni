@@ -400,6 +400,9 @@ public class Jwc{
 		context.stopService(intent);
 	}
 
-
+	public static void notificationRemoveAll(Context context){
+		NotificationManager notificationManager = (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager.cancelAll();
+	}
 
 }
