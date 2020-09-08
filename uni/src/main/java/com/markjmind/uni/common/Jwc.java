@@ -276,6 +276,14 @@ public class Jwc{
 		}
 	}
 
+	public static void gotMarket(Context context, String packageName){
+		try {
+			context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName)));
+		} catch (android.content.ActivityNotFoundException anfe) {
+			context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName)));
+		}
+	}
+
 	public static void appStore(Context context){
 		gotMarket(context);
 	}
