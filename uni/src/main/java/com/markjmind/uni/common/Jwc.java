@@ -315,16 +315,26 @@ public class Jwc{
 		return stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : context.getString(stringId);
 	}
 
-	public static void gotMarket(Context context){
+
+	public static void goMarket(Context context, String storeId){
 		String packageName = context.getPackageName();
 		try {
-			context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName)));
-		} catch (android.content.ActivityNotFoundException anfe) {
-			context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName)));
-		}
-	}
+			if (storeId != null) {
+				String installName = context.getPackageManager().getInstallerPackageName(packageName);
+				if (installName != null) {
+					if ("com.skt.skaf.A000Z00040".equals(installName) || "com.kt.olleh.storefront".equals(installName) || "android.lgt.appstore".equals(installName)) {
+						context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("onestore://common/product/bg_update/" + storeId)));
+						return;
+					} else if ("com.samsung.android.mateagent".equals(installName) || "com.sec.android.app.samsungapps".equals(installName) || "com.sec.android.easyMover.Agent".equals(installName)) {
+						context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("samsungapps://ProductDetail/" + packageName)));
+						return;
+					}
+				}
 
-	public static void gotMarket(Context context, String packageName){
+			}
+		}catch (android.content.ActivityNotFoundException anfe){
+
+		}
 		try {
 			context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName)));
 		} catch (android.content.ActivityNotFoundException anfe) {
@@ -332,8 +342,8 @@ public class Jwc{
 		}
 	}
 
-	public static void appStore(Context context){
-		gotMarket(context);
+	public static void goPlayStore(Context context){
+		goMarket(context,  null);
 	}
 
 	public static void clearNotification(Context context){
