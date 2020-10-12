@@ -316,8 +316,10 @@ public class Jwc{
 	}
 
 
-	public static void goMarket(Context context, String storeId){
-		String packageName = context.getPackageName();
+	public static void goMarket(Context context, String packageName, String storeId){
+		if(packageName == null) {
+			packageName = context.getPackageName();
+		}
 		try {
 			if (storeId != null) {
 				String installName = context.getPackageManager().getInstallerPackageName(packageName);
@@ -342,8 +344,16 @@ public class Jwc{
 		}
 	}
 
+	public static void goMarket(Context context, String storeId){
+		goMarket(context, null, storeId);
+	}
+
+	public static void goPlayStore(Context context, String packageName){
+		goMarket(context,  packageName, null);
+	}
+
 	public static void goPlayStore(Context context){
-		goMarket(context,  null);
+		goMarket(context,  null, null);
 	}
 
 	public static void clearNotification(Context context){
