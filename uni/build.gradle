@@ -20,8 +20,8 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'org.jetbrains:annotations:16.0.2'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'org.jetbrains:annotations:20.1.0'
 }
 
 //configurations.all {
