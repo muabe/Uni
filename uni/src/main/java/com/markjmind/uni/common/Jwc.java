@@ -250,27 +250,7 @@ public class Jwc{
 	}
 
 	public static boolean isUpdateVersion(Context context, String newVersion) throws PackageManager.NameNotFoundException, NumberFormatException{
-		String[] preVersions = Jwc.getVersion(context).split("\\.");
-		String[] postVersions = newVersion.split("\\.");
-
-		for(int i=0; i<preVersions.length; i++){
-			int postVersion = 0;
-			if(i < postVersions.length){
-				postVersion = Integer.parseInt(postVersions[i]);
-			}
-			if(Integer.parseInt(preVersions[i]) < postVersion){
-				return true;
-			}
-		}
-
-		if(preVersions.length < postVersions.length){
-			for(int i=preVersions.length; i<postVersions.length; i++){
-				if(Integer.parseInt(postVersions[i]) > 0){
-					return true;
-				}
-			}
-		}
-		return false;
+		return isUpdateVersion(Jwc.getVersion(context), newVersion);
 	}
 
 	public static boolean isUpdateVersion(String preVersion, String newVersion) throws NumberFormatException{
