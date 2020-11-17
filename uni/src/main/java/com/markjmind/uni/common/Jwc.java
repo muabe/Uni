@@ -284,6 +284,8 @@ public class Jwc{
 			}
 			if(Integer.parseInt(preVersions[i]) < postVersion){
 				return true;
+			}else if(Integer.parseInt(preVersions[i]) > postVersion){
+				return false;
 			}
 		}
 
