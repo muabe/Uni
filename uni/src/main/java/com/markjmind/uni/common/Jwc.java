@@ -308,7 +308,7 @@ public class Jwc{
 			if (storeId != null) {
 				String installName = context.getPackageManager().getInstallerPackageName(packageName);
 				if (installName != null) {
-					if ("com.skt.skaf.A000Z00040".equals(installName) || "com.kt.olleh.storefront".equals(installName) || "android.lgt.appstore".equals(installName)) {
+					if ("com.skt.skaf.A000Z00040".equals(installName) || "com.kt.olleh.storefront".equals(installName) || "android.lgt.appstore".equals(installName) || "com.lguplus.appstore".equals(installName)) {
 						context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("onestore://common/product/bg_update/" + storeId)));
 						return;
 					} else if ("com.samsung.android.mateagent".equals(installName) || "com.sec.android.app.samsungapps".equals(installName) || "com.sec.android.easyMover.Agent".equals(installName)) {
