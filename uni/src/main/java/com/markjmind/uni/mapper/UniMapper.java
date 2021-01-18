@@ -13,6 +13,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -43,6 +45,10 @@ public class UniMapper extends Mapper{
         super(finder);
     }
 
+    public UniMapper(BottomSheetDialog finder){
+        super(finder);
+    }
+
     public UniMapper(View finder, Object targetObject){
         super(finder, targetObject);
     }
@@ -52,6 +58,10 @@ public class UniMapper extends Mapper{
     }
 
     public UniMapper(Dialog finder, Object targetObject){
+        super(finder, targetObject);
+    }
+
+    public UniMapper(BottomSheetDialog finder, Object targetObject){
         super(finder, targetObject);
     }
 

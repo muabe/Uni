@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
@@ -57,6 +59,10 @@ public class Mapper {
 		this(finder, finder);
 	}
 
+	public Mapper(BottomSheetDialog finder){
+		this(finder, finder);
+	}
+
 	public Mapper(View finder, Object targetObject){
 		reset(finder, targetObject);
 	}
@@ -66,6 +72,10 @@ public class Mapper {
 	}
 
 	public Mapper(Dialog finder, Object targetObject){
+		reset(finder, targetObject);
+	}
+
+	public Mapper(BottomSheetDialog finder, Object targetObject){
 		reset(finder, targetObject);
 	}
 
@@ -92,6 +102,18 @@ public class Mapper {
 	}
 
 	public void reset(Dialog finder, Object targetObject){
+		this.context = finder.getContext();
+		this.targetObject = targetObject;
+		this.finder = new Finder(finder);
+		this.targetClass = targetObject.getClass();
+
+		viewHash.clear();
+		classAnnotations = null;
+		fieldAnnotations = null;
+		methodAnnotations = null;
+	}
+
+	public void reset(BottomSheetDialog finder, Object targetObject){
 		this.context = finder.getContext();
 		this.targetObject = targetObject;
 		this.finder = new Finder(finder);

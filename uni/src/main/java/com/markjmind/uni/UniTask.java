@@ -161,6 +161,13 @@ public class UniTask implements UniInterface, AopListener {
         setUniInterface(uniInterface);
     }
 
+    void initAtrribute(UniBottomSheetDialog uniBottomSheetDialog, UniInterface uniInterface){
+        uniBottomSheetDialog.param = this.param;
+        uniBottomSheetDialog.progressBuilder = this.progressBuilder;
+        mapper.setInjectParents(UniBottomSheetDialog.class);
+        setUniInterface(uniInterface);
+    }
+
     public void syncUniLayout(UniLayout uniLayout){
         uniLayout.param = param;
         uniLayout.progressBuilder = progressBuilder;
