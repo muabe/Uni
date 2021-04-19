@@ -8,8 +8,6 @@
 
 package com.markjmind.uni.mapper.annotiation.adapter;
 
-import android.util.Log;
-
 import com.markjmind.uni.common.Store;
 import com.markjmind.uni.exception.ErrorMessage;
 import com.markjmind.uni.exception.UinMapperException;
@@ -50,7 +48,6 @@ public class ParamAdapter extends FieldInjectAdapter<Param> {
                     setField(field, value);
                 }
             } catch (Exception e) {
-                Log.i("dsd", field.getType().getName());
                 if (value == null && ("int".equals(field.getType().getName())
                         || "long".equals(field.getType().getName())
                         || "float".equals(field.getType().getName())
